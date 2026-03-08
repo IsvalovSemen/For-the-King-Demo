@@ -5,14 +5,16 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewItem", menuName = "Item")]
 public class ItemStats : ScriptableObject
 {
+    public string ID;
+    public GameObject prefab;
+    public bool isStackable;
+    public int maxStacksAmount;
+    public ItemSlotType itemType;
     public string itemTitle;
-    public GameObject cardPrefab;
-    public float pickUpDistance = 50f;
     public Sprite sprite;
-    public ItemSlot slotType;
-    public Damage[] swingDmg;
-    public Damage[] aboveDmg;
-    public Damage[] stabDmg;
+    public int damage;
+    public DamageType dmgType;
+    public WeaponType wpnType;
     public int slashRes;
     public int thrustRes;
     public int bluntRes;
@@ -20,18 +22,22 @@ public class ItemStats : ScriptableObject
     public int coldRes;
     public int poisonRes;
     public int lightRes;
-    public float strScale;
-    public float dexScale;
-    public float intScale;
     public int strReq;
     public int dexReq;
     public int intReq;
+    public int restoreAmount;
     public float weight;
     public int price;
     public int durability;
     public int iconWidth;
     public int iconHeight;
     public string description;
+    public WeaponPlacement placement;
     public Sound[] sounds;
-    
 }
+
+public enum WeaponPlacement { Back, Belt }
+
+public enum DamageType { Slash, Blunt, Thrust, Fire, Cold, Poison, Light }
+
+public enum WeaponType { Striking1H, Thrusting1H, Striking2H, Thrusting2H }

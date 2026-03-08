@@ -5,17 +5,17 @@ public class MainMenuCamera: CameraControl
 {
     public override void Update()
     {
-        float mouseX = Input.GetAxis("Mouse X") * GM.mouseSensitivity * Time.deltaTime;
+        float mouseX = Input.GetAxis("Mouse X") * GameMaster.instance.mouseSensitivity * Time.deltaTime;
 
-        float mouseY = Input.GetAxis("Mouse Y") * GM.mouseSensitivity * Time.deltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * GameMaster.instance.mouseSensitivity * Time.deltaTime;
 
         XRot -= mouseY;
 
-        XRot = Mathf.Clamp(XRot, -MaxAngle, MaxAngle);
+        XRot = Mathf.Clamp(XRot, -viewAngle, viewAngle);
 
         YRot += mouseX;
 
-        YRot = Mathf.Clamp(YRot, -MaxAngle, MaxAngle);
+        YRot = Mathf.Clamp(YRot, -viewAngle, viewAngle);
 
         if (Input.GetMouseButton(1))
         {

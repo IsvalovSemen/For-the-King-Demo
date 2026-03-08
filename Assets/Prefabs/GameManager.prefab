@@ -9,9 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3303617083735649538}
+  - component: {fileID: 6742611976371861398}
+  - component: {fileID: 1313661791125251595}
+  - component: {fileID: 6258340164547598967}
   m_Layer: 0
   m_Name: GameManager
-  m_TagString: Untagged
+  m_TagString: GameController
   m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -23,10 +26,256 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3303617083735649536}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2758759651278084885}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6742611976371861398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3303617083735649536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 355f9ace099c601439e6ee4911348396, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HUD: {fileID: 0}
+  SM: {fileID: 0}
+  _notificationsWindow: {fileID: 0}
+  _messageDisplayDelay: 5
+  effectIconPrefab: {fileID: 0}
+  environmentMask:
+    serializedVersion: 2
+    m_Bits: 8
+  actorsMask:
+    serializedVersion: 2
+    m_Bits: 64
+  waterMask:
+    serializedVersion: 2
+    m_Bits: 16
+  _cursorStandart: {fileID: 2800000, guid: 10c0d94cd2bcc2e4da8f48b546b203c2, type: 3}
+  _cursorDrag: {fileID: 2800000, guid: 7d2401c6687fa0948abad68944f23ea7, type: 3}
+  _cursorPick: {fileID: 2800000, guid: d81c46e155a54fd4f8ba5cda5434759a, type: 3}
+  _cursorFether: {fileID: 2800000, guid: f44f6f00035e1824cbb1b2105d565dda, type: 3}
+  crosshair: {fileID: 0}
+  inventoryMenu: {fileID: 0}
+  _mainMenu: {fileID: 0}
+  _playerMenu: {fileID: 0}
+  _charMenu: {fileID: 0}
+  _journalMenu: {fileID: 0}
+  _questLogMenu: {fileID: 0}
+  _mapMenu: {fileID: 0}
+  _settingsMenu: {fileID: 0}
+  _controlsMenu: {fileID: 0}
+  _graphicMenu: {fileID: 0}
+  _soundMenu: {fileID: 0}
+  _exitConfirmWindow: {fileID: 0}
+  soundOverall: 1
+  musicOverall: 1
+  effectsOverall: 1
+  dialogueOverall: 1
+  _fallingTimer: 10
+  _maxFallTime: 0
+  deathScreen: {fileID: 0}
+  gravity: 10
+  _sun: {fileID: 0}
+  _timeSpeed: 0.1
+  _sunColor:
+    serializedVersion: 2
+    key0: {r: 0.78431374, g: 0.33583918, b: 0.12041585, a: 1}
+    key1: {r: 0.9528302, g: 0.7604592, b: 0.29214135, a: 1}
+    key2: {r: 0.78431374, g: 0.26976463, b: 0.09369387, a: 0}
+    key3: {r: 0.7311321, g: 0.82436854, b: 1, a: 0}
+    key4: {r: 1, g: 1, b: 1, a: 0}
+    key5: {r: 0.7311321, g: 0.8243686, b: 1, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 22918
+    ctime2: 32768
+    ctime3: 33423
+    ctime4: 49171
+    ctime5: 65535
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_ColorSpace: -1
+    m_NumColorKeys: 6
+    m_NumAlphaKeys: 2
+  _day: 1
+  _dayCycleActive: 0
+  _compass: {fileID: 0}
+  _sunIcon: {fileID: 21300000, guid: e303cd978e604d94e86504d73b0f434e, type: 3}
+  _moonIcon: {fileID: 21300000, guid: f43253e1b4499e64088bca8c3861e787, type: 3}
+  _timeWidget: {fileID: 0}
+  _miniMapCam: {fileID: 0}
+  fogColor: {r: 0, g: 0, b: 0, a: 0}
+  fogDensity: 0
+  fogEnabled: 0
+  fogMode: 0
+  mouseSensitivity: 300
+  mainMenuKey: 0
+  playerMenuKey: 0
+  moveForward: 119
+  moveBackward: 115
+  moveRight: 100
+  moveLeft: 97
+  sprintKey: 304
+  walkKey: 308
+  sneakKey: 306
+  jumpKey: 32
+  dodgeKey: 0
+  kickKey: 107
+  drawWeaponKey: 114
+  interactionKey: 101
+  holdKey: 113
+  throwKey: 116
+  interactionDistance: 3
+  keyHoldTime: 0
+--- !u!114 &1313661791125251595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3303617083735649536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5c37cc2e21ff9f4c8daa530e0f23100, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemsList:
+  - {fileID: 0}
+--- !u!114 &6258340164547598967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3303617083735649536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 230bd54b784261043906429fb1b274d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: MainMenuTheme
+    clip: {fileID: 8300000, guid: 1761773ec014ea64d82619c3bdfbd928, type: 3}
+    loop: 1
+    autoplay: 0
+    spatialBlend: 0
+    volume: 0.5
+    pitch: 1
+    source: {fileID: 0}
+    category: 0
+  - name: FootstepsStone
+    clip: {fileID: 8300000, guid: 375ae5a11b3dd074abd4fc44a9960a16, type: 3}
+    loop: 0
+    autoplay: 0
+    spatialBlend: 0
+    volume: 0.5
+    pitch: 1
+    source: {fileID: 0}
+    category: 2
+  - name: Ambient
+    clip: {fileID: 8300000, guid: 768355cbe4119ab47bf897f0a2ab1292, type: 3}
+    loop: 1
+    autoplay: 0
+    spatialBlend: 0
+    volume: 0.5
+    pitch: 1
+    source: {fileID: 0}
+    category: 2
+  - name: EatVegetable
+    clip: {fileID: 8300000, guid: 0668ed691c096f7449a7e4c403d0beec, type: 3}
+    loop: 1
+    autoplay: 0
+    spatialBlend: 0
+    volume: 0.5
+    pitch: 1
+    source: {fileID: 0}
+    category: 2
+--- !u!1 &9096762332866717107
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2758759651278084885}
+  - component: {fileID: 4946355685540513872}
+  - component: {fileID: 8029344638382955619}
+  m_Layer: 0
+  m_Name: EventSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967295
+  m_IsActive: 1
+--- !u!4 &2758759651278084885
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9096762332866717107}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -77.100006, y: 14.299988, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3303617083735649538}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4946355685540513872
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9096762332866717107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_FirstSelected: {fileID: 0}
+  m_sendNavigationEvents: 1
+  m_DragThreshold: 10
+--- !u!114 &8029344638382955619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9096762332866717107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
+  m_HorizontalAxis: Horizontal
+  m_VerticalAxis: Vertical
+  m_SubmitButton: Submit
+  m_CancelButton: Cancel
+  m_InputActionsPerSecond: 10
+  m_RepeatDelay: 0.5
+  m_ForceModuleActive: 1

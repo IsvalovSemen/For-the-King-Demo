@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27c4fcf34aaa3cb43ae6f1f410c57a15, type: 3}
+  m_Name: SteelSwordStats
+  m_EditorClassIdentifier: 
+  ID: steel_sword
+  prefab: {fileID: 2758179790640682902, guid: 40bf073a67ded2a4fa6a834545a5a894, type: 3}
+  isStackable: 0
+  maxStacks: 0
+  itemType: 1
+  itemTitle: Steel Sword
+  sprite: {fileID: 21300000, guid: 7bf4fce3587b7c84588206cf685c3325, type: 3}
+  damage: 5
+  dmgType: 0
+  wpnType: 0
+  slashRes: 0
+  thrustRes: 0
+  bluntRes: 0
+  fireRes: 0
+  coldRes: 0
+  poisonRes: 0
+  lightRes: 0
+  strReq: 5
+  dexReq: 3
+  intReq: 0
+  restoreAmount: 0
+  weight: 2.5
+  price: 250
+  durability: 120
+  iconWidth: 3
+  iconHeight: 4
+  description: Simple steel sword.
+  placement: 1
+  sounds:
+  - name: Hit
+    clip: {fileID: 8300000, guid: 1f4edb2658ea61243a03f08d0c0edb7d, type: 3}
+    loop: 0
+    autoplay: 0
+    spatialBlend: 0
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+    category: 2
+  - name: Sway
+    clip: {fileID: 8300000, guid: 8717fc5be0a936849bb9d35499d9f2b1, type: 3}
+    loop: 0
+    autoplay: 0
+    spatialBlend: 0
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+    category: 2

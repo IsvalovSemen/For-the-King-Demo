@@ -1,0 +1,15 @@
+{
+  "version": "0.2.1",
+  "tasks": [
+    {
+      "taskLabel": "task-Humanoid",
+      "appliesTo": "Assets/Scripts/Humanoid.cs",
+      "type": "launch"
+    },
+    {
+      "taskLabel": "task-InventoryManager",
+      "appliesTo": "Assets/Scripts/InventoryManager.cs",
+      "type": "launch"
+    }
+  ]
+}

@@ -1,4 +1,0 @@
-sceneSetups:
-- path: Assets/EquippingItems.unity
-  isLoaded: 1
-  isActive: 1

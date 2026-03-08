@@ -19,6 +19,10 @@ public class SoundManager : MonoBehaviour
             sound.source.pitch = sound.pitch;
 
             sound.source.loop = sound.loop;
+
+            sound.source.playOnAwake = sound.autoplay;
+
+            sound.source.spatialBlend = sound.spatialBlend;
         }
     }
 
@@ -28,6 +32,13 @@ public class SoundManager : MonoBehaviour
 
         sound.source.Play();
     }
+
+    public void StopSound(string name)
+    {
+        Sound sound = Array.Find(sounds, sound => sound.name == name);
+
+        sound.source.Stop();
+    }
 }
 
 [System.Serializable]
@@ -36,6 +47,8 @@ public class Sound
     public string name;
     public AudioClip clip;
     public bool loop;
+    public bool autoplay;
+    [Range(0f, 1f)] public float spatialBlend;
     [Range(0f, 1f)] public float volume = .5f;
     [Range(.1f, 1f)] public float pitch = 1f;
     public AudioSource source;

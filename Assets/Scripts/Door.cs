@@ -1,36 +1,59 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using static UIManager;
 
-public class Door : MonoBehaviour, IInteractableObject, IHitable
+public class Door : MonoBehaviour, IInteractable, IDamageable
 {
-    private DungeonMaster _GM;
     public SoundManager SM { get; set; }
-    private GameObject _player;
-    [SerializeField] private bool _opened;
-    [SerializeField] private bool _inRadius;
-    [SerializeField] private bool _opening;
+    GameObject _player;
+    public InteractionType interactionType { get; set; }
+    [SerializeField] bool _opened;
+    Animator _animator;
+    [SerializeField] bool _locked;
+    [SerializeField] string _keyID;
+    [SerializeField] Creature _interactor;
 
-    void Start()
+    private void Awake()
     {
-        _GM = GameObject.FindGameObjectWithTag("GameController").GetComponent<DungeonMaster>();
-
-        SM = GetComponent<SoundManager>();
+        interactionType = InteractionType.Open;
     }
 
-    void Update()
+    private void Start()
+    {
+        SM = GetComponent<SoundManager>();
+
+        _animator = GetComponent<Animator>();
+
+        _animator.SetFloat("Speed", 0);
+    }
+
+    private void Update()
     {
         //GetComponent<Animation>()["Open"].speed = 1 * -1;
     }
 
-    public void Interact()
+    public void Interaction(Creature interactor)
     {
-        
-        //if (_opened) GetComponent<Animator>().SetTrigger("Interacted");
+        if (interactor == _interactor)
+        {
+            if (_locked)
+            {
+                UIManager.instance.OpenMenu(MenuState.Inventory);
+            }
+            else
+            {
+                UIManager.instance.PrintMessage("Door has opened.");
 
-        if (_opened) GetComponent<Animator>().SetFloat("Speed", 1);
-        else GetComponent<Animator>().SetFloat("Speed", -1);
-        
-        _opened = !_opened;
+                if (!_opened) _animator.SetFloat("Speed", 1);
+                else _animator.SetFloat("Speed", -1);
+
+                _animator.SetTrigger("Interacted");
+
+                _opened = !_opened;
+            }
+        }
     }
 
     public void GetHit(float amount, DamageType type, Transform part)
@@ -40,19 +63,31 @@ public class Door : MonoBehaviour, IInteractableObject, IHitable
         //GetComponent<Rigidbody>().AddForce(GetComponent<Rigidbody>().velocity * 10f, ForceMode.Impulse); Need to finish it later
     }
 
+    public void Unlock(string key)
+    {
+        if (_locked)
+        {
+            if (_keyID == key)
+            {
+                UIManager.instance.PrintMessage("Door was unlocked.");
+
+                UIManager.instance.CloseAllMenus();
+
+                SM.PlaySound("Unlock");
+
+                _locked = false;
+            }
+            else UIManager.instance.PrintMessage("Oops wrong key!");
+        }
+    }
+
     public void Open(AnimationEvent animationEvent)
     {
-
-        
-        Sound sound = Array.Find(SM.sounds, sound => sound.name == "Creak");
-
-        if (sound.source.isPlaying) sound.source.Stop();
-        
-        SM.sounds[2].source.Stop();
-
-        if (!_opened)
+        if (_opened)
         {
             SM.PlaySound("Open");
+
+            SM.StopSound("Creak");
 
             SM.PlaySound("Creak");
         }
@@ -60,42 +95,28 @@ public class Door : MonoBehaviour, IInteractableObject, IHitable
         {
             SM.PlaySound("Close");
 
-            
+            SM.StopSound("Creak");
         }
-
-        
     }
 
     public void Close(AnimationEvent animationEvent)
     {
-
-        Sound sound = Array.Find(SM.sounds, sound => sound.name == "Creak");
-
-        if (sound.source.isPlaying) sound.source.Stop();
-        
-        SM.sounds[2].source.Stop();
-
-        if (!_opened)
+        if (_opened)
         {
             SM.PlaySound("Close");
 
-            
+            SM.StopSound("Creak");
         }
-        else SM.PlaySound("Creak");
-    }
+        else
+        {
+            SM.StopSound("Creak");
 
-    void OnTriggerEnter(Collider trigger)
-    {
-        if (trigger.transform.root.gameObject.tag == "Player") _inRadius = true;
+            SM.PlaySound("Creak");
+        }
     }
 
     void OnTriggerStay(Collider trigger)
     {
-        if (trigger.transform.root.gameObject.tag == "Player") _inRadius = true;
-    }
-
-    void OnTriggerExit(Collider trigger)
-    {
-        if (trigger.transform.root.gameObject.tag == "Player") _inRadius = false;
+        _interactor = trigger.GetComponentInParent<Creature>();
     }
 }

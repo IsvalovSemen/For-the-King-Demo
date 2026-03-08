@@ -25,6 +25,7 @@ public class ActorUI : MonoBehaviour
     public Text equipLoadTxt;
     public Slider equipLoadSlider;
     public Gradient loadGrad;
+    public Transform statusEffectsPanel;
     public Image alertIndicator;
     public List<Sprite> alertIndicatorSprites = new List<Sprite>(4);
 }

@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3cba2b270f582141aa2698e522c7526, type: 3}
+  m_Name: Escape The DungeonQuest
+  m_EditorClassIdentifier: 
+  ID: QST01
+  title: Escape the dungeon
+  stagesList:
+  - requiredStageProgressPoints: 0
+    stageDetailsText: I woke in the strange place. Looks like it's a dungeon.. or
+      a prison of some sort. I need to find a way out. And better be quick.
+    objectivesList:
+    - topic: Escape the dungeon.
+      progressPointsValue: 1
+      status: 1
+      labelText: {fileID: 0}
+      _toggle: {fileID: 0}
+      _checkDone: {fileID: 0}
+      _checkFailed: {fileID: 0}
+      _checkTrack: {fileID: 0}
+      target: {fileID: 0}
+    _complition: 0
+  - requiredStageProgressPoints: 1
+    stageDetailsText: I successfully escaped the dungeon. Now time to look out for
+      some town or village when i can finally rest a while.
+    objectivesList:
+    - topic: SOSAL?
+      progressPointsValue: 1
+      status: 1
+      labelText: {fileID: 0}
+      _toggle: {fileID: 0}
+      _checkDone: {fileID: 0}
+      _checkFailed: {fileID: 0}
+      _checkTrack: {fileID: 0}
+      target: {fileID: 0}
+    _complition: 0
+  - requiredStageProgressPoints: 1
+    stageDetailsText: I successfully escaped the dungeon. Now time to look out for
+      some town or village when i can finally rest a while.
+    objectivesList:
+    - topic: GOVNO
+      progressPointsValue: 1
+      status: 1
+      labelText: {fileID: 0}
+      _toggle: {fileID: 0}
+      _checkDone: {fileID: 0}
+      _checkFailed: {fileID: 0}
+      _checkTrack: {fileID: 0}
+      target: {fileID: 0}
+    _complition: 0
+  objectivePrefab: {fileID: 7799629481390152230, guid: a88c44045452ca1478a99846d233615d, type: 3}

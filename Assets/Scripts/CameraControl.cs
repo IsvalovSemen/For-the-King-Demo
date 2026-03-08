@@ -3,93 +3,113 @@ using UnityEngine.UI;
 
 public class CameraControl: MonoBehaviour
 {
-    protected DungeonMaster GM;
-    [SerializeField] private float _interactionDistance = 10f;
+    public static CameraControl instance;
+    public Camera mainCam;
     protected float XRot;
     protected float YRot;
-    [SerializeField] protected float MaxAngle = 60f;
+    [SerializeField] protected float viewAngle = 60f;
     private float _distanceToObject;
-
+    private Ray _ray;
+    public RaycastHit hit;
+    private Transform _target;
+    
+    #region Singleton
     void Awake()
     {
-        GM = GameObject.FindGameObjectWithTag("GameController").GetComponent<DungeonMaster>();
+        mainCam = GetComponent<Camera>();
+
+        if (instance != null) Debug.LogWarning("More than one Main camera.");
+
+        instance = this;
     }
+    #endregion
 
     public virtual void Update()
     {
-        RaycastHit hit;
-
-        Ray ray;
-
-        if (GM.paused == true)
+        if (!UIManager.instance.IsAnyMenuOpen()) // Freezes camera movement if any of menu is opened.
         {
-            ray = GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
-
-            if (Physics.Raycast(ray, out hit))
+            if (!Input.GetMouseButton(0) & !Input.GetMouseButton(1)) // If not choosing attack direction right now. FIXME: PROBABLY REMOVE IT LATER.
             {
-                _distanceToObject = Vector3.Distance(hit.transform.position, transform.position);
+                XRot -= Input.GetAxis("Mouse Y") * GameMaster.instance.mouseSensitivity * Time.deltaTime;
 
-                if (hit.transform.tag == "Items" && _distanceToObject < _interactionDistance) GM.SetCursor(true);
-                else if (hit.transform.tag != "Items" || _distanceToObject > _interactionDistance) GM.SetCursor(false);
-            }
-        }
-        else
-        {
-            //Cursor.visible = false;
+                //XRot = Mathf.Clamp(XRot, -viewAngle, viewAngle);
 
-            ray = new Ray(transform.position, transform.forward * _interactionDistance);
+                YRot -= Input.GetAxis("Mouse X") * GameMaster.instance.mouseSensitivity * Time.deltaTime;
 
-            //Debug.DrawRay(transform.position, transform.forward * interactDistance, Color.red);
+                //YRot = Mathf.Clamp(YRot, -viewAngle,viewAngle);
 
-            if (Physics.Raycast(ray, out hit))
-            {
-                _distanceToObject = Vector3.Distance(hit.transform.position, transform.position);
-
-                if (_distanceToObject < _interactionDistance & hit.transform.GetComponent<IInteractableObject>() != null & hit.transform.gameObject.layer == 3 || hit.transform.gameObject.layer == 6)
+                transform.rotation = Quaternion.Euler(XRot, -YRot, 0f);
+                /* 
+                if (Input.GetAxis("Mouse ScrollWheel") > 0f || Input.GetAxis("Mouse ScrollWheel") < 0f) // If any menu is opened, zooms in/out view via mouse scroll
                 {
-                    if (hit.transform.GetComponent<Item>() != null)
+                    GetComponent<Camera>().fieldOfView = Mathf.Clamp(GetComponent<Camera>().fieldOfView - (10 * Input.GetAxis("Mouse ScrollWheel")), 60, 90);
+                }
+                */
+                _ray = GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
+
+                if (Physics.Raycast(_ray, out hit))
+                {
+                    _distanceToObject = Vector3.Distance(hit.transform.position, transform.position);
+
+                    if (hit.transform.tag == "Items" && _distanceToObject < GameMaster.instance.interactionDistance)
                     {
-                        hit.transform.GetComponent<Item>().selected = true;
-
-                        hit.transform.GetComponent<Item>().card.GetComponent<Icon>().ShowInfo();
+                        UIManager.instance.SetCursor(true);
                     }
-
-                    if (Input.GetKeyDown(GM.interactKey)) hit.transform.GetComponent<IInteractableObject>().Interact();
-
+                    else if (hit.transform.tag != "Items" || _distanceToObject > GameMaster.instance.interactionDistance)
+                    {
+                        UIManager.instance.SetCursor(false);
+                    }
                 }
             }
-
-            XRot -= Input.GetAxis("Mouse Y") * GM.mouseSensitivity * Time.deltaTime;
-
-            XRot = Mathf.Clamp(XRot, -MaxAngle, MaxAngle);
-
-            YRot -= Input.GetAxis("Mouse X") * GM.mouseSensitivity * Time.deltaTime;
-
-            YRot = Mathf.Clamp(YRot, -MaxAngle, MaxAngle);
-
-            transform.localRotation = Quaternion.Euler(XRot, -YRot, 0f);
-
-            //transform.parent.Rotate(Vector3.up * Input.GetAxis("Mouse Y") * sensa * Time.deltaTime);
         }
     }
 
-    public void SwapToInventoryCam(bool state)
+    public InteractionType InteractionCheck()
     {
-    
-        if (state)
+        InteractionType result = InteractionType.None;
+
+        if (!UIManager.instance.IsAnyMenuOpen())
         {
-            GetComponent<Animation>()["SwitchToInventoryCamAnim"].speed = 1;
+            _ray = new Ray(transform.position, transform.forward * GameMaster.instance.interactionDistance);
 
-            //GetComponent<Camera>().clearFlags = CameraClearFlags.SolidColor;
+            //Debug.DrawRay(transform.position, transform.forward * GM.GetComponent<DungeonMaster>().interactionDistance, Color.red);
 
-            //GetComponent<Camera>().cullingMask = 6;
+            if (Physics.Raycast(_ray, out hit, 100f, ~0, QueryTriggerInteraction.Collide)) // "QueryTriggerInteraction.Collide" is necessary for raycast to work with trigger colliders.
+            {
+                _distanceToObject = Vector3.Distance(hit.transform.position, transform.position);
+
+                if (_distanceToObject < GameMaster.instance.interactionDistance & hit.transform.GetComponent<IInteractable>() != null && (hit.transform.gameObject.layer == 3 || hit.transform.gameObject.layer == 6))
+                {
+                    if (hit.transform.GetComponent<Item>() != null)
+                    {
+                        //InventoryManager.instance.ShowItemInfo(hit.transform.GetComponent<Item>()); // Show item infobox while looking at item.
+
+                        _target = hit.transform;
+                    }
+                    //else InventoryManager.instance.ClearItemInfo(); // Close item infobox if looking away.
+
+                    result = hit.transform.GetComponent<IInteractable>().interactionType;
+                }
+                else
+                {
+                    result = InteractionType.None;
+
+                    //InventoryManager.instance.ClearItemInfo();
+                }
+            }
+            else result = InteractionType.None;
+
+            if (result == InteractionType.None)
+            {
+                if (_target != null)
+                {
+                    //InventoryManager.instance.ClearItemInfo();
+
+                    _target = null;
+                }
+            }
         }
-        else
-        {
-            GetComponent<Animation>()["SwitchToInventoryCamAnim"].speed = -1;
-        }
-        
-        GetComponent<Animation>().Play();
 
+        return result;
     }
 }

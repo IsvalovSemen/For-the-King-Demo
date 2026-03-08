@@ -8,26 +8,23 @@ public class SkeletonResurrection : MonoBehaviour
 
     void Update()
     {
-        if (GetComponent<Character>().dead) 
-        {          
+        if (GetComponent<Creature>().dead)
+        {
             StartCoroutine(DestroySkeleton());
 
-            startResurrection = true;    
+            startResurrection = true;
         }
         
-        if (GetComponent<Character>().dead && startResurrection) 
+        if (GetComponent<Creature>().dead && startResurrection)
         {
-            
-                StartCoroutine(ResetSkeleton());
+            StartCoroutine(ResetSkeleton());
 
-                startResurrection = false;
-                  
+            startResurrection = false;
         }
     }
 
     IEnumerator DestroySkeleton()
     {
-
         for (int i = 0; i < transform.childCount; i++)
         {
             if (transform.GetChild(0).GetComponent<Bone>() != null)
@@ -44,11 +41,11 @@ public class SkeletonResurrection : MonoBehaviour
 
     IEnumerator ResetSkeleton()
     {
-        GetComponent<Character>().dead = false;
+        GetComponent<Creature>().dead = false;
 
-        GetComponent<Character>().curHP = GetComponent<Character>().maxHP;
+        GetComponent<Creature>().curHP = GetComponent<Creature>().maxHP;
 
-        GetComponent<Character>().enabled = true;
+        GetComponent<Creature>().enabled = true;
 
         GetComponent<Animator>().enabled = true;
 

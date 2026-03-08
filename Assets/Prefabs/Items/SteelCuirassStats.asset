@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27c4fcf34aaa3cb43ae6f1f410c57a15, type: 3}
+  m_Name: SteelCuirassStats
+  m_EditorClassIdentifier: 
+  ID: steel_cuirass
+  prefab: {fileID: 1287215384068858973, guid: a752c5d3943eacc4483a7b32dcb5293a, type: 3}
+  isStackable: 0
+  maxStacksAmount: 0
+  itemType: 3
+  itemTitle: Steel Cuirass
+  sprite: {fileID: 21300000, guid: 2c0e70f9d2fb28e499b20f405a2f9c89, type: 3}
+  damage: 0
+  dmgType: 0
+  wpnType: 0
+  slashRes: 15
+  thrustRes: 25
+  bluntRes: 5
+  fireRes: 10
+  coldRes: 5
+  poisonRes: 0
+  lightRes: -5
+  strReq: 0
+  dexReq: 0
+  intReq: 0
+  restoreAmount: 0
+  weight: 4
+  price: 300
+  durability: 180
+  iconWidth: 3
+  iconHeight: 4
+  description: Simple cuirass made of steel. Provides mediocre protection.
+  placement: 0
+  sounds:
+  - name: GetHit
+    clip: {fileID: 8300000, guid: 4e6f8e88ca372ce4e8b51b8445ce780b, type: 3}
+    loop: 0
+    autoplay: 0
+    spatialBlend: 0
+    volume: 0.5
+    pitch: 1
+    source: {fileID: 0}
+    category: 2

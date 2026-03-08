@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class NPC : Character, IInteractableObject
+public class NPC : Humanoid, IInteractable
 {
     public Transform indicatorsPrefab;
     private UnityEngine.AI.NavMeshAgent _agent;
-    
+    public InteractionType interactionType { get; set; }
     [SerializeField] private int _HPBarOffset;
     [SerializeField] private float _sightDistance = 50;
     [SerializeField] private float _aggroDistance = 30f;
@@ -25,12 +25,17 @@ public class NPC : Character, IInteractableObject
     private Vector3 _startPos;
     private Vector3 _dir;
     private Quaternion _startRot;
-    private bool _examine;
+    float attackSpeed = 1f;
+
+    public override void Awake()
+    {
+        interactionType = InteractionType.Loot;
+
+        base.Awake();
+    }
 
     public override void Start()
     {
-        curHP = maxHP;
-
         IndicatorsSetup();
 
         _agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
@@ -39,41 +44,20 @@ public class NPC : Character, IInteractableObject
 
         _startRot = transform.rotation;
 
-        _target = GameObject.FindGameObjectWithTag("Player");
-
-        inventory = Instantiate(inventory, GM.HUD.transform);
-
-        inventory.name = transform.name + " Inventory";
-
-        for (int i = 0; i < parts.Count; i++)
+        _target = Player.instance.gameObject;
+        /*
+        for (int i = 0; i <= GetComponent<Container>().inventoryPrefab.GetChild(0).GetComponent<Inventory>().storage.childCount; i++)
         {
-            if (parts[i].equipment != null)
+            if (GetComponent<Container>().inventoryPrefab.GetChild(0).GetComponent<Inventory>().storage.GetChild(i).GetComponent<Cloth>() != null)
             {
-                inventory.GetChild(0).GetComponent<Inventory>().invWidth += parts[i].equipment.GetComponentInChildren<Item>().stats.iconWidth;
-
-                inventory.GetChild(0).GetComponent<Inventory>().invHeight += parts[i].equipment.GetComponentInChildren<Item>().stats.iconHeight;
+                GetComponent<Container>().inventoryPrefab.GetChild(0).GetComponent<Inventory>().storage.GetChild(i).GetComponent<Item>().Equip(GetComponent<Container>().inventoryPrefab.GetChild(0).GetComponent<Inventory>().storage.GetChild(i).GetComponent<Item>().slotNum);
             }
         }
-
-        inventory.GetChild(0).GetComponent<RectTransform>().sizeDelta = new Vector2(inventory.GetChild(0).GetComponent<Inventory>().invWidth * 50, inventory.GetChild(0).GetComponent<Inventory>().invHeight * 50);
-
-        inventory.GetComponent<RectTransform>().sizeDelta = new Vector2(inventory.GetChild(0).GetComponent<RectTransform>().sizeDelta.x, inventory.GetChild(0).GetComponent<RectTransform>().sizeDelta.y + 40);
-
-        inventory.GetComponent<Text>().text = transform.name;
-
-        for (int i = 0; i < inventory.GetChild(0).GetComponent<Inventory>().invHeight * inventory.GetChild(0).GetComponent<Inventory>().invWidth; i++)
-        {
-            Instantiate(inventory.GetChild(0).GetComponent<Inventory>().slotPrefab, inventory.GetChild(0));
-
-            inventory.GetChild(0).GetChild(i).name = "Slot (" + i + ")";
-        }
-
-        inventory.GetChild(0).GetComponent<Inventory>().SetupInventory();
-
+        */
         base.Start();
     }
 
-    void Update()
+    private void Update()
     {
         if (!dead)
         {
@@ -81,21 +65,21 @@ public class NPC : Character, IInteractableObject
 
             float distanceToTarget = Vector3.Distance(transform.position, _saveTargetPos);
 
-            Vector3 screenPos = GM.mainCam.WorldToScreenPoint(_agent.transform.position); //Projects Character's position in world coordinates onto it's position on screen
+            Vector3 screenPos = CameraControl.instance.mainCam.WorldToScreenPoint(_agent.transform.position); //Projects actor's position in world coordinates onto it's position on screen
 
-            float angleToTarget = Vector3.Angle(GM.mainCam.transform.forward, transform.position - _target.transform.position); //Angle between target and this character, checks if Player faces this character
+            float angleToTarget = Vector3.Angle(CameraControl.instance.transform.forward, transform.position - _target.transform.position); //Angle between target and this actor, checks if Player faces this actor
 
-            //float dotProduct = Vector3.Dot(transform.forward, _saveTargetPos - transform.position); //Alternate method that calculates cosinus of the angle between target and this character, if it's below 0 then Player is behind the character
+            //float dotProduct = Vector3.Dot(transform.forward, _saveTargetPos - transform.position); //Alternate method that calculates cosinus of the angle between target and this actor, if it's below 0 then Player is behind the actor
 
             if (screenPos.x > 0f && screenPos.x < Screen.width && screenPos.y > 0f && screenPos.y < Screen.height && angleToTarget < 90)
             {
                 indicators.GetComponent<Canvas>().enabled = true;
 
-                indicators.transform.position = GM.mainCam.WorldToScreenPoint(new Vector3(transform.position.x, Mathf.Clamp(_HPBarOffset * distanceToTarget, 1, 2), transform.position.z));
+                indicators.transform.position = CameraControl.instance.mainCam.WorldToScreenPoint(new Vector3(transform.position.x, Mathf.Clamp(_HPBarOffset * distanceToTarget, 1, 2), transform.position.z));
 
                 //indicators.transform.position = transform.position + new Vector3(0, _HPBarOffset, 0);
 
-                //indicators.transform.LookAt(GM.player.transform);
+                //indicators.transform.LookAt(GameMaster.instance.player.transform);
 
                 indicators.transform.localScale = new Vector2(Mathf.Clamp(1 / distanceToTarget, 1, 100), Mathf.Clamp(1 / distanceToTarget, 1, 100));
             }
@@ -109,8 +93,8 @@ public class NPC : Character, IInteractableObject
 
                 _dmgHideDelay = Time.time + _fadeTime;
             }
-            //If the actor sees the target or being alerted enough, he draws a weapon
-            if (RayToScan())
+            
+            if (FielfOfView()) //If the actor sees the target or being alerted enough, he draws a weapon
             {
                 Alarm(maxAlert);
 
@@ -120,14 +104,14 @@ public class NPC : Character, IInteractableObject
 
                     _agent.SetDestination(_saveTargetPos);
                 }
-                //If target in attack range, performs an attack
-                if (distanceToTarget <= _attackDistance && inCombat)
+                
+                if (distanceToTarget <= _attackDistance && inCombat) //If target in attack range, performs an attack
                 {
                     int attackType = Random.Range(1, 5);
 
                     if (Time.time >= attackDelay)
                     {
-                        Attack(attackType);
+                        if (WeaponDrawn) Attack(attackType);
 
                         attackDelay = Time.time + animator.GetCurrentAnimatorStateInfo(0).length + Random.Range(1f, attackSpeed);
                     }
@@ -137,8 +121,8 @@ public class NPC : Character, IInteractableObject
             {
                 if (!inCombat) alertVolume -= maxAlert / 10 * Time.deltaTime;
                 else alertVolume -= maxAlert / 100 * Time.deltaTime;
-                //If lose sight of the target, agent walks towards to last place where target was seen
-                if (inCombat && distanceToTarget > _attackDistance && distanceToTarget <= _aggroDistance)
+                
+                if (inCombat && distanceToTarget > _attackDistance && distanceToTarget <= _aggroDistance) //If lose sight of the target, agent walks towards to last place where target was seen
                 {
                     _agent.SetDestination(_saveTargetPos);
 
@@ -148,7 +132,6 @@ public class NPC : Character, IInteractableObject
                     else animator.SetInteger("Movement", 3);
                 }
             }
-
 
             if (distanceToTarget <= _attackDistance && alertVolume >= maxAlert)
             {
@@ -171,25 +154,11 @@ public class NPC : Character, IInteractableObject
 
             if (animator.GetInteger("Movement") == 0) _agent.speed = 0;
         }
-        else
-        {
-            if (_examine)
-            {
-                if (Vector3.Distance(_target.transform.position, _saveTargetPos) > 2f)
-                {
-                    inventory.gameObject.SetActive(false);
-
-                    _examine = !_examine;
-                }
-
-                inventory.transform.position = GM.mainCam.WorldToScreenPoint(transform.position);
-            }
-        }
     }
 
-    void IndicatorsSetup()
+    private void IndicatorsSetup()
     {
-        indicators = Instantiate(indicatorsPrefab.gameObject, GM.HUD.transform);
+        indicators = Instantiate(indicatorsPrefab.gameObject, GameMaster.instance.HUD.transform);
 
         //indicators = Instantiate(indicatorsPrefab.gameObject, transform); // alternative variant if using "world space" render mode of canvas
 
@@ -197,21 +166,17 @@ public class NPC : Character, IInteractableObject
 
         indicators.GetComponent<ActorUI>().nameTxt.text = transform.name;
 
-        //indicators.gameObject.SetActive(false);
-
         indicators.GetComponent<ActorUI>().healthBar.maxValue = maxHP;
 
         indicators.GetComponent<ActorUI>().healthBar.value = curHP;
 
         indicators.GetComponent<ActorUI>().curHealthTxt.text = curHP + " / " + maxHP;
 
-        indicators.GetComponent<ActorUI>().lvlTxt.text = "Lvl: " + lvl.ToString();
+        indicators.gameObject.SetActive(false);
     }
 
     public override void ChangeHealth(float value)
     {
-        Debug.Log(value);
-
         totalDmg += value;
 
         //dmgHideDelay = Time.time + fadeTime;
@@ -219,11 +184,6 @@ public class NPC : Character, IInteractableObject
         indicators.GetComponent<ActorUI>().damageCount.GetComponent<Text>().text = totalDmg.ToString();
 
         base.ChangeHealth(value);
-    }
-
-    public void Interact()
-    {
-        if (dead) Loot();
     }
 
     public void Alarm(float alert)
@@ -247,11 +207,13 @@ public class NPC : Character, IInteractableObject
             {
                 indicators.GetComponent<ActorUI>().alertIndicator.GetComponent<Image>().enabled = false;
 
+                alertVolume = 0;
+
                 if (inCombat)
                 {
-                    inCombat = !inCombat;
-
                     indicators.gameObject.SetActive(false);
+
+                    inCombat = !inCombat;
                 }
 
                 if (Vector3.Distance(_agent.transform.position, _startPos) <= 1f)
@@ -282,9 +244,9 @@ public class NPC : Character, IInteractableObject
             {
                 if (!inCombat)
                 {
-                    DrawWeapon();
+                    DrawOrSheathWeapon();
 
-                    indicators.GetComponent<ActorUI>().healthBar.enabled = true;
+                    indicators.gameObject.SetActive(true);
 
                     inCombat = true;
                 }
@@ -294,25 +256,9 @@ public class NPC : Character, IInteractableObject
 
             //Mathf.Clamp(alertVolume, 0, maxAlert);
         }
-
     }
 
-    public void Loot(/*Vector3 pos, GameObject player*/)
-    {
-        /*
-
-        _looting = !_looting;
-
-        _saveTargetPos = pos;
-
-        _target = player;
-
-        if (_looting) inventory.gameObject.SetActive(true);
-        else inventory.gameObject.SetActive(false);
-        */
-    }
-
-    public void FallDamage()
+    public override void Land()
     {
         float fallDistance = startFallPosition - transform.position.y;
 
@@ -324,13 +270,11 @@ public class NPC : Character, IInteractableObject
         {
             healthDamage = (int)Mathf.Clamp(maxHP * (fallDistance / maxFallHeight) - DEX, 0, maxHP);
 
-            //dexGain += (int)healthDamage;
-
             if (fallDistance >= maxFallHeight) healthDamage = maxHP;
 
             ChangeHealth((int)(healthDamage));
 
-            Debug.Log(transform.name + "  fell from " + fallDistance + " units and took " + healthDamage + " damage");
+            UIManager.instance.PrintMessage(transform.name + "  fell from " + fallDistance + " units and took " + healthDamage + " damage");
         }
 
         if (!_agent.isOnNavMesh)
@@ -351,32 +295,9 @@ public class NPC : Character, IInteractableObject
         velocity = Vector3.zero;
     }
 
-    void OnMouseOver()
-    {
-        float distanceToPlayer = Vector3.Distance(transform.position, _target.transform.position);
-
-        if (dead == true && Input.GetMouseButtonDown(0))
-        {
-            indicators.transform.position = GM.mainCam.WorldToScreenPoint(transform.position + new Vector3 (0, _HPBarOffset, 0));
-
-            indicators.transform.localScale = new Vector2(50 / distanceToPlayer, 50 / distanceToPlayer);
-
-            indicators.SetActive(true);
-
-            indicators.GetComponent<ActorUI>().healthBar.enabled = false;
-        }    
-    }
-
-    void OnMouseExit()
-    {
-        //if (dead == true) clone.transform.GetChild(0).transform.gameObject.SetActive(false);
-    }
-
-    bool RayToScan()
+    private bool FielfOfView()
     {
         bool result = false;
-
-        
 
         Vector3 pos = viewPoint.transform.position;
 
@@ -384,8 +305,6 @@ public class NPC : Character, IInteractableObject
 
         for (int k = -_rays; k <= _rays; k++)
         {
-
-
             for (int i = -_rays; i <= _rays; i++)
             {
                 
@@ -442,22 +361,26 @@ public class NPC : Character, IInteractableObject
 
         //Invoke("DisableActor", animator.GetCurrentAnimatorStateInfo(0).length);
 
-        Invoke("DisableActor", 1f);
+        //Invoke("DisableActor", 3f);
+
+        base.Death();
+
+        Sound sound = System.Array.Find(soundManager.sounds, sound => sound.name == "Death");
+
+        Invoke("DisableActor", sound.source.clip.length);
     }
 
-    void DisableActor()
+    private void DisableActor()
     {
         animator.enabled = false;
 
         this.enabled = false;
     }
 
-    void OnDrawGizmosSelected()
+    private void OnDrawGizmosSelected()
     {
-       
         Gizmos.color = Color.red;
 
         Gizmos.DrawWireSphere(transform.position, _sightDistance);
-        
     }
 }

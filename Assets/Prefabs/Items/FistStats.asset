@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27c4fcf34aaa3cb43ae6f1f410c57a15, type: 3}
+  m_Name: FistStats
+  m_EditorClassIdentifier: 
+  ID: fist
+  itemTitle: Fist
+  cardPrefab: {fileID: 3306752862384541458, guid: 90fb032b77fc1694dbb1317edaceb2ad, type: 3}
+  sprite: {fileID: 0}
+  slotType: 0
+  swingDmg:
+  - value: 10
+    dmgType: 0
+  aboveDmg:
+  - value: 10
+    dmgType: 0
+  stabDmg:
+  - value: 5
+    dmgType: 2
+  slashRes: 0
+  thrustRes: 0
+  bluntRes: 0
+  fireRes: 0
+  coldRes: 0
+  poisonRes: 0
+  lightRes: 0
+  strScale: 3
+  dexScale: 2
+  intScale: 0
+  strReq: 5
+  dexReq: 3
+  intReq: 0
+  type: 0
+  restoreAmount: 0
+  weight: 0
+  price: 0
+  durability: 0
+  iconWidth: 1
+  iconHeight: 1
+  description: 
+  sounds:
+  - name: Hit
+    clip: {fileID: 8300000, guid: 1f4edb2658ea61243a03f08d0c0edb7d, type: 3}
+    loop: 0
+    autoplay: 0
+    spatialBlend: 0
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+    category: 2
+  - name: Sway
+    clip: {fileID: 8300000, guid: 8717fc5be0a936849bb9d35499d9f2b1, type: 3}
+    loop: 0
+    autoplay: 0
+    spatialBlend: 0
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+    category: 2
