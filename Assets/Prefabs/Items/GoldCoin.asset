@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: GoldCoin
   m_EditorClassIdentifier: 
   ID: gold_coin
-  prefab: {fileID: 0}
+  prefab: {fileID: 2919880173807949922, guid: 27941058b83d8774aad67760d0eca65c, type: 3}
   isStackable: 1
   maxStacksAmount: 10
   itemType: 0
   itemTitle: Gold coin
-  sprite: {fileID: 21300000, guid: 97d9e48a24bfcac41ae888fc873510f8, type: 3}
+  iconSprite: {fileID: 21300000, guid: 97d9e48a24bfcac41ae888fc873510f8, type: 3}
   damage: 0
   dmgType: 0
   wpnType: 0
@@ -35,7 +35,7 @@ MonoBehaviour:
   restoreAmount: 0
   weight: 0.1
   price: 1
-  durability: 0
+  maxDurability: 0
   iconWidth: 0
   iconHeight: 0
   description: 

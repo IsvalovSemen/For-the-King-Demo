@@ -4,6 +4,6 @@ public class RegenerationEffect : Effect
 {
     public override void Affect(float power, GameObject target)
     {
-        target.GetComponent<Creature>().ChangeHealth(power);
+        target.GetComponent<Creature>().ChangeCurrentHealth(power);
     }
 }

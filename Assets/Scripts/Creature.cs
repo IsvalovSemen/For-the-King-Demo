@@ -1,12 +1,9 @@
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.AI;
 using System.Collections.Generic;
 using System.Collections;
 using System;
 using UnityEngine.Animations.Rigging;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
-using static UnityEditor.Timeline.Actions.MenuPriority;
+using static UnityEngine.Rendering.DebugUI;
 
 public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
 {
@@ -53,27 +50,27 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
     protected bool _recoil;
 
     [Header("Stats:")]
-    public bool dead;
+    public bool isDead;
     [field: SerializeField] public GameObject indicators { get; set; }
-    [field: SerializeField] public int STR { get; set; }
-    [field: SerializeField] public int DEX { get; set; }
-    [field: SerializeField] public int INT { get; set; }
-    [field: SerializeField] public float maxHP { get; set; }
-    [field: SerializeField] public float maxSP { get; set; }
-    [field: SerializeField] public float maxMP { get; set; }
-    [field: SerializeField] public float curHP { get; set; }
-    [field: SerializeField] public float curSP { get; set; }
-    [field: SerializeField] public float curMP { get; set; }
-    [field: SerializeField] public float healthRegen { get; set; }
-    [field: SerializeField] public float staminaRegen { get; set; }
-    [field: SerializeField] public float manaRegen { get; set; }
+    [field: SerializeField] public int strength { get; set; }
+    [field: SerializeField] public int dexterity { get; set; }
+    [field: SerializeField] public int intelligence { get; set; }
+    [field: SerializeField] public float maxHealth { get; set; }
+    [field: SerializeField] public float maxStamina { get; set; }
+    [field: SerializeField] public float maxMana { get; set; }
+    [field: SerializeField] public float currentHealth { get; set; }
+    [field: SerializeField] public float currentStamina { get; set; }
+    [field: SerializeField] public float currentMana { get; set; }
+    [field: SerializeField] public float healthRecovery { get; set; }
+    [field: SerializeField] public float staminaRecovery { get; set; }
+    [field: SerializeField] public float manaRecovery { get; set; }
     public float healthRegenDelay;
-    [SerializeField] private float _staminaRegenDelay = 1f;
-    [SerializeField] private float _staminaRegenTick = .1f;
+    [SerializeField] private float _staminaRecoveryDelay = 1f;
+    [SerializeField] private float _staminaRecoveryTick = .1f;
     private Coroutine _staminaRegenCoroutine;
     public float manaRegenDelay;
-    public float carryWeight;
-    public float equipLoad;
+    public float maxEquipload;
+    public float currentEquipLoad;
     [field: SerializeField] public int loadStage { get; set; }
     [field: SerializeField] public float maxOxygen { get; set; }
     public float curOxygen { get; set; }
@@ -87,24 +84,36 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
     public virtual void Awake()
     {
         if (GetComponentInChildren<Animator>() != null) animator = GetComponentInChildren<Animator>();
-        else Debug.LogWarning("No Animator component found on this creature. Assign it manually than.", this.gameObject);
+        else Debug.LogWarning("No Animator component found on this creature.", this.gameObject);
 
         if (GetComponentInChildren<Inventory>() != null) inventory = GetComponentInChildren<Inventory>();
-        else Debug.LogWarning("No Inventory component found on this creature. Assign it manually than.", this.gameObject);
+        else Debug.LogWarning("No Inventory component found on this creature.", this.gameObject);
     }
 
     public virtual void Start()
     {
         if (GetComponentInChildren<SoundManager>() != null) soundManager = GetComponentInChildren<SoundManager>();
-        else Debug.LogWarning("No Sound Manager component found on this creature. Assign it manually than.", this.gameObject);
+        else Debug.LogWarning("No Sound Manager component found on this creature.", this.gameObject);
 
-        curHP = maxHP;
+        SetMaxHealth(maxHealth);
 
-        OnHealthChange?.Invoke(curHP, maxHP);
+        ChangeCurrentHealth(maxHealth);
 
-        curSP = maxSP;
+        SetMaxStamina(maxStamina);
 
-        curMP = maxMP;
+        ChangeCurrentStamina(maxStamina);
+
+        SetMaxMana(maxMana);
+
+        ChangeCurrentMana(maxMana);
+
+        SetMaxEquipload(maxEquipload);
+
+        ChangeEquipload(currentEquipLoad);
+
+        if (inventory != null) inventory.OnEquiploadChange += ChangeEquipload;
+
+        loadStage = Mathf.Clamp(CalculateLoadStage(currentEquipLoad, maxEquipload), 1, 4);
     }
 
     public virtual void Update()
@@ -143,25 +152,30 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
         Dodge();
     }
 
-    public virtual void ChangeHealth(float value)
+    private void SetMaxHealth(float value)
+    {
+        maxHealth = value;
+    }
+
+    public virtual void ChangeCurrentHealth(float value)
     {
         if (value != 0)
         {
-            if (value > 0 && (curHP + value) > maxHP) value = maxHP - curHP; //When resultant curHP after healing exceeds the maxHP, caps received healing to the difference between curHP and maxHP to avoid overhealing (mb remove this later).
+            if (value > 0 && (currentHealth + value) > maxHealth) value = maxHealth - currentHealth; //When resultant curHP after healing exceeds the maxHP, caps received healing to the difference between curHP and maxHP to avoid overhealing (mb remove this later).
 
-            curHP += value;
+            currentHealth += value;
 
-            OnHealthChange?.Invoke(curHP, maxHP);
+            OnHealthChange?.Invoke(currentHealth, maxHealth);
 
             if (value < 0)
             {
                 healthRegenDelay = Time.time + 5f;
 
-                if (Time.time >= healthRegenDelay) RegenHealth();
+                if (Time.time >= healthRegenDelay) RestoreHealth();
 
-                if (curHP <= 0)
+                if (currentHealth <= 0)
                 {
-                    curHP = 0;
+                    currentHealth = 0;
 
                     Death();
                 }
@@ -169,49 +183,59 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
         }
     }
 
-    private IEnumerator RegenHealth()
+    private IEnumerator RestoreHealth()
     {
         yield return null;
     }
 
-    public void ChangeStamina(float value)
+    private void SetMaxStamina(float value)
+    {
+        maxStamina = value;
+    }
+
+    public void ChangeCurrentStamina(float value)
     {
         if (value < 0)
         {
             if (_staminaRegenCoroutine != null) StopCoroutine(_staminaRegenCoroutine);
 
-            _staminaRegenCoroutine = StartCoroutine(RegenStamina());
+            _staminaRegenCoroutine = StartCoroutine(RecoverStamina());
         }
 
-        curSP += value;
+        currentStamina += value;
 
-        curSP = Mathf.Clamp(curSP, 0, maxSP);
+        currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
 
-        OnStaminaChange?.Invoke(curSP, maxSP);
+        OnStaminaChange?.Invoke(currentStamina, maxStamina);
     }
 
-    private IEnumerator RegenStamina()
+    private IEnumerator RecoverStamina()
     {
-        yield return new WaitForSeconds(_staminaRegenDelay); // Wait a delay after last stamina usage.
+        yield return new WaitForSeconds(_staminaRecoveryDelay); // Wait a delay after last stamina usage.
 
-        while (curSP < maxSP) // While stamina is not full.
+        while (currentStamina < maxStamina) // While stamina is not full.
         {
-            ChangeStamina(staminaRegen);
+            ChangeCurrentStamina(staminaRecovery);
 
-            yield return new WaitForSeconds(_staminaRegenTick);
+            yield return new WaitForSeconds(_staminaRecoveryTick);
         }
 
         _staminaRegenCoroutine = null; // When stamina is full replenished, forget this coroutine for further reusage.
     }
 
-    public void ChangeMana(float value)
+    private void SetMaxMana(float value)
     {
-        if (value < 0) curMP += value;
-        else curMP += value;
+        maxMana = value;
+    }
 
-        OnManahange?.Invoke(curMP, maxMP);
+    public void ChangeCurrentMana(float value)
+    {
+        if (value < 0) currentMana += value;
+        else currentMana += value;
 
-        if (curMP < 0) curMP = 0;
+        OnManahange?.Invoke(currentMana, maxMana);
+
+        if (currentMana < 0) currentMana = 0;
     }
 
     private IEnumerator RegenMana()
@@ -223,6 +247,41 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
     {
 
     }
+
+    private void SetMaxEquipload(float value)
+    {
+        maxEquipload = value;
+    }
+
+    public virtual void ChangeEquipload(float value)
+    {
+
+    }
+
+    protected int CalculateLoadStage(float equipLoad, float carryWeight)
+    {
+        if (carryWeight <= 0) throw new ArgumentOutOfRangeException(nameof(carryWeight));
+
+        float ratio = equipLoad / carryWeight;
+
+        switch (ratio)
+        {
+            case < 0.33f:
+                return 1;
+
+            case >= 0.33f and < 0.66f:
+                return 2;
+
+            case >= 0.66f and < 1f:
+                return 3;
+
+            case >= 1f:
+                return 4;
+
+            default: throw new InvalidOperationException("Unexpected load stage.");
+        }
+    }
+
 
     public virtual void AddStatusEffect(Sprite icon, Effect effect)
     {
@@ -324,7 +383,7 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
         {
             yield return new WaitForSeconds(1);
             
-            ChangeHealth(maxHP / 60);
+            ChangeCurrentHealth(maxHealth / 60);
         }
     }
 
@@ -348,11 +407,11 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
 
         if (fallDistance > minFallHeight)
         {
-            fallDmg = (int)Mathf.Clamp(maxHP * (fallDistance / maxFallHeight) - DEX, 0, maxHP);
+            fallDmg = (int)Mathf.Clamp(maxHealth * (fallDistance / maxFallHeight) - dexterity, 0, maxHealth);
 
-            if (fallDistance >= maxFallHeight) fallDmg = maxHP;
+            if (fallDistance >= maxFallHeight) fallDmg = maxHealth;
 
-            ChangeHealth((int)(fallDmg));
+            ChangeCurrentHealth((int)(fallDmg));
 
             UIManager.instance.PrintMessage(transform.name + " fell from " + fallDistance + " units and took " + fallDmg + " damage");
         }
@@ -402,7 +461,7 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
 
     public virtual void GetHit(float amount, DamageType type, Transform part)
     {
-        ChangeHealth(amount);
+        ChangeCurrentHealth(amount);
 
         soundManager.PlaySound("GetHit");
     }

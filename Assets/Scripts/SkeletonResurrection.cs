@@ -8,14 +8,14 @@ public class SkeletonResurrection : MonoBehaviour
 
     void Update()
     {
-        if (GetComponent<Creature>().dead)
+        if (GetComponent<Creature>().isDead)
         {
             StartCoroutine(DestroySkeleton());
 
             startResurrection = true;
         }
         
-        if (GetComponent<Creature>().dead && startResurrection)
+        if (GetComponent<Creature>().isDead && startResurrection)
         {
             StartCoroutine(ResetSkeleton());
 
@@ -41,9 +41,9 @@ public class SkeletonResurrection : MonoBehaviour
 
     IEnumerator ResetSkeleton()
     {
-        GetComponent<Creature>().dead = false;
+        GetComponent<Creature>().isDead = false;
 
-        GetComponent<Creature>().curHP = GetComponent<Creature>().maxHP;
+        GetComponent<Creature>().currentHealth = GetComponent<Creature>().maxHealth;
 
         GetComponent<Creature>().enabled = true;
 

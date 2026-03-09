@@ -1,17 +1,24 @@
+using System;
 using TMPro;
 using UnityEngine;
 
 public class InventoryCell : MonoBehaviour
 {
     [SerializeField] private ItemIcon _icon;
-    [SerializeField] private TextMeshProUGUI _stacksCounter;
     [SerializeField] private Sprite _defaultIcon;
     [SerializeField] private ItemSlot _relatedSlot;
+
+    private void Start()
+    {
+        _icon.ConnectCell(this);
+    }
 
     public void SetRelatedSlot(ItemSlot slot)
     {
         _relatedSlot = slot;
     }
+
+    public ItemSlot RelatedSlot => _relatedSlot;
 
     public void UpdateCellView()
     {
@@ -30,41 +37,27 @@ public class InventoryCell : MonoBehaviour
             return;
         }
         */
-        if (_relatedSlot.IsOccupied() == true)
-        {
-            ChangeIcon(_relatedSlot.GetItem().GetStats().sprite);
 
-            UpdateStacksCounter(_relatedSlot.GetItem().GetAmount());
+        if (InventoryManager.instance.IsDragging == true && InventoryManager.instance.GetSelectedSlot() == _relatedSlot)
+        {
+            _icon.SetIconImage(InventoryManager.instance.DraggedItem.Stats.iconSprite);
+
+            _icon.UpdateStacksCounter(InventoryManager.instance.DraggedItem.Count);
         }
         else
         {
-            UpdateStacksCounter(0);
+            if (_relatedSlot.IsOccupied == true)
+            {
+                _icon.UpdateStacksCounter(_relatedSlot.StoredItem.Count);
 
-            ClearCell();
+                _icon.SetIconImage(_relatedSlot.StoredItem.Stats.iconSprite);
+            }
+            else
+            {
+                _icon.UpdateStacksCounter(0);
+
+                _icon.SetIconImage(_defaultIcon);
+            }
         }
-    }
-
-    public void ChangeIcon(Sprite sprite)
-    {
-        _icon.iconImg.sprite = sprite;
-    }
-
-    private void UpdateStacksCounter(int amount)
-    {
-        if (amount > 1)
-        {
-            _stacksCounter.gameObject.SetActive(true);
-        }
-        else
-        {
-            _stacksCounter.gameObject.SetActive(false);
-        }
-
-        _stacksCounter.text = amount.ToString();
-    }
-
-    public void ClearCell()
-    {
-        _icon.iconImg.sprite = _defaultIcon;
     }
 }

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 public class Item : Entity, IInteractable
@@ -7,7 +6,7 @@ public class Item : Entity, IInteractable
     public InteractionType interactionType { get; set; }
     public List<Transform> hittedTargets = new List<Transform>();
     public ItemStats stats;
-    [Range(1, 9999)] public int amount;
+    [Range(1, 9999)] public int count;
 
     public virtual void Awake()
     {
@@ -28,14 +27,14 @@ public class Item : Entity, IInteractable
 
         RB.mass = stats.weight;
 
-        currentDurability = stats.durability;
+        currentDurability = stats.maxDurability;
 
     }
 
     public virtual void Start()
     {
 
-        amount = Mathf.Clamp(amount, 1, stats.maxStacksAmount);
+        count = Mathf.Clamp(count, 1, stats.maxStacksAmount);
     }
 
     public virtual void Use()
@@ -65,6 +64,11 @@ public class Item : Entity, IInteractable
     public virtual void Unequip()
     {
 
+    }
+
+    public void SetCount(int value)
+    {
+        count = value;
     }
 
     void ChangeDurability(int amount)

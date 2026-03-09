@@ -1,14 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
-using static UnityEditor.Progress;
-using Unity.IO.LowLevel.Unsafe;
 
 public class Humanoid : Creature
 {
@@ -30,42 +21,13 @@ public class Humanoid : Creature
 
         base.Start();
 
-        loadStage = Mathf.Clamp(CalculateLoadStage(equipLoad, carryWeight), 1, 4);
+        loadStage = Mathf.Clamp(CalculateLoadStage(currentEquipLoad, maxEquipload), 1, 4);
     }
     public override void Update()
     {
         Throw();
 
         base.Update();
-    }
-
-    public virtual void ChangeEquipload(float value)
-    {
-
-    }
-
-    protected int CalculateLoadStage(float equipLoad, float carryWeight)
-    {
-
-        float ratio = equipLoad / carryWeight;
-
-        switch (ratio)
-        {
-            case < 0.33f:
-                return 1;
-
-            case >= 0.33f and < 0.66f:
-                return 2;
-
-            case >= 0.66f and < 1f:
-                return 3;
-
-            case >= 1f:
-                return 4;
-
-            default:
-                throw new Exception("Impossible load stage!");
-        }
     }
 
     protected void DrawOrSheathWeapon()

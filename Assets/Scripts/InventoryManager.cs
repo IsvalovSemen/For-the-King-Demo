@@ -1,12 +1,8 @@
 using System;
 using System.Collections.Generic;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using static UIManager;
-using static UnityEditor.Progress;
 using static UnityEngine.Rendering.DebugUI;
-
 
 public class InventoryManager : MonoBehaviour
 {
@@ -25,8 +21,8 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] private int bagRows;
     [SerializeField] private int bagColumns;
     [Header("Dragging data:")]
-    private ItemInstance draggedItem;
-    private bool isDragging = false;
+    private ItemInstance _draggedItem;
+    private bool _isDragging = false;
     private ItemSlot _prevSlot; // Stores the slot from which item was removed at the start of the drag.
 
     private void Awake()
@@ -54,42 +50,61 @@ public class InventoryManager : MonoBehaviour
             else if (Input.GetKeyDown(KeyCode.LeftArrow)) MovePointer(Vector2Int.left);
             else if (Input.GetKeyDown(KeyCode.RightArrow)) MovePointer(Vector2Int.right);
 
-            ItemSlot selectedCell = GetSelectedSlot();
+            ItemSlot selectedSlot = GetSelectedSlot();
+            
+            if (selectedSlot != null)
+            {
+                if (selectedSlot.IsOccupied == true)
+                {
+                    UIManager.instance.ShowItemTooltip(selectedSlot.StoredItem);
+                }
+                else if (_isDragging == true)
+                {
+                    UIManager.instance.ShowItemTooltip(_draggedItem);
+                }
+                else
+                {
+                    UIManager.instance.HideItemTooltip();
+                }
+                
+            }
+            else
+            {
+                UIManager.instance.HideItemTooltip();
+            }
 
             if (Input.GetKeyDown(KeyCode.E))
-            {
-                if (!isDragging)
                 {
-                    TakeFromSlot(selectedCell);
+                    if (!_isDragging)
+                    {
+                        TakeFromSlot(selectedSlot);
+                    }
+                    else
+                    {
+                        StoreInSlot(selectedSlot);
+                    }
                 }
-                else
+
+                if (Input.GetKeyDown(KeyCode.Escape) && _isDragging)
                 {
-                    StoreInSlot(selectedCell);
+                    CancelDrag();
                 }
-            }
 
-            if (Input.GetKeyDown(KeyCode.Escape) && isDragging)
-            {
-                CancelDrag();
-            }
-
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                if (selectedCell.IsOccupied() == true)
+                if (Input.GetKeyDown(KeyCode.Q))
                 {
-                    DropItem(selectedCell.GetItem());
+                    if (selectedSlot.IsOccupied == true)
+                    {
+                        selectedSlot.Inventory.DropItem(selectedSlot.Index);
 
-                    selectedCell.ClearSLot();
+                        OnInventoryChanged?.Invoke(selectedSlot.Inventory);
+                    }
+                    else
+                    {
+                        Debug.Log("No item in this cell to drop.");
 
-                    OnInventoryChanged?.Invoke(selectedCell.GetInventory());
+                        return;
+                    }
                 }
-                else
-                {
-                    Debug.Log("No item in this cell to drop.");
-
-                    return;
-                }
-            }
         }
     }
     #region UTILITY METHODS
@@ -127,11 +142,15 @@ public class InventoryManager : MonoBehaviour
 
         if (GetSelectedSlot() != null)
         {
-            UIManager.instance.UpdateInventoryPointerLocation(GetSelectedSlot().GetRelatedCell());
+            UIManager.instance.UpdateInventoryPointerLocation(GetSelectedSlot().RelatedCell);
 
-            OnInventoryChanged?.Invoke(GetSelectedSlot().GetInventory());
+            OnInventoryChanged?.Invoke(GetSelectedSlot().Inventory);
         }
     }
+
+    public ItemInstance DraggedItem => _draggedItem;
+
+    public bool IsDragging => _isDragging;
 
     public ItemSlot GetSelectedSlot()
     {
@@ -141,7 +160,7 @@ public class InventoryManager : MonoBehaviour
 
         if (inventory == null || inventory.cells.Count == 0)
         {
-            throw new System.Exception("Wrong inventory capacity or no inventory detected.");
+            throw new Exception("Wrong inventory capacity or no inventory detected.");
         }
 
         if (_currentRow < equipRows)
@@ -156,11 +175,6 @@ public class InventoryManager : MonoBehaviour
         if (index >= 0 && index < inventory.cells.Count)
         {
             ItemSlot slot = inventory.slots[index];
-
-            if (isDragging == true)
-            {
-                slot.GetRelatedCell().ChangeIcon(draggedItem.GetStats().sprite); // Shows dragged item icon in the cell where pointer is located.
-            }
 
             return slot;
         }
@@ -177,9 +191,9 @@ public class InventoryManager : MonoBehaviour
     #region ITEM PLACEMENT
     public void PickUpItem(Inventory inventory, Item item)
     {
-        if (isDragging == false)
+        if (_isDragging == false)
         {
-            draggedItem = new ItemInstance(item);
+            _draggedItem = new ItemInstance(item);
         }
         else
         {
@@ -190,16 +204,16 @@ public class InventoryManager : MonoBehaviour
 
         UIManager.instance.OpenMenu(MenuState.Inventory);
 
-        isDragging = true;
+        _isDragging = true;
 
-        Debug.Log($"Begun dragging {draggedItem.GetStats().itemTitle}.");
+        Debug.Log($"Begun dragging {_draggedItem.Stats.itemTitle}.");
 
         OnInventoryChanged?.Invoke(inventory);
     }
 
-    private void TakeFromSlot(ItemSlot slot)
+    public void TakeFromSlot(ItemSlot slot)
     {
-        if (slot.IsOccupied() == false)
+        if (slot.IsOccupied == false)
         {
             Debug.LogWarning("No item in this cell.");
 
@@ -208,104 +222,114 @@ public class InventoryManager : MonoBehaviour
 
         _prevSlot = slot;
 
-        draggedItem = slot.GetInventory().slots[slot.GetIndex()].GetItem();
+        _draggedItem = slot.Inventory.slots[slot.Index].StoredItem;
 
-        slot.ClearSLot();
+        slot.FreeSlot();
 
-        isDragging = true;
+        _isDragging = true;
 
-        Debug.Log($"Now dragging {draggedItem.GetStats().itemTitle}.");
+        Debug.Log($"Now dragging {_draggedItem.Stats.itemTitle}.");
 
-        OnInventoryChanged?.Invoke(slot.GetInventory());
+        OnInventoryChanged?.Invoke(slot.Inventory);
     }
 
-    private void StoreInSlot(ItemSlot slot)
+    public void StoreInSlot(ItemSlot slot)
     {
-        if (!isDragging) // If no dragged item, than abort placement.
+        if (slot.IsOccupied == false) // If the slot is free just place dragged item in there.
         {
-            Debug.LogWarning("Failed to place item in cell: no item dragged.");
-
-            return;
-        }
-
-        if (slot.IsOccupied() == false) // If the slot is free just place dragged item in there.
-        {
-            if (draggedItem.GetStats().itemType == slot.GetSlotType()) // Check if target slot accepted item type is the same as dragged item.
+            if (_draggedItem.Stats.itemType == slot.SlotType) // If target slot accepted item type is the same as dragged item.
             {
-                slot.AssignItem(draggedItem);
+                if (_prevSlot == null)
+                {
+                    slot.Inventory.AddItem(_draggedItem, slot.Index);
 
-                OnItemPickUpConfirmation?.Invoke();
+                    OnItemPickUpConfirmation?.Invoke();
+                }
+                else
+                {
+                    slot.Inventory.StoreInSlot(_draggedItem, slot.Index);
+                }
 
                 ClearDragData();
 
-                OnInventoryChanged?.Invoke(slot.GetInventory());
+                OnInventoryChanged?.Invoke(slot.Inventory);
             }
             else// But if dragged item type is incorrect.
             {
-                SwapBack(draggedItem);
+                SwapBack(_draggedItem);
 
                 Debug.Log("Invalid item type. Try different slot.");
             }
         }
         else // But if slot isn't free.
         {
-            if (draggedItem.GetStats().itemType == slot.GetSlotType()) // If target slot accepted item type is the same as dragged item.
+            if (_draggedItem.Stats.itemType == slot.SlotType) // If target slot accepted item type is the same as dragged item.
             {
-                if (slot.GetItem().GetStats().ID == draggedItem.GetStats().ID) // If stored item and dragged item both have the same ID.
+                if (slot.StoredItem.Stats.ID == _draggedItem.Stats.ID) // If stored item and dragged item both have the same ID.
                 {
-                    if (slot.GetItem().GetStats().isStackable == true) // And this type of item is able to stack, then add stacks to target slot and clear dragged item data.
+                    if (slot.StoredItem.Stats.isStackable == true) // And this type of item is able to stack, then add stacks to target slot and clear dragged item data.
                     {
-                        int excess = (draggedItem.GetAmount() + slot.GetItem().GetAmount()) - slot.GetItem().GetStats().maxStacksAmount;
-                        Debug.LogWarning("test: " + excess);
+                        int excess = (_draggedItem.Count + slot.StoredItem.Count) - slot.StoredItem.Stats.maxStacksAmount;
+
                         if (excess > 0)
                         {
-                            slot.GetItem().SetAmount(slot.GetItem().GetStats().maxStacksAmount);
+                            if (_prevSlot == null)
+                            {
+                                slot.Inventory.ChangeCarryWeight(excess * _draggedItem.Stats.weight);
 
-                            draggedItem.SetAmount(excess);
+                                OnItemPickUpConfirmation?.Invoke();
+                            }
+
+                            slot.StoredItem.SetCount(slot.StoredItem.Stats.maxStacksAmount);
+
+                            _draggedItem.SetCount(excess);
+
+                            SwapBack(_draggedItem);
                         }
                         else
                         {
-                            slot.GetItem().SetAmount(slot.GetItem().GetAmount() + draggedItem.GetAmount());
+                            slot.StoredItem.SetCount(slot.StoredItem.Count + _draggedItem.Count);
 
-                            if (_prevSlot != null) OnItemPickUpConfirmation?.Invoke();
+                            if (_prevSlot == null)
+                            {
+                                slot.Inventory.ChangeCarryWeight(_draggedItem.Count * _draggedItem.Stats.weight);
+
+                                OnItemPickUpConfirmation?.Invoke();
+                            }
 
                             ClearDragData();
                         }
 
-                        OnInventoryChanged?.Invoke(slot.GetInventory());
+                        OnInventoryChanged?.Invoke(slot.Inventory);
                     }
                     else // But if this item isn't stackable
                     {
-                        SwapBack(draggedItem);
+                        SwapBack(_draggedItem);
 
                         Debug.Log("This item isn't capable of stacking.");
-
-                        OnItemPickUpConfirmation?.Invoke();
                     }
                 }
                 else // But if IDs don't match, swap them.
                 {
                     SwapItems(slot);
-
-                    OnItemPickUpConfirmation?.Invoke();
                 }
             }
             else
             {
-                SwapBack(draggedItem);
+                SwapBack(_draggedItem);
 
                 Debug.Log("Invalid item type. Try different slot.");
             }
         }
     }
 
-    private void SwapItems(ItemSlot targetSLot)
+    private void SwapItems(ItemSlot targetSlot)
     {
-        ItemInstance tempItem = targetSLot.GetItem();
+        ItemInstance tempItem = targetSlot.StoredItem;
 
-        targetSLot.AssignItem(draggedItem);
+        targetSlot.Inventory.StoreInSlot(_draggedItem, targetSlot.Index);
 
-        Debug.Log($"Swapped {tempItem.GetStats().itemTitle} and {draggedItem.GetStats().itemTitle} ");
+        Debug.Log($"Swapped {tempItem.Stats.itemTitle} and {_draggedItem.Stats.itemTitle} ");
 
         if (_prevSlot != null)
         {
@@ -313,35 +337,35 @@ public class InventoryManager : MonoBehaviour
         }
         else
         {
-            draggedItem = tempItem;
+            _draggedItem = tempItem;
         }
 
-        OnInventoryChanged?.Invoke(targetSLot.GetInventory());
+        OnInventoryChanged?.Invoke(targetSlot.Inventory);
     }
 
     public void CancelDrag()
     {
-        if (isDragging == false)
+        if (_isDragging == false)
         {
             Debug.LogWarning("No dragged item.");
 
             return;
         }
 
-        SwapBack(draggedItem);
+        SwapBack(_draggedItem);
 
         ClearDragData();
 
-        OnInventoryChanged?.Invoke(_prevSlot.GetInventory());
+        OnInventoryChanged?.Invoke(_prevSlot.Inventory);
 
         Debug.Log("Drag cancelled.");
     }
 
     private void ClearDragData()
     {
-        draggedItem = null;
+        _draggedItem = null;
         _prevSlot = null;
-        isDragging = false;
+        _isDragging = false;
     }
     /// <summary>
     /// Returns item to slot, where it was taken from.
@@ -350,9 +374,9 @@ public class InventoryManager : MonoBehaviour
     {
         if (_prevSlot != null)
         {
-            _prevSlot.AssignItem(item);
+            _prevSlot.Inventory.StoreInSlot(item, _prevSlot.Index);
 
-            int index = _prevSlot.GetIndex();
+            int index = _prevSlot.Index;
 
             if (index < equipRows * equipColumns)
             {
@@ -368,29 +392,19 @@ public class InventoryManager : MonoBehaviour
 
             if (GetSelectedSlot() != null)
             {
-                UIManager.instance.UpdateInventoryPointerLocation(GetSelectedSlot().GetRelatedCell());
+                UIManager.instance.UpdateInventoryPointerLocation(GetSelectedSlot().RelatedCell);
 
-                OnInventoryChanged?.Invoke(GetSelectedSlot().GetInventory());
+                OnInventoryChanged?.Invoke(GetSelectedSlot().Inventory);
             }
 
-            Debug.Log($"{item.GetStats().itemTitle} swapped back to {index} slot.");
+            Debug.Log($"{item.Stats.itemTitle} swapped back to {index} slot.");
 
-            OnInventoryChanged?.Invoke(_prevSlot.GetInventory());
+            OnInventoryChanged?.Invoke(_prevSlot.Inventory);
 
             ClearDragData();
 
         }
         return;
-    }
-    /// <summary>
-    /// Creates prefab of dropped item in the scene.
-    /// </summary>
-    /// <param name="item"></param>
-    private void DropItem(ItemInstance item)
-    {
-        GameObject droppedGO = Instantiate(item.GetStats().prefab, Player.instance.transform.position + Player.instance.transform.forward, Quaternion.identity);
-
-        Debug.Log($"{item.GetStats().itemTitle} was dropped on the ground.");
     }
     #endregion
 }
@@ -414,13 +428,13 @@ public class ItemSlot
         _assignedInventory.cells[_index].SetRelatedSlot(this);
     }
 
-    public InventoryCell GetRelatedCell() => _assignedInventory.cells[_index];
-    public int GetIndex() => _index;
-    public Inventory GetInventory() => _assignedInventory;
-    public ItemInstance GetItem() => _storedItem;
-    public bool IsOccupied() => _isOccupied;
-    public ItemSlotType GetSlotType() => _itemType;
-    public EquipmentSlotType GetEquipmentSlotType() => _equipSlotType;
+    public InventoryCell RelatedCell => _assignedInventory.cells[_index];
+    public int Index => _index;
+    public Inventory Inventory => _assignedInventory;
+    public ItemInstance StoredItem => _storedItem;
+    public bool IsOccupied => _isOccupied;
+    public ItemSlotType SlotType => _itemType;
+    public EquipmentSlotType EquipmentType => _equipSlotType;
 
     public void AssignItem(ItemInstance item)
     {
@@ -428,40 +442,16 @@ public class ItemSlot
 
         _isOccupied = true;
 
-        if (_equipSlotType != EquipmentSlotType.None)
-        {
-            EquipItem();
-        }
-
-        Debug.Log($"{_storedItem.GetStats().itemTitle} was placed in {_index} slot.");
+        Debug.Log($"{_storedItem.Stats.itemTitle} was placed in {_index} slot.");
     }
 
-    private void EquipItem()
+    public void FreeSlot()
     {
-        _assignedInventory.equipment[_equipSlotType] = _storedItem;
-
-        Debug.Log($"{_storedItem.GetStats().itemTitle} was equipped in {_equipSlotType} slot.");
-    }
-
-    public void ClearSLot()
-    {
-        if (_equipSlotType != EquipmentSlotType.None)
-        {
-            UnequipItem();
-        }
-
-        Debug.Log($"{_storedItem.GetStats().itemTitle} was taken from {_index} slot.");
+        Debug.Log($"{_storedItem.Stats.itemTitle} was taken from {_index} slot.");
 
         _storedItem = null;
 
         _isOccupied = false;
-    }
-
-    private void UnequipItem()
-    {
-        _assignedInventory.equipment[_equipSlotType] = null;
-
-        Debug.Log($"{_storedItem.GetStats().itemTitle} was unequipped from {_equipSlotType} slot.");
     }
 }
 
@@ -469,22 +459,22 @@ public class ItemSlot
 public class ItemInstance
 {
     [SerializeField] private ItemStats _stats;
-    [SerializeField] private int _amount;
+    [SerializeField] private int _count;
     [SerializeField] private float _currentDurability;
 
     public ItemInstance(Item reference)
     {
         _stats = reference.stats;
-        _amount = reference.amount;
+        _count = reference.count;
         _currentDurability = reference.currentDurability;
     }
 
-    public ItemStats GetStats() => _stats;
-    public int GetAmount() => _amount;
-    public float GetDurability() => _currentDurability;
-    public void SetAmount(int value)
+    public ItemStats Stats => _stats;
+    public int Count => _count;
+    public float CurrentDurability => _currentDurability;
+    public void SetCount(int value)
     {
-        _amount = value;
+        _count = value;
     }
 }
 public enum EquipmentSlotType

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewItem", menuName = "Item")]
@@ -11,7 +9,7 @@ public class ItemStats : ScriptableObject
     public int maxStacksAmount;
     public ItemSlotType itemType;
     public string itemTitle;
-    public Sprite sprite;
+    public Sprite iconSprite;
     public int damage;
     public DamageType dmgType;
     public WeaponType wpnType;
@@ -28,7 +26,7 @@ public class ItemStats : ScriptableObject
     public int restoreAmount;
     public float weight;
     public int price;
-    public int durability;
+    public int maxDurability;
     public int iconWidth;
     public int iconHeight;
     public string description;

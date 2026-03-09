@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -59,7 +57,7 @@ public class NPC : Humanoid, IInteractable
 
     private void Update()
     {
-        if (!dead)
+        if (!isDead)
         {
             _saveTargetPos = _target.transform.position;
 
@@ -166,16 +164,16 @@ public class NPC : Humanoid, IInteractable
 
         indicators.GetComponent<ActorUI>().nameTxt.text = transform.name;
 
-        indicators.GetComponent<ActorUI>().healthBar.maxValue = maxHP;
+        indicators.GetComponent<ActorUI>().healthBar.maxValue = maxHealth;
 
-        indicators.GetComponent<ActorUI>().healthBar.value = curHP;
+        indicators.GetComponent<ActorUI>().healthBar.value = currentHealth;
 
-        indicators.GetComponent<ActorUI>().curHealthTxt.text = curHP + " / " + maxHP;
+        indicators.GetComponent<ActorUI>().curHealthTxt.text = currentHealth + " / " + maxHealth;
 
         indicators.gameObject.SetActive(false);
     }
 
-    public override void ChangeHealth(float value)
+    public override void ChangeCurrentHealth(float value)
     {
         totalDmg += value;
 
@@ -183,12 +181,12 @@ public class NPC : Humanoid, IInteractable
 
         indicators.GetComponent<ActorUI>().damageCount.GetComponent<Text>().text = totalDmg.ToString();
 
-        base.ChangeHealth(value);
+        base.ChangeCurrentHealth(value);
     }
 
     public void Alarm(float alert)
     {
-        if (!dead)
+        if (!isDead)
         {
             alertVolume += alert;
 
@@ -268,11 +266,11 @@ public class NPC : Humanoid, IInteractable
 
         if (fallDistance > minFallHeight)
         {
-            healthDamage = (int)Mathf.Clamp(maxHP * (fallDistance / maxFallHeight) - DEX, 0, maxHP);
+            healthDamage = (int)Mathf.Clamp(maxHealth * (fallDistance / maxFallHeight) - dexterity, 0, maxHealth);
 
-            if (fallDistance >= maxFallHeight) healthDamage = maxHP;
+            if (fallDistance >= maxFallHeight) healthDamage = maxHealth;
 
-            ChangeHealth((int)(healthDamage));
+            ChangeCurrentHealth((int)(healthDamage));
 
             UIManager.instance.PrintMessage(transform.name + "  fell from " + fallDistance + " units and took " + healthDamage + " damage");
         }
@@ -341,7 +339,7 @@ public class NPC : Humanoid, IInteractable
     {
         animator.SetTrigger("Dead");
 
-        dead = true;
+        isDead = true;
 
         //PlaySound("Death");
 

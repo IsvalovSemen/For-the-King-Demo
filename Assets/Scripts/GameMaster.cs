@@ -1,10 +1,8 @@
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
-using System.Collections.Generic;
 using System.Collections;
 using System;
-using static UnityEditor.Progress;
 
 public class GameMaster : MonoBehaviour
 {
