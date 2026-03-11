@@ -9,17 +9,17 @@ public class MainMenuCamera: CameraControl
 
         float mouseY = Input.GetAxis("Mouse Y") * GameMaster.instance.mouseSensitivity * Time.deltaTime;
 
-        XRot -= mouseY;
+        XRotation -= mouseY;
 
-        XRot = Mathf.Clamp(XRot, -viewAngle, viewAngle);
+        XRotation = Mathf.Clamp(XRotation, -maxHorizontalAngle, maxHorizontalAngle);
 
-        YRot += mouseX;
+        YRotation += mouseX;
 
-        YRot = Mathf.Clamp(YRot, -viewAngle, viewAngle);
+        YRotation = Mathf.Clamp(YRotation, -maxVerticalAngle, maxVerticalAngle);
 
         if (Input.GetMouseButton(1))
         {
-            transform.localRotation = Quaternion.Euler(XRot, YRot, 0f);
+            transform.localRotation = Quaternion.Euler(XRotation, YRotation, 0f);
         }
         else transform.localRotation = Quaternion.Slerp(transform.localRotation, new Quaternion(0.608761489f, 0, 0, 0.793353319f), 0.01f); //Change in future
     }

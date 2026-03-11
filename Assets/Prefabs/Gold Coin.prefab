@@ -48,13 +48,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _weight: 0.1
   _maxDurability: 100
+  currentDurability: 0
   _discardingTime: 30
   _takeDmgThreshold: 1
   dealDmgThreshold: 5
   _pieces: {fileID: 0}
   hittedTargets: []
-  stats: {fileID: 11400000, guid: 72a4bde5dc9b18f47a2c6d982647a2b3, type: 2}
-  amount: 0
+  _stats: {fileID: 11400000, guid: 72a4bde5dc9b18f47a2c6d982647a2b3, type: 2}
+  _count: 0
 --- !u!54 &1827478287453952377
 Rigidbody:
   m_ObjectHideFlags: 0

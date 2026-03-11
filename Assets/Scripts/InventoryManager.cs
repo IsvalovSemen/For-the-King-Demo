@@ -43,7 +43,7 @@ public class InventoryManager : MonoBehaviour
 
     private void Update()
     {
-        if (UIManager.instance.GetCurrentMenu() == MenuState.Inventory)
+        if (UIManager.instance.GetCurrentMenu == MenuState.Inventory)
         {
             if (Input.GetKeyDown(KeyCode.UpArrow)) MovePointer(Vector2Int.up);
             else if (Input.GetKeyDown(KeyCode.DownArrow)) MovePointer(Vector2Int.down);
@@ -51,60 +51,37 @@ public class InventoryManager : MonoBehaviour
             else if (Input.GetKeyDown(KeyCode.RightArrow)) MovePointer(Vector2Int.right);
 
             ItemSlot selectedSlot = GetSelectedSlot();
-            
-            if (selectedSlot != null)
+
+            if (Input.GetKeyDown(KeyCode.E))
             {
-                if (selectedSlot.IsOccupied == true)
+                if (!_isDragging)
                 {
-                    UIManager.instance.ShowItemTooltip(selectedSlot.StoredItem);
-                }
-                else if (_isDragging == true)
-                {
-                    UIManager.instance.ShowItemTooltip(_draggedItem);
+                    TakeFromSlot(selectedSlot);
                 }
                 else
                 {
-                    UIManager.instance.HideItemTooltip();
+                    StoreInSlot(selectedSlot);
                 }
-                
             }
-            else
+
+            if (Input.GetKeyDown(KeyCode.Escape) && _isDragging)
             {
-                UIManager.instance.HideItemTooltip();
+                CancelDrag();
             }
 
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                if (selectedSlot.IsOccupied == true)
                 {
-                    if (!_isDragging)
-                    {
-                        TakeFromSlot(selectedSlot);
-                    }
-                    else
-                    {
-                        StoreInSlot(selectedSlot);
-                    }
+                    selectedSlot.Inventory.DropItem(selectedSlot.Index, false);
                 }
-
-                if (Input.GetKeyDown(KeyCode.Escape) && _isDragging)
+                else
                 {
-                    CancelDrag();
+                    Debug.Log("No item in this cell to drop.");
+
+                    return;
                 }
-
-                if (Input.GetKeyDown(KeyCode.Q))
-                {
-                    if (selectedSlot.IsOccupied == true)
-                    {
-                        selectedSlot.Inventory.DropItem(selectedSlot.Index);
-
-                        OnInventoryChanged?.Invoke(selectedSlot.Inventory);
-                    }
-                    else
-                    {
-                        Debug.Log("No item in this cell to drop.");
-
-                        return;
-                    }
-                }
+            }
         }
     }
     #region UTILITY METHODS
@@ -140,17 +117,37 @@ public class InventoryManager : MonoBehaviour
 
         _currentColumn = newColumn;
 
-        if (GetSelectedSlot() != null)
+        ItemSlot slot = GetSelectedSlot();
+
+        if (slot != null)
         {
             UIManager.instance.UpdateInventoryPointerLocation(GetSelectedSlot().RelatedCell);
 
-            OnInventoryChanged?.Invoke(GetSelectedSlot().Inventory);
+            if (slot.IsOccupied == true)
+            {
+                UIManager.instance.ShowItemTooltip(slot.StoredItem);
+            }
+            else if (_isDragging == true)
+            {
+                UIManager.instance.ShowItemTooltip(_draggedItem);
+            }
+            else
+            {
+                UIManager.instance.HideItemTooltip();
+            }
+
+            UpdateInventoryUI(GetSelectedSlot().Inventory);
         }
     }
 
     public ItemInstance DraggedItem => _draggedItem;
 
     public bool IsDragging => _isDragging;
+
+    public void UpdateInventoryUI(Inventory inventory)
+    {
+        OnInventoryChanged?.Invoke(inventory);
+    }
 
     public ItemSlot GetSelectedSlot()
     {
@@ -202,13 +199,22 @@ public class InventoryManager : MonoBehaviour
             return;
         }
 
-        UIManager.instance.OpenMenu(MenuState.Inventory);
+        ItemSlot freeSlot = inventory.TryFindAppropriateSlot(item);
 
-        _isDragging = true;
+        if (freeSlot != null)
+        {
+            StoreInSlot(freeSlot);
+        }
+        else
+        {
+            UIManager.instance.OpenMenu(MenuState.Inventory);
 
-        Debug.Log($"Begun dragging {_draggedItem.Stats.itemTitle}.");
+            _isDragging = true;
 
-        OnInventoryChanged?.Invoke(inventory);
+            Debug.Log($"Begun dragging {_draggedItem.Stats.itemTitle}.");
+        }
+
+        UpdateInventoryUI(inventory);
     }
 
     public void TakeFromSlot(ItemSlot slot)
@@ -230,7 +236,7 @@ public class InventoryManager : MonoBehaviour
 
         Debug.Log($"Now dragging {_draggedItem.Stats.itemTitle}.");
 
-        OnInventoryChanged?.Invoke(slot.Inventory);
+        UpdateInventoryUI(slot.Inventory);
     }
 
     public void StoreInSlot(ItemSlot slot)
@@ -252,7 +258,7 @@ public class InventoryManager : MonoBehaviour
 
                 ClearDragData();
 
-                OnInventoryChanged?.Invoke(slot.Inventory);
+                UpdateInventoryUI(slot.Inventory);
             }
             else// But if dragged item type is incorrect.
             {
@@ -273,18 +279,20 @@ public class InventoryManager : MonoBehaviour
 
                         if (excess > 0)
                         {
-                            if (_prevSlot == null)
-                            {
-                                slot.Inventory.ChangeCarryWeight(excess * _draggedItem.Stats.weight);
-
-                                OnItemPickUpConfirmation?.Invoke();
-                            }
-
                             slot.StoredItem.SetCount(slot.StoredItem.Stats.maxStacksAmount);
 
                             _draggedItem.SetCount(excess);
 
-                            SwapBack(_draggedItem);
+                            if (_prevSlot == null)
+                            {
+                                slot.Inventory.ChangeCarryWeight((slot.StoredItem.Stats.maxStacksAmount - slot.StoredItem.Count) * _draggedItem.Stats.weight);
+
+                                OnItemPickUpConfirmation?.Invoke();
+                            }
+                            else
+                            {
+                                SwapBack(_draggedItem);
+                            }
                         }
                         else
                         {
@@ -300,7 +308,7 @@ public class InventoryManager : MonoBehaviour
                             ClearDragData();
                         }
 
-                        OnInventoryChanged?.Invoke(slot.Inventory);
+                        UpdateInventoryUI(slot.Inventory);
                     }
                     else // But if this item isn't stackable
                     {
@@ -340,7 +348,7 @@ public class InventoryManager : MonoBehaviour
             _draggedItem = tempItem;
         }
 
-        OnInventoryChanged?.Invoke(targetSlot.Inventory);
+        UpdateInventoryUI(targetSlot.Inventory);
     }
 
     public void CancelDrag()
@@ -356,7 +364,7 @@ public class InventoryManager : MonoBehaviour
 
         ClearDragData();
 
-        OnInventoryChanged?.Invoke(_prevSlot.Inventory);
+        UpdateInventoryUI(_prevSlot.Inventory);
 
         Debug.Log("Drag cancelled.");
     }
@@ -399,7 +407,7 @@ public class InventoryManager : MonoBehaviour
 
             Debug.Log($"{item.Stats.itemTitle} swapped back to {index} slot.");
 
-            OnInventoryChanged?.Invoke(_prevSlot.Inventory);
+            UpdateInventoryUI(_prevSlot.Inventory);
 
             ClearDragData();
 
@@ -456,7 +464,7 @@ public class ItemSlot
 }
 
 [System.Serializable]
-public class ItemInstance
+public class ItemInstance: IItem
 {
     [SerializeField] private ItemStats _stats;
     [SerializeField] private int _count;
@@ -464,9 +472,9 @@ public class ItemInstance
 
     public ItemInstance(Item reference)
     {
-        _stats = reference.stats;
-        _count = reference.count;
-        _currentDurability = reference.currentDurability;
+        _stats = reference.Stats;
+        _count = reference.Count;
+        _currentDurability = reference.CurrentDurability;
     }
 
     public ItemStats Stats => _stats;

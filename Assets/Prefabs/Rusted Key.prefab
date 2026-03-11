@@ -200,13 +200,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66af589a5ecc010459decc8e32520f71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GM: {fileID: 0}
-  SM: {fileID: 0}
-  card: {fileID: 0}
-  _equipped: 0
-  _stored: 0
-  selected: 0
-  currDurrability: 0
+  _weight: 0
+  _maxDurability: 100
+  currentDurability: 0
+  _discardingTime: 30
+  _takeDmgThreshold: 1
+  dealDmgThreshold: 5
+  _pieces: {fileID: 0}
   hittedTargets: []
-  stats: {fileID: 11400000, guid: 9969ea29fa9730f4b895c4ee739cc47f, type: 2}
-  _damageThreshold: 1
+  _stats: {fileID: 11400000, guid: 9969ea29fa9730f4b895c4ee739cc47f, type: 2}
+  _count: 0

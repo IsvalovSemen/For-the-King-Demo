@@ -155,19 +155,19 @@ public class Equipment : Item
         {
             case DamageType.Slash:
                 {
-                    result = stats.slashRes;
+                    result = _stats.slashRes;
                 }
                 break;
 
             case DamageType.Thrust:
                 {
-                    result = stats.thrustRes;
+                    result = _stats.thrustRes;
                 }
                 break;
 
             case DamageType.Blunt:
                 {
-                    result = stats.bluntRes;
+                    result = _stats.bluntRes;
                 }
                 break;
 

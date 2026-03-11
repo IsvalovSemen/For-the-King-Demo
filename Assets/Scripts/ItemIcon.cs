@@ -12,7 +12,6 @@ public class ItemIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     [SerializeField] private Canvas _canvas;
     [SerializeField] private RectTransform _rectTransform;
     [SerializeField] private CanvasGroup _canvasGroup;
-    [SerializeField] private bool _isHoveringOver = false;
 
     private void Awake()
     {
@@ -23,14 +22,6 @@ public class ItemIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         _canvasGroup = GetComponent<CanvasGroup>();
 
         if (_canvasGroup == null) _canvasGroup = gameObject.AddComponent<CanvasGroup>();
-    }
-
-    private void Update()
-    {
-        if (_relatedCell.RelatedSlot.IsOccupied == true && Input.GetMouseButtonDown(1))
-        {
-            _relatedCell.RelatedSlot.Inventory.DropItem(_relatedCell.RelatedSlot.Index);
-        }
     }
 
     public void ConnectCell(InventoryCell cell)
@@ -72,16 +63,18 @@ public class ItemIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        _isHoveringOver = true;
-
-        if (_relatedCell != null && _relatedCell.RelatedSlot.IsOccupied == true) UIManager.instance.ShowItemTooltip(_relatedCell.RelatedSlot.StoredItem);
+        if (_relatedCell != null && _relatedCell.RelatedSlot.IsOccupied == true)
+        {
+            UIManager.instance.ShowItemTooltip(_relatedCell.RelatedSlot.StoredItem);
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        _isHoveringOver = false;
-
-        UIManager.instance.HideItemTooltip();
+        if (_relatedCell != null && _relatedCell.RelatedSlot.IsOccupied == true)
+        {
+            UIManager.instance.HideItemTooltip();
+        }
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -108,24 +101,35 @@ public class ItemIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        GameObject target = eventData.pointerEnter;
-
-        if (target != null && target.layer == 5 && target.GetComponent<ItemIcon>() != null)
+        if (_relatedCell.RelatedSlot.IsOccupied == true)
         {
-            InventoryManager.instance.TakeFromSlot(_originalParent.GetComponent<InventoryCell>().RelatedSlot);
+            GameObject target = eventData.pointerEnter;
 
-            InventoryManager.instance.StoreInSlot(target.GetComponentInParent<InventoryCell>().RelatedSlot);
+            if (target != null)
+            {
+                if (target.GetComponent<ItemIcon>() != null)
+                {
+                    InventoryManager.instance.TakeFromSlot(_originalParent.GetComponent<InventoryCell>().RelatedSlot);
+
+                    InventoryManager.instance.StoreInSlot(target.GetComponentInParent<InventoryCell>().RelatedSlot);
+                }
+            }
+            else
+            {
+                _originalParent.GetComponent<InventoryCell>().RelatedSlot.Inventory.DropItem(_originalParent.GetComponent<InventoryCell>().RelatedSlot.Index, true);
+            }
+
+            MakeInteractable();
+
+            _canvasGroup.alpha = 1f;
+
+            if (transform.parent == _canvas.transform)
+            {
+                transform.SetParent(_originalParent);
+
+                _rectTransform.anchoredPosition = Vector2.zero;
+            }
         }
 
-        MakeInteractable();
-
-        _canvasGroup.alpha = 1f;
-
-        if (transform.parent == _canvas.transform)
-        {
-            transform.SetParent(_originalParent);
-
-            _rectTransform.anchoredPosition = Vector2.zero;
-        }
     }
 }

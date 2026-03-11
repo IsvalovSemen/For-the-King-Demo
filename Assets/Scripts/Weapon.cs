@@ -26,10 +26,10 @@ public class Weapon : Item
             {
                 hittedTargets.Add(coll.transform.GetComponent<Collider>().transform.root.transform);
 
-                coll.transform.GetComponentInParent<IDamageable>().GetHit(-stats.damage, stats.dmgType, part);
+                coll.transform.GetComponentInParent<IDamageable>().GetHit(-_stats.damage, _stats.dmgType, part);
 
 
-                UIManager.instance.PrintMessage(coll.transform.GetComponentInParent<Creature>().gameObject.name + " got hit by " + transform.GetComponentInParent<Creature>().gameObject.name + " with " + transform.name + ", taking " + stats.damage + " " + stats.dmgType.ToString() + " damage to " + part.name);
+                UIManager.instance.PrintMessage(coll.transform.GetComponentInParent<Creature>().gameObject.name + " got hit by " + transform.GetComponentInParent<Creature>().gameObject.name + " with " + transform.name + ", taking " + _stats.damage + " " + _stats.dmgType.ToString() + " damage to " + part.name);
 
                 
             }
@@ -43,7 +43,7 @@ public class Weapon : Item
 
             UIManager.instance.PrintMessage(transform.root.name + " hits " + coll.transform.GetComponent<Collider>().transform.name);
 
-            if (coll.transform.GetComponent<IDamageable>() != null) coll.transform.GetComponent<IDamageable>().GetHit(-stats.damage, stats.dmgType, part);
+            if (coll.transform.GetComponent<IDamageable>() != null) coll.transform.GetComponent<IDamageable>().GetHit(-_stats.damage, _stats.dmgType, part);
             else SM.PlaySound("Hit");
         }
     }

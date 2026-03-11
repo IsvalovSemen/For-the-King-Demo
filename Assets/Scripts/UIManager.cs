@@ -26,7 +26,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Texture2D _cursorFether;
     private int _size = 50;
     private Vector2 _offset;
-    public Transform crosshair;
+    [SerializeField] private Transform crosshair;
+
+    [Header("Context prompt:")]
+    public GameObject interactionPrompt;
+    public Text promptText;
+    [SerializeField] private Text promptKey;
 
     [Header("Menus sources:")]
     [SerializeField] private GameObject _inventoryMenu;
@@ -105,6 +110,10 @@ public class UIManager : MonoBehaviour
         Player.instance.OnOxygenChange += UpdateOxygenBar;
 
         CloseAllMenus();
+
+        promptKey.text = GameMaster.instance.interactionKey.ToString();
+
+        HideItemTooltip();
     }
 
     private void Update()
@@ -272,7 +281,7 @@ public class UIManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Closes all menus and resets state machine.
+    /// Close all menus and reset state machine.
     /// </summary>
     public void CloseAllMenus()
     {
@@ -292,15 +301,17 @@ public class UIManager : MonoBehaviour
     }
 
     /// <returns>True if any menu is currently open.</returns>
-    public bool IsAnyMenuOpen() => currentMenu != MenuState.None;
+    public bool IsAnyMenuOpen => currentMenu != MenuState.None;
 
     /// <returns>Returns the currently active menu.</returns>
-    public MenuState GetCurrentMenu() => currentMenu;
+    public MenuState GetCurrentMenu => currentMenu;
 
     public void PrintMessage(string messageTxt)
     {
         _activeMessages.Add(messageTxt);
+
         UpdateMessageText();
+
         StartCoroutine(RemoveMessageAfterDelay(messageTxt, _messageDisplayDelay));
     }
 
@@ -309,7 +320,7 @@ public class UIManager : MonoBehaviour
         _inventoryPointer.transform.position = cell.transform.position;
     }
 
-    public void ShowItemTooltip(ItemInstance item)
+    public void ShowItemTooltip(IItem item)
     {
         _tooltipWindow.SetActive(true);
         _tooltipIcon.sprite = item.Stats.iconSprite;

@@ -1,3 +1,4 @@
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,16 +6,16 @@ public class CameraControl: MonoBehaviour
 {
     public static CameraControl instance;
     public Camera mainCam;
-    protected float XRot;
-    protected float YRot;
-    [SerializeField] protected float viewAngle = 60f;
     private float _distanceToObject;
     private Ray _ray;
     public RaycastHit hit;
-    private Transform _target;
-    
+    [SerializeField] protected float maxHorizontalAngle = 60f;
+    [SerializeField] protected float maxVerticalAngle = 60f;
+    protected float XRotation;
+    protected float YRotation;
+
     #region Singleton
-    void Awake()
+    private void Awake()
     {
         mainCam = GetComponent<Camera>();
 
@@ -26,26 +27,52 @@ public class CameraControl: MonoBehaviour
 
     public virtual void Update()
     {
-        if (!UIManager.instance.IsAnyMenuOpen()) // Freezes camera movement if any of menu is opened.
+        if (!UIManager.instance.IsAnyMenuOpen)
         {
-            if (!Input.GetMouseButton(0) & !Input.GetMouseButton(1)) // If not choosing attack direction right now. FIXME: PROBABLY REMOVE IT LATER.
+            if (Input.GetAxis("Vertical") > 0f) // If Player is moving forward.
             {
-                XRot -= Input.GetAxis("Mouse Y") * GameMaster.instance.mouseSensitivity * Time.deltaTime;
+                Vector3 forward = transform.forward;
 
-                //XRot = Mathf.Clamp(XRot, -viewAngle, viewAngle);
+                forward.y = 0f;
 
-                YRot -= Input.GetAxis("Mouse X") * GameMaster.instance.mouseSensitivity * Time.deltaTime;
+                if (forward.sqrMagnitude > 0.01f) Player.instance.transform.rotation = Quaternion.LookRotation(forward); // Rotate character model to the direction the camera is facing.
 
-                //YRot = Mathf.Clamp(YRot, -viewAngle,viewAngle);
+                XRotation = 0f;
+            }
+        }
+    }
 
-                transform.rotation = Quaternion.Euler(XRot, -YRot, 0f);
-                /* 
-                if (Input.GetAxis("Mouse ScrollWheel") > 0f || Input.GetAxis("Mouse ScrollWheel") < 0f) // If any menu is opened, zooms in/out view via mouse scroll
+    void LateUpdate()
+    {
+        if (!UIManager.instance.IsAnyMenuOpen)
+        {
+            if (!Input.GetMouseButton(0) & !Input.GetMouseButton(1))
+            {
+                XRotation += Input.GetAxis("Mouse X") * GameMaster.instance.mouseSensitivity * Time.deltaTime; ;
+                YRotation -= Input.GetAxis("Mouse Y") * GameMaster.instance.mouseSensitivity * Time.deltaTime; ;
+
+                YRotation = Mathf.Clamp(YRotation, -maxVerticalAngle, maxVerticalAngle);
+
+                if (XRotation > maxHorizontalAngle)
                 {
-                    GetComponent<Camera>().fieldOfView = Mathf.Clamp(GetComponent<Camera>().fieldOfView - (10 * Input.GetAxis("Mouse ScrollWheel")), 60, 90);
+                    float extra = XRotation - maxHorizontalAngle;
+                    XRotation = maxHorizontalAngle;
+
+                    Player.instance.transform.Rotate(Vector3.up * extra);
                 }
-                */
-                _ray = GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
+                else if (XRotation < -maxHorizontalAngle)
+                {
+                    float extra = XRotation + maxHorizontalAngle;
+                    XRotation = -maxHorizontalAngle;
+
+                    Player.instance.transform.Rotate(Vector3.up * extra);
+                }
+
+                XRotation = Mathf.Clamp(XRotation, -maxHorizontalAngle, maxHorizontalAngle);
+
+                Quaternion parentRotation = Player.instance.transform.rotation;
+                Quaternion localRotation = Quaternion.Euler(YRotation, XRotation, 0f);
+                transform.rotation = parentRotation * localRotation;
 
                 if (Physics.Raycast(_ray, out hit))
                 {
@@ -68,7 +95,7 @@ public class CameraControl: MonoBehaviour
     {
         InteractionType result = InteractionType.None;
 
-        if (!UIManager.instance.IsAnyMenuOpen())
+        if (!UIManager.instance.IsAnyMenuOpen)
         {
             _ray = new Ray(transform.position, transform.forward * GameMaster.instance.interactionDistance);
 
@@ -76,37 +103,38 @@ public class CameraControl: MonoBehaviour
 
             if (Physics.Raycast(_ray, out hit, 100f, ~0, QueryTriggerInteraction.Collide)) // "QueryTriggerInteraction.Collide" is necessary for raycast to work with trigger colliders.
             {
-                _distanceToObject = Vector3.Distance(hit.transform.position, transform.position);
-
-                if (_distanceToObject < GameMaster.instance.interactionDistance & hit.transform.GetComponent<IInteractable>() != null && (hit.transform.gameObject.layer == 3 || hit.transform.gameObject.layer == 6))
+                if (hit.collider.isTrigger) // If target collider is trigger and a Sphere Collider.
                 {
-                    if (hit.transform.GetComponent<Item>() != null)
+                    _distanceToObject = Vector3.Distance(hit.transform.position, transform.position); // Calculate distance to the target object.
+
+                    if (_distanceToObject < GameMaster.instance.interactionDistance) // If distance is appropriate.
                     {
-                        //InventoryManager.instance.ShowItemInfo(hit.transform.GetComponent<Item>()); // Show item infobox while looking at item.
+                        if (hit.transform.gameObject.layer == 3 || hit.transform.gameObject.layer == 6) // If target object belongs to the "environment" or "entities" layers.
+                        {
+                            if (hit.transform.GetComponent<IInteractable>() != null)
+                            {
+                                if (hit.transform.GetComponent<Item>() != null)
+                                {
+                                    UIManager.instance.ShowItemTooltip(hit.transform.GetComponent<Item>()); // Show item infobox while looking at item.
 
-                        _target = hit.transform;
+                                }
+
+                                result = hit.transform.GetComponent<IInteractable>().interactionType;
+
+                                UIManager.instance.interactionPrompt.SetActive(true);
+
+                                UIManager.instance.promptText.text = result.ToString();
+                            }
+                        }
                     }
-                    //else InventoryManager.instance.ClearItemInfo(); // Close item infobox if looking away.
-
-                    result = hit.transform.GetComponent<IInteractable>().interactionType;
-                }
-                else
-                {
-                    result = InteractionType.None;
-
-                    //InventoryManager.instance.ClearItemInfo();
                 }
             }
-            else result = InteractionType.None;
 
             if (result == InteractionType.None)
             {
-                if (_target != null)
-                {
-                    //InventoryManager.instance.ClearItemInfo();
+                UIManager.instance.interactionPrompt.transform.gameObject.SetActive(false);
 
-                    _target = null;
-                }
+                UIManager.instance.HideItemTooltip();
             }
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using static UnityEditor.Progress;
 using static UnityEngine.Rendering.DebugUI;
@@ -47,6 +48,23 @@ public class Inventory : MonoBehaviour
             cells[i].UpdateCellView();
         }
     }
+    /// <summary>
+    /// Returns first free appropriate slot in inventory for this item.
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns></returns>
+    public ItemSlot TryFindAppropriateSlot(IItem item)
+    {
+        for (int i = 0; i < slots.Count;i++)
+        {
+            if (slots[i].SlotType == item.Stats.itemType && slots[i].IsOccupied == false)
+            {
+                return slots[i];
+            }
+        }
+
+        return null;
+    }
 
     public void AddItem(ItemInstance item, int slotIndex)
     {
@@ -61,7 +79,10 @@ public class Inventory : MonoBehaviour
     {
         slots[slotIndex].AssignItem(item);
 
-        if (slots[slotIndex].EquipmentType != EquipmentSlotType.None) EquipItem(slots[slotIndex].EquipmentType, item, slotIndex);
+        if (slots[slotIndex].EquipmentType != EquipmentSlotType.None)
+        {
+            EquipItem(slots[slotIndex].EquipmentType, item, slotIndex);
+        }
     }
 
     private void EquipItem(EquipmentSlotType EquipmentType, ItemInstance item, int slotIndex)
@@ -78,7 +99,10 @@ public class Inventory : MonoBehaviour
 
     private void RemoveFromSlot(int slotIndex)
     {
-        if (slots[slotIndex].EquipmentType != EquipmentSlotType.None) UnequipItem(slots[slotIndex].EquipmentType, slots[slotIndex].StoredItem);
+        if (slots[slotIndex].EquipmentType != EquipmentSlotType.None)
+        {
+            UnequipItem(slots[slotIndex].EquipmentType, slots[slotIndex].StoredItem);
+        }
 
         slots[slotIndex].FreeSlot();
     }
@@ -89,13 +113,28 @@ public class Inventory : MonoBehaviour
 
         equipment[EquipmentType] = null;
     }
-    /// <summary>
-    ///  Creates prefab of dropped item in the scene.
-    /// </summary>
-    /// <param name="slotIndex"></param>
-    public void DropItem(int slotIndex)
+
+    public void DropItem(int slotIndex, bool viaCursor)
     {
-        GameObject createdItem = Instantiate(slots[slotIndex].StoredItem.Stats.prefab, Player.instance.transform.position + Player.instance.transform.forward, Quaternion.identity);
+        RaycastHit hitInfo;
+
+        if (viaCursor == true)
+        {
+            Ray ray = CameraControl.instance.mainCam.ScreenPointToRay(Input.mousePosition);
+
+            Physics.Raycast(ray, out hitInfo, GameMaster.instance.interactionDistance, LayerMask.GetMask("Environment"));
+
+        }
+        else
+        {
+            Ray ray = new Ray(CameraControl.instance.mainCam.transform.position, CameraControl.instance.mainCam.transform.forward);
+
+            Physics.Raycast(ray, out hitInfo, GameMaster.instance.interactionDistance, LayerMask.GetMask("Environment"));
+
+        }
+
+        GameObject createdItem = Instantiate(slots[slotIndex].StoredItem.Stats.prefab, hitInfo.point, Quaternion.identity); // Spawns a prefab of dropped item in the point camera facing.
+
 
         createdItem.GetComponent<Item>().SetCount(slots[slotIndex].StoredItem.Count);
 
@@ -104,6 +143,8 @@ public class Inventory : MonoBehaviour
         ChangeCarryWeight(-slots[slotIndex].StoredItem.Stats.weight * slots[slotIndex].StoredItem.Count);
 
         RemoveFromSlot(slotIndex);
+
+        InventoryManager.instance.UpdateInventoryUI(this);
     }
 
     public bool IsEnoughSpace()

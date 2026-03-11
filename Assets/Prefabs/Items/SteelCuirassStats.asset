@@ -35,7 +35,7 @@ MonoBehaviour:
   restoreAmount: 0
   weight: 4
   price: 300
-  maxDurability: 0
+  maxDurability: 100
   iconWidth: 3
   iconHeight: 4
   description: Simple cuirass made of steel. Provides mediocre protection.

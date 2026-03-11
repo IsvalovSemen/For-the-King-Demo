@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class Player : Humanoid
 {
@@ -98,11 +100,11 @@ public class Player : Humanoid
 
     public override void Movement()
     {
-        if (!UIManager.instance.IsAnyMenuOpen() && grounded)
+        if (!UIManager.instance.IsAnyMenuOpen && grounded)
         {
             if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
             {
-                transform.rotation = Quaternion.Euler(0, CameraControl.instance.transform.rotation.eulerAngles.y, 0);
+                //transform.rotation = Quaternion.Euler(0, CameraControl.instance.transform.rotation.eulerAngles.y, 0);
 
                 if (Input.GetKey(GameMaster.instance.sprintKey) && Input.GetKey(GameMaster.instance.moveForward) && currentStamina >= sprintStamina)
                 {
@@ -130,7 +132,6 @@ public class Player : Humanoid
 
                     animator.SetInteger("Movement", 3);
                 }
-
 
                 /*var camRotation = CameraControl.instance.transform.rotation;
 
@@ -380,10 +381,6 @@ public class Player : Humanoid
         {
             RaycastHit target = CameraControl.instance.hit;
 
-            UIManager.instance.crosshair.GetChild(0).gameObject.SetActive(true);
-
-            UIManager.instance.crosshair.GetComponentInChildren<Text>().text = CameraControl.instance.InteractionCheck().ToString();
-
             if (Input.GetKey(GameMaster.instance.interactionKey))
             {
                 if (target.transform.GetComponent<IPortable>() != null && !target.transform.GetComponent<IPortable>().holding)
@@ -418,7 +415,6 @@ public class Player : Humanoid
                 }
             }
         }
-        else UIManager.instance.crosshair.GetChild(0).gameObject.SetActive(false);
     }
 
     private void RotateProjectile() // FIXME: don't forget remove it in future

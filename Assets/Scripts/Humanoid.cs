@@ -110,11 +110,6 @@ public class Humanoid : Creature
         else if (animationEvent.intParameter == 1) attackAllowed = true;
     }
 
-    public void StoreItem(Item item)
-    {
-        ChangeEquipload(item.stats.weight);
-    }
-
     /*public void DropItem(ItemSlot slot)
     {
         GameObject item;

@@ -155,7 +155,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.5219332, y: 0.11030245, z: 0.794}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.6666667, y: 0.6666667, z: 0.6666667}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6543841664967953651}
@@ -174,17 +174,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e94cf11de69f6fb4c9ba65339f0626b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GM: {fileID: 0}
-  SM: {fileID: 0}
-  slotNum: 0
-  card: {fileID: 0}
-  _equipped: 0
-  _stored: 0
-  selected: 0
-  currDurrability: 0
+  _weight: 0
+  _maxDurability: 100
+  currentDurability: 0
+  _discardingTime: 30
+  _takeDmgThreshold: 1
+  dealDmgThreshold: 5
+  _pieces: {fileID: 0}
   hittedTargets: []
-  stats: {fileID: 11400000, guid: d601826ffe8ea27459f8a463617aeb06, type: 2}
-  _damageThreshold: 1
+  _stats: {fileID: 11400000, guid: d601826ffe8ea27459f8a463617aeb06, type: 2}
+  _count: 0
 --- !u!54 &2378323815984910563
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1695,6 +1694,7 @@ GameObject:
   - component: {fileID: 6543841664967953651}
   - component: {fileID: 7687770540215102711}
   - component: {fileID: 5108333493163422612}
+  - component: {fileID: 7416034461603761206}
   m_Layer: 3
   m_Name: Cuirass
   m_TagString: Untagged
@@ -1846,6 +1846,27 @@ CapsuleCollider:
   m_Height: 0.6488911
   m_Direction: 2
   m_Center: {x: 0.013122579, y: -0.0045641847, z: 0.03601268}
+--- !u!135 &7416034461603761206
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8884333548341798203}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1
+  m_Center: {x: 0.013124308, y: -0.004564006, z: 0.03600973}
 --- !u!1 &8987447897129444403
 GameObject:
   m_ObjectHideFlags: 0

@@ -7,7 +7,7 @@ public abstract class Entity : MonoBehaviour, IDamageable
     protected Rigidbody RB;
     protected int infinityFallThreshold = -1;
     [SerializeField] float _maxDurability = 100f;
-    public float currentDurability { get; set; }
+    [SerializeField] protected float currentDurability;
     [SerializeField] float _discardingTime = 30f;
     [SerializeField] float _takeDmgThreshold = 1f;
     [SerializeField] public float dealDmgThreshold = 5f;
@@ -27,12 +27,12 @@ public abstract class Entity : MonoBehaviour, IDamageable
         SM = GetComponent<SoundManager>();
     }
 
-    void Update()
+    private void Update()
     {
-        if (transform.position.y < infinityFallThreshold) TryRecoverToSurface();
+        if (transform.position.y < infinityFallThreshold) SnapToTheSurface();
     }
 
-    void TryRecoverToSurface()
+    private void SnapToTheSurface()
     {
         Ray ray = new Ray(transform.position, Vector3.up);
 
