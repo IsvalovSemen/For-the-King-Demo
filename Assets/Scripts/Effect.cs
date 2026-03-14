@@ -11,7 +11,7 @@ public class Effect : MonoBehaviour
     private float _internalTimer;
     private GameObject _target;
 
-    public void Activate(float power, float tick, float duration, Sprite icon, GameObject target)
+    public void Activate(int power, float tick, float duration, Sprite icon, GameObject target)
     {
         _isActive = true;
 
@@ -26,7 +26,7 @@ public class Effect : MonoBehaviour
         _internalTimer = _duration;
     }
 
-    public virtual void Affect(float power, GameObject target)
+    public virtual void Affect(int power, GameObject target)
     {
 
     }
@@ -48,7 +48,7 @@ public class Effect : MonoBehaviour
         }
     }
 
-    private IEnumerator EffectCountdown(float power, float tick, float duration, Sprite icon, GameObject target)
+    private IEnumerator EffectCountdown(int power, float tick, float duration, Sprite icon, GameObject target)
     {
         for (float i = 0f; i <= duration; i += tick)
         {

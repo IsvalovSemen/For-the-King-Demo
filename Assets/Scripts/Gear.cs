@@ -1,8 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Equipment : Item
+public class Gear : Item, IEquipment
 {
     private Transform _bodyMesh;
     private List<Transform> _bones = new List<Transform>();
@@ -17,20 +16,14 @@ public class Equipment : Item
 
         ConvertToRegularMesh();
     }
-    public override void Start()
-    {
-        base.Start();
-
-        
-    }
 
     private void ConvertToRegularMesh()
     {
-        RB.isKinematic = false;
+        RigidBody.isKinematic = false;
 
-        RB.useGravity = true;
+        RigidBody.useGravity = true;
 
-        RB.freezeRotation = false;
+        RigidBody.freezeRotation = false;
 
         _mesh = transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().sharedMesh;
 
@@ -58,7 +51,7 @@ public class Equipment : Item
         _bones.Clear();
     }
 
-    private void ConvertToSkinnedMesh()
+    public void ConvertToSkinnedMesh()
     {
         Destroy(transform.GetChild(0).GetComponent<MeshFilter>());
 
@@ -93,11 +86,9 @@ public class Equipment : Item
         transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().rootBone = _bodyMesh.GetComponent<SkinnedMeshRenderer>().rootBone;
     }
 
-    public override void Equip()
-    {/*
-        RB.useGravity = false;
-
-        transform.SetParent(card.transform.parent.GetComponent<Slot>().inventorySource.owner);
+    private void Equip()
+    {
+        RigidBody.useGravity = false;
 
         transform.gameObject.SetActive(true);
 
@@ -105,13 +96,12 @@ public class Equipment : Item
 
         transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
 
-        card.transform.position = card.transform.parent.position;
 
         transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = true;
 
         //GetComponent<CapsuleCollider>().center = gameObject.GetComponent<SkinnedMeshRenderer>().bounds.center;
 
-        RB.isKinematic = true;
+        RigidBody.isKinematic = true;
 
         //transform.position = GetComponent<CapsuleCollider>().bounds.center;
 
@@ -134,50 +124,10 @@ public class Equipment : Item
         //GetComponent<CapsuleCollider>().center = gameObject.transform.position;
 
         //GetComponent<CapsuleCollider>().center = new Vector3(0, 0, 0);
-
-        base.Equip(slotNum);*/
     }
 
-    public override void Unequip()
+    private void Unequip()
     {
         ConvertToRegularMesh();
-
-        base.Unequip();
-    }
-
-    int CalculateResistance(int part, Collider coll, DamageType type)
-    {
-        int result = 0;
-
-        //coll.GetComponent<Collider>().transform.root.GetComponent<Entity>().HitBodyPart(part);
-
-        switch (type)
-        {
-            case DamageType.Slash:
-                {
-                    result = _stats.slashRes;
-                }
-                break;
-
-            case DamageType.Thrust:
-                {
-                    result = _stats.thrustRes;
-                }
-                break;
-
-            case DamageType.Blunt:
-                {
-                    result = _stats.bluntRes;
-                }
-                break;
-
-            default:
-                    {
-                    result = 0;
-                }
-                break;
-        }
-
-        return result;
     }
 }

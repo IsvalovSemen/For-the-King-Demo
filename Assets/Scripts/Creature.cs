@@ -16,22 +16,23 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
     protected bool inCombat;
     public MultiRotationConstraint headConstraint;
     public Transform viewPoint;
+
+    [Header("Movement:")]
     [SerializeField] protected Transform GroundCheckRight;
     [SerializeField] protected Transform GroundCheckLeft;
-
-    [Header("Actions:")]
     public bool falling;
     public bool grounded;
+    [SerializeField] private int _fallingTimer;
     protected bool swimming;
     protected bool diving;
     protected bool suffocate;
     protected Vector3 velocity;
     [SerializeField] protected float jumpHeight = 10f;
-    protected float jumpDistance = 10f;
+    [SerializeField] protected float jumpDistance = 10f;
     [SerializeField] protected float groundCheckDistance = 0.5f;
     protected float startFallPosition;
-    public int maxFallHeight;
-    public int minFallHeight;
+    public int maxSafeFallHeight;
+    public int minSafeFallHeight;
     public float walkSpeed = 1f;
     public float runSpeed = 3f;
     public float sprintSpeed = 5f;
@@ -39,31 +40,30 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
     public float strafeSpeed = 5f;
     public float swimSpeed = 0.5f;
     public float rotationSpeed = 5f;
-    public int jumpStamina;
-    public float sprintStamina;
-    public int dodgeStamina;
     protected float dodgeDelay;
     public float dodgeDistance = 5f;
     protected float ThrowPower;
     [SerializeField] protected float MaxThrowPower = 30f;
     protected Collider[] hitColliders;
     protected bool _recoil;
+    [SerializeField] protected int _jumpStaminaCost;
+    [SerializeField] protected float _sprintStaminaCost;
+    [SerializeField] protected int _dodgeStaminaCost;
 
     [Header("Stats:")]
     public bool isDead;
-    [field: SerializeField] public GameObject indicators { get; set; }
     [field: SerializeField] public int strength { get; set; }
     [field: SerializeField] public int dexterity { get; set; }
     [field: SerializeField] public int intelligence { get; set; }
-    [field: SerializeField] public float maxHealth { get; set; }
-    [field: SerializeField] public float maxStamina { get; set; }
-    [field: SerializeField] public float maxMana { get; set; }
-    [field: SerializeField] public float currentHealth { get; set; }
-    [field: SerializeField] public float currentStamina { get; set; }
-    [field: SerializeField] public float currentMana { get; set; }
-    [field: SerializeField] public float healthRecovery { get; set; }
-    [field: SerializeField] public float staminaRecovery { get; set; }
-    [field: SerializeField] public float manaRecovery { get; set; }
+    [field: SerializeField] public int maxHealth { get; set; }
+    [field: SerializeField] public int maxStamina { get; set; }
+    [field: SerializeField] public int maxMana { get; set; }
+    [field: SerializeField] public int currentHealth { get; set; }
+    [field: SerializeField] public int currentStamina { get; set; }
+    [field: SerializeField] public int currentMana { get; set; }
+    [field: SerializeField] public int healthRecovery { get; set; }
+    [field: SerializeField] public int staminaRecovery { get; set; }
+    [field: SerializeField] public int manaRecovery { get; set; }
     public float healthRegenDelay;
     [SerializeField] private float _staminaRecoveryDelay = 1f;
     [SerializeField] private float _staminaRecoveryTick = .1f;
@@ -72,8 +72,8 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
     public float maxEquipload;
     public float currentEquipLoad;
     [field: SerializeField] public int loadStage { get; set; }
-    [field: SerializeField] public float maxOxygen { get; set; }
-    public float curOxygen { get; set; }
+    [field: SerializeField] public int maxOxygen { get; set; }
+    public int curOxygen { get; set; }
     public List<Effect> activeEffects;
 
     public event Action<float, float> OnHealthChange;
@@ -81,7 +81,7 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
     public event Action<float, float> OnManahange;
     public event Action<float, float> OnOxygenChange;
 
-    public virtual void Awake()
+    protected virtual void Awake()
     {
         if (GetComponentInChildren<Animator>() != null) animator = GetComponentInChildren<Animator>();
         else Debug.LogWarning("No Animator component found on this creature.", this.gameObject);
@@ -90,7 +90,7 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
         else Debug.LogWarning("No Inventory component found on this creature.", this.gameObject);
     }
 
-    public virtual void Start()
+    protected virtual void Start()
     {
         if (GetComponentInChildren<SoundManager>() != null) soundManager = GetComponentInChildren<SoundManager>();
         else Debug.LogWarning("No Sound Manager component found on this creature.", this.gameObject);
@@ -110,19 +110,16 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
         SetMaxEquipload(maxEquipload);
 
         ChangeEquipload(currentEquipLoad);
-
-        if (inventory != null) inventory.OnEquiploadChange += ChangeEquipload;
-
-        loadStage = Mathf.Clamp(CalculateLoadStage(currentEquipLoad, maxEquipload), 1, 4);
     }
 
-    public virtual void Update()
+    protected virtual void Update()
     {
+
         grounded = Physics.CheckSphere(GroundCheckRight.position, groundCheckDistance, GameMaster.instance.environmentMask) | Physics.CheckSphere(GroundCheckLeft.transform.position, groundCheckDistance, GameMaster.instance.environmentMask);
 
-        velocity.y += -GameMaster.instance.gravity * Time.deltaTime; //Acceleration of gravity
+        velocity.y += -GameMaster.instance.gravity * Time.deltaTime; //Acceleration of gravity.
 
-        if (velocity.y < -3)
+        if (velocity.y < 0)
         {
             if (grounded)
             {
@@ -139,6 +136,8 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
                     falling = true;
 
                     startFallPosition = transform.position.y;
+
+                    StartCoroutine(InfiniteFallCountdown());
                 }
             }
         }
@@ -152,33 +151,75 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
         Dodge();
     }
 
-    private void SetMaxHealth(float value)
+    public virtual void Land()
+    {
+        
+        float fallDistance = startFallPosition - transform.position.y;
+
+        //PlaySound("Land");
+
+        if (fallDistance > minSafeFallHeight)
+        {
+            //float fallDmg = Mathf.Clamp(maxHealth * (fallDistance / maxFallHeight), 0, maxHealth);
+
+            float x = Mathf.InverseLerp(minSafeFallHeight, maxSafeFallHeight, fallDistance); // If value <= a  returns 0 | if value >= b returns 1 | if value between a and b returns 0..1.
+
+            int fallDmg = (int)(x * maxHealth);
+
+            UIManager.instance.PrintMessage($"{transform.name} fell from {fallDistance} units and took {fallDmg} damage.");
+
+            ChangeCurrentHealth(-fallDmg);
+        }
+
+        falling = false;
+
+        velocity = Vector3.zero;
+    }
+
+    IEnumerator InfiniteFallCountdown()
+    {
+        while (falling == true)
+        {
+            yield return new WaitForSeconds(1);
+
+            _fallingTimer++;
+
+            if (_fallingTimer > GameMaster.MaxFallTime) Kill();
+        }
+
+        _fallingTimer = 0;
+    }
+
+    private void SetMaxHealth(int value)
     {
         maxHealth = value;
     }
 
-    public virtual void ChangeCurrentHealth(float value)
+    public virtual void ChangeCurrentHealth(int value)
     {
         if (value != 0)
         {
-            if (value > 0 && (currentHealth + value) > maxHealth) value = maxHealth - currentHealth; //When resultant curHP after healing exceeds the maxHP, caps received healing to the difference between curHP and maxHP to avoid overhealing (mb remove this later).
-
-            currentHealth += value;
-
-            OnHealthChange?.Invoke(currentHealth, maxHealth);
+            if (value > 0 && (currentHealth + value) > maxHealth)
+            {
+                value = maxHealth - currentHealth; //When resultant curHP after healing exceeds the maxHP, caps received healing to avoid overhealing.
+            }
 
             if (value < 0)
             {
                 healthRegenDelay = Time.time + 5f;
 
                 if (Time.time >= healthRegenDelay) RestoreHealth();
+            }
 
-                if (currentHealth <= 0)
-                {
-                    currentHealth = 0;
+            currentHealth += value;
 
-                    Death();
-                }
+            OnHealthChange?.Invoke(currentHealth, maxHealth);
+
+            if (currentHealth <= 0)
+            {
+                currentHealth = 0;
+
+                Kill();
             }
         }
     }
@@ -188,12 +229,12 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
         yield return null;
     }
 
-    private void SetMaxStamina(float value)
+    private void SetMaxStamina(int value)
     {
         maxStamina = value;
     }
 
-    public void ChangeCurrentStamina(float value)
+    public void ChangeCurrentStamina(int value)
     {
         if (value < 0)
         {
@@ -223,12 +264,12 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
         _staminaRegenCoroutine = null; // When stamina is full replenished, forget this coroutine for further reusage.
     }
 
-    private void SetMaxMana(float value)
+    private void SetMaxMana(int value)
     {
         maxMana = value;
     }
 
-    public void ChangeCurrentMana(float value)
+    public void ChangeCurrentMana(int value)
     {
         if (value < 0) currentMana += value;
         else currentMana += value;
@@ -243,7 +284,7 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
         yield return null;
     }
 
-    public void ChangePoise(float value)
+    public void ChangePoise(int value)
     {
 
     }
@@ -281,7 +322,6 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
             default: throw new InvalidOperationException("Unexpected load stage.");
         }
     }
-
 
     public virtual void AddStatusEffect(Sprite icon, Effect effect)
     {
@@ -352,7 +392,7 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
 
             grounded = false;
 
-            curOxygen -= 10 * Time.deltaTime;
+            curOxygen -= (int) (10 * Time.deltaTime);
 
             OnOxygenChange?.Invoke(curOxygen, maxOxygen); // TODO: add coroutine to disable oxygen meter in UI after it's regenerates to full.
 
@@ -397,30 +437,6 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
 
     }
 
-    public virtual void Land()
-    {
-        float fallDistance = startFallPosition - transform.position.y;
-
-        float fallDmg = 0;
-
-        //PlaySound("Land");
-
-        if (fallDistance > minFallHeight)
-        {
-            fallDmg = (int)Mathf.Clamp(maxHealth * (fallDistance / maxFallHeight) - dexterity, 0, maxHealth);
-
-            if (fallDistance >= maxFallHeight) fallDmg = maxHealth;
-
-            ChangeCurrentHealth((int)(fallDmg));
-
-            UIManager.instance.PrintMessage(transform.name + " fell from " + fallDistance + " units and took " + fallDmg + " damage");
-        }
-
-        falling = false;
-
-        velocity = Vector3.zero;
-    }
-
     public virtual void Footsteps(AnimationEvent animationEvent)
     {
         soundManager.PlaySound("Footsteps");
@@ -437,13 +453,23 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
         animator.SetTrigger("Stop");
     }
 
-    public void Knockback(Transform weapon)
+    protected virtual void EnableHitbox(AnimationEvent animationEvent)
+    {
+
+    }
+
+    protected virtual void DisableHitbox(AnimationEvent animationEvent)
+    {
+
+    }
+
+    public void Knockback(Weapon weapon)
     {
         animator.SetFloat("Speed", -1f);
 
-        foreach (Collider coll in weapon.transform.GetComponentsInChildren<Collider>()) coll.enabled = false;
+        weapon.GetComponentInChildren<Hitbox>().Disable();
 
-        weapon.transform.GetComponentInChildren<Item>().hittedTargets.Clear();
+        weapon.GetComponentInChildren<Hitbox>().hittedTargets.Clear();
 
         _recoil = true;
     }
@@ -459,14 +485,14 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
         }
     }
 
-    public virtual void GetHit(float amount, DamageType type, Transform part)
+    public virtual void GetHit(int amount, DamageType type, Transform part)
     {
-        ChangeCurrentHealth(amount);
+        ChangeCurrentHealth(-amount);
 
         soundManager.PlaySound("GetHit");
     }
 
-    public virtual void Death()
+    public virtual void Kill()
     {
         soundManager.PlaySound("Death");
 

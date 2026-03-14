@@ -1,12 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Security.Cryptography;
-using UnityEditor.PackageManager;
 using UnityEngine;
-using static UnityEditor.Progress;
-using static UnityEngine.Rendering.DebugUI;
 
 public class Inventory : MonoBehaviour
 {
@@ -16,12 +11,19 @@ public class Inventory : MonoBehaviour
     public List<InventoryCell> cells { get; set; }
     [SerializeField] private GameObject _inventoryCanvas;
     public event Action<float> OnEquiploadChange;
+    public event Action<EquipmentSlotType, ItemInstance> OnItemEquip;
+    public event Action<EquipmentSlotType> OnItemUnequip;
 
     private void Awake()
     {
         cells = _inventoryCanvas.GetComponentsInChildren<InventoryCell>(true).ToList();
 
         _maxSlots = cells.Count + 1;
+
+        foreach (EquipmentSlotType slot in Enum.GetValues(typeof(EquipmentSlotType)))
+        {
+            equipment[slot] = null;
+        }
     }
     private void Start()
     {
@@ -81,15 +83,19 @@ public class Inventory : MonoBehaviour
 
         if (slots[slotIndex].EquipmentType != EquipmentSlotType.None)
         {
-            EquipItem(slots[slotIndex].EquipmentType, item, slotIndex);
+            EquipItem(item, slotIndex);
         }
     }
 
-    private void EquipItem(EquipmentSlotType EquipmentType, ItemInstance item, int slotIndex)
+    private void EquipItem(ItemInstance item, int slotIndex)
     {
-        equipment[EquipmentType] = item;
+        equipment[slots[slotIndex].EquipmentType] = item;
 
-        Debug.Log($"{item.Stats.itemTitle} was equipped in {EquipmentType} slot.");
+        OnItemEquip?.Invoke(slots[slotIndex].EquipmentType, item);
+
+        Debug.Log("test: " + equipment[slots[slotIndex].EquipmentType].Stats.itemTitle);
+
+        Debug.Log($"{item.Stats.itemTitle} was equipped in {slots[slotIndex].EquipmentType} slot.");
     }
 
     public void ChangeCarryWeight(float value)
@@ -101,17 +107,19 @@ public class Inventory : MonoBehaviour
     {
         if (slots[slotIndex].EquipmentType != EquipmentSlotType.None)
         {
-            UnequipItem(slots[slotIndex].EquipmentType, slots[slotIndex].StoredItem);
+            UnequipItem(slotIndex);
         }
 
         slots[slotIndex].FreeSlot();
     }
 
-    private void UnequipItem(EquipmentSlotType EquipmentType, ItemInstance item)
+    private void UnequipItem(int slotIndex)
     {
-        Debug.Log($"{item.Stats.itemTitle} was unequipped from {EquipmentType} slot.");
+        OnItemUnequip?.Invoke(slots[slotIndex].EquipmentType);
 
-        equipment[EquipmentType] = null;
+        Debug.Log($"{slots[slotIndex].StoredItem.Stats.itemTitle} was unequipped from {slots[slotIndex].EquipmentType} slot.");
+
+        equipment[slots[slotIndex].EquipmentType] = null;
     }
 
     public void DropItem(int slotIndex, bool viaCursor)
@@ -134,7 +142,6 @@ public class Inventory : MonoBehaviour
         }
 
         GameObject createdItem = Instantiate(slots[slotIndex].StoredItem.Stats.prefab, hitInfo.point, Quaternion.identity); // Spawns a prefab of dropped item in the point camera facing.
-
 
         createdItem.GetComponent<Item>().SetCount(slots[slotIndex].StoredItem.Count);
 

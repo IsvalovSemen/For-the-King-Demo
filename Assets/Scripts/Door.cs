@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using static UIManager;
 
@@ -13,7 +15,7 @@ public class Door : MonoBehaviour, IInteractable, IDamageable
     Animator _animator;
     [SerializeField] bool _locked;
     [SerializeField] string _keyID;
-    [SerializeField] Creature _interactor;
+    [SerializeField] List<Creature> _interactors = new List<Creature>();
 
     private void Awake()
     {
@@ -36,27 +38,32 @@ public class Door : MonoBehaviour, IInteractable, IDamageable
 
     public void Interaction(Creature interactor)
     {
-        if (interactor == _interactor)
+        for (int i = 0; i < _interactors.Count; i++)
         {
-            if (_locked)
+            ;if (_interactors[i] == interactor)
             {
-                UIManager.instance.OpenMenu(MenuState.Inventory);
+                if (_locked == true)
+                {
+                    UIManager.instance.OpenMenu(MenuState.Inventory);
+                }
+                else
+                {
+                    UIManager.instance.PrintMessage("Door has opened.");
+
+                    if (!_opened) _animator.SetFloat("Speed", 1);
+                    else _animator.SetFloat("Speed", -1);
+
+                    _animator.SetTrigger("Interacted");
+
+                    _opened = !_opened;
+                }
             }
-            else
-            {
-                UIManager.instance.PrintMessage("Door has opened.");
 
-                if (!_opened) _animator.SetFloat("Speed", 1);
-                else _animator.SetFloat("Speed", -1);
-
-                _animator.SetTrigger("Interacted");
-
-                _opened = !_opened;
-            }
+            break;
         }
     }
 
-    public void GetHit(float amount, DamageType type, Transform part)
+    public void GetHit(int amount, DamageType type, Transform part)
     {
         SM.PlaySound("GetHit");
 
@@ -115,8 +122,20 @@ public class Door : MonoBehaviour, IInteractable, IDamageable
         }
     }
 
-    void OnTriggerStay(Collider trigger)
+    private void OnTriggerEnter(Collider trigger)
     {
-        _interactor = trigger.GetComponentInParent<Creature>();
+        if (!_interactors.Contains(trigger.GetComponentInParent<Creature>()))
+        {
+            _interactors.Add(trigger.GetComponentInParent<Creature>());
+        }
+    }
+
+    private void OnTriggerExit(Collider trigger)
+    {
+        if (_interactors.Contains(trigger.GetComponentInParent<Creature>()))
+        {
+            _interactors.Remove(trigger.GetComponentInParent<Creature>());
+        }
+        
     }
 }

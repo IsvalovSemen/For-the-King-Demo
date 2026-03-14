@@ -7,7 +7,7 @@ public class EffectInfo : ScriptableObject
 {
     public string effectTitle;
     public Sprite icon;
-    public float power;
+    public int power;
     public float tick;
     public float duration;
 }

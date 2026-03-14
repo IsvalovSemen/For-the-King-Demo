@@ -3,10 +3,6 @@ using UnityEngine;
 
 public class Consumable : Item
 {
-    public override void Start()
-    {
-        base.Start();
-    }
     /*
     public override void Store(int slotType)
     {

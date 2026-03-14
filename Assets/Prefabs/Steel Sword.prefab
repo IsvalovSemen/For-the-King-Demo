@@ -28,7 +28,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.054465815, y: 0.093379416, z: -0.13618556, w: 0.9847676}
   m_LocalPosition: {x: 33.538677, y: 6.719, z: 27.277}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.50000006}
+  m_LocalScale: {x: 0.33333334, y: 0.33333337, z: 0.3333334}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2828658076371786548}
@@ -73,17 +73,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6dc3acc8b34d9784b93a9f0c61d3d24a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GM: {fileID: 0}
-  SM: {fileID: 0}
-  slotNum: 0
-  card: {fileID: 0}
-  _equipped: 0
-  _stored: 0
-  selected: 0
-  currDurrability: 0
-  hittedTargets: []
-  stats: {fileID: 11400000, guid: a1dc2d187e1636e47a769c9b5569ce49, type: 2}
-  _damageThreshold: 1
+  _stats: {fileID: 11400000, guid: a1dc2d187e1636e47a769c9b5569ce49, type: 2}
+  _currentDurability: 0
+  _count: 0
 --- !u!1 &3173552451766600078
 GameObject:
   m_ObjectHideFlags: 0
@@ -99,6 +91,7 @@ GameObject:
   - component: {fileID: 2828658076371786510}
   - component: {fileID: 2828658076371786496}
   - component: {fileID: 5291916521185537227}
+  - component: {fileID: 8789451971315817408}
   m_Layer: 3
   m_Name: Steel Sword
   m_TagString: Untagged
@@ -186,7 +179,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -257,3 +250,16 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.55169326, y: 0.059771847, z: 0.14366035}
   m_Center: {x: -0.0000029217613, y: -0.00000007637026, z: -0.055428877}
+--- !u!114 &8789451971315817408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3173552451766600078}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c1bd67c653fbe84c8f1d632e8d29cc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _collider: {fileID: 1220108390431265943}

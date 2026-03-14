@@ -4,9 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro;
-using JetBrains.Annotations;
-using Unity.VisualScripting;
-using static UnityEditor.Progress;
 
 public class UIManager : MonoBehaviour
 {
@@ -18,6 +15,8 @@ public class UIManager : MonoBehaviour
     public GameObject effectIconPrefab;
     [SerializeField] private Transform _inventoryPointer;
     public event Action OnInventoryClosure;
+    [SerializeField] private MenuState currentMenu = MenuState.None;
+    public ActorStatus actorStatusPanelPrefab;
 
     [Header("Cursor:")]
     [SerializeField] private Texture2D _cursorStandart;
@@ -63,6 +62,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Slider _playerEquiploadMeter;
     [SerializeField] private TextMeshProUGUI _playerEquiploadRatio;
     [SerializeField] private Slider _playerOxygenBar;
+    public Slider throwMeter;
+    public Slider oxygenMeter;
+    public Image experienceMeter;
+    public RectTransform statusEffectsPanel;
 
     [Header("Item tooltip:")]
     [SerializeField] private GameObject _tooltipWindow;
@@ -84,8 +87,6 @@ public class UIManager : MonoBehaviour
         Map
     }
 
-    [SerializeField] private MenuState currentMenu = MenuState.None;
-
     #region Singleton
     private void Awake()
     {
@@ -98,6 +99,8 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
         //Cursor.visible = false;
+
+        Debug.LogWarning(Player.instance.gameObject);
 
         Player.instance.OnHealthChange += UpdateHealthbar;
 
@@ -205,6 +208,16 @@ public class UIManager : MonoBehaviour
         _playerOxygenBar.maxValue = maxOxygen;
 
         _playerOxygenBar.value = currentOxygen;
+    }
+
+    public void UpdateThrowMeter(float curPower, float maxPower)
+    {
+        if (curPower > 0) throwMeter.gameObject.SetActive(true);
+        else throwMeter.gameObject.SetActive(false);
+
+        throwMeter.maxValue = maxPower;
+
+        throwMeter.value = curPower;
     }
 
     public void OpenMenu(MenuState menu)

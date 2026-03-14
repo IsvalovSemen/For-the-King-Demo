@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Projectile : Entity, IPortable
+public class Projectile : PhysicalObject, IPortable
 {
     public InteractionType interactionType { get; set; }
     [SerializeField] private bool _inRadius;
@@ -10,7 +10,7 @@ public class Projectile : Entity, IPortable
     [SerializeField] private Vector3 _holdOffset;
     [SerializeField] private Transform _holdPoint;
 
-    public override void Awake()
+    protected override void Awake()
     {
         interactionType = InteractionType.Take;
 

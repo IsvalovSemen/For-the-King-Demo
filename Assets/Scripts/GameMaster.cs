@@ -16,8 +16,7 @@ public class GameMaster : MonoBehaviour
     public float fogDensity;
     public bool fogEnabled;
     public FogMode fogMode;
-    [SerializeField] private int _fallingTimer;
-    [SerializeField] private int _maxFallTime;
+    public const int MaxFallTime = 5;
     public Transform deathScreen;
     public float gravity;
     [SerializeField] private Transform _sun;
@@ -73,8 +72,6 @@ public class GameMaster : MonoBehaviour
     {
         if (_dayCycleActive) DayNightCycle();
 
-        InfiniteFallSolve();
-
         /*
         if (paused == false && Time.timeScale != 1f)
         {
@@ -86,7 +83,7 @@ public class GameMaster : MonoBehaviour
         {
             Time.timeScale = 0.33f;
 
-            //Time.fixedDeltaTime = Time.timeScale * 0.02f;  
+            //Time.fixedDeltaTime = Time.timeScale * 0.02f;
         }*/
 
     }
@@ -128,29 +125,6 @@ public class GameMaster : MonoBehaviour
         }
     }
 
-    void InfiniteFallSolve()
-    {
-        if (Player.instance.falling == true & _fallingTimer == 0)
-        {
-            StartCoroutine(FallCountdown());
-        }
-        else if (Player.instance.falling == false)
-        {
-            StopCoroutine(FallCountdown());
-
-            _fallingTimer = 0;
-        }
-
-        if (_fallingTimer > _maxFallTime) GameOver();
-    }
-
-    IEnumerator FallCountdown()
-    {
-        yield return new WaitForSeconds(1.0f);
-
-        _fallingTimer++;
-    }
-
     public void NewGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
@@ -158,10 +132,26 @@ public class GameMaster : MonoBehaviour
 
     public void GameOver()
     {
+        deathScreen.gameObject.SetActive(true);
+
+        deathScreen.GetComponent<Animation>().Play("DeathScreen");
+
+        StartCoroutine(GameOverDelay(deathScreen.GetComponent<Animation>().clip.length, "GameOver"));
+    }
+
+    IEnumerator GameOverDelay(float delay, string levelTitle)
+    {
+        yield return new WaitForSeconds(delay);
+
+        ReloadLevel();
+    }
+
+    public void ReloadLevel()
+    {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    public void ToMainScreen()
+    private void ToMainMenu(string sceneTitle)
     {
         SceneManager.LoadScene("MainMenu");
     }

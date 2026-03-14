@@ -15,24 +15,36 @@ public class Player : Humanoid
 
     public event Action<float, float, int> OnEquiploadChange;
 
-    #region Singleton
-    public Player()
+    protected AttackTypes _attackDir;
+    protected enum AttackTypes
     {
-        // If there's more than one Player ion the scene.
-        if (instance != null && instance != this) throw new Exception($"Multiple Player instances detected! Existing: {instance.name}, New: {name}");
+        OverheadR,
+        OverheadL,
+        InwardR,
+        InwardL,
+        OutwardR,
+        OutwardL,
+        ThrustR,
+        ThrustL
+    }
+
+    #region Singleton
+    protected override void Awake()
+    {
+        if (instance != null && instance != this) throw new Exception($"Multiple Player instances detected! Existing: {instance.name}, New: {name}"); // If there's more than one Player ion the scene.
 
         instance = this;
 
         DontDestroyOnLoad(gameObject); // Do not destroy when transitioning between scenes.
+
+        base.Awake();
     }
     #endregion
 
-    public override void Start()
+    protected override void Start()
     {
-        //InventoryManager.instance.OnPickUpConfirmation += ChangeEquipload;
-
         controller = GetComponent<CharacterController>();
-
+        /*
         indicators.GetComponent<ActorUI>().strTxt.text = strength.ToString();
 
         indicators.GetComponent<ActorUI>().dexTxt.text = dexterity.ToString();
@@ -46,21 +58,78 @@ public class Player : Humanoid
         indicators.GetComponent<ActorUI>().experienceBar.fillAmount = (float)exp / (float)nextLvlExp;
 
         indicators.GetComponent<ActorUI>().expTxt.text = exp.ToString() + " / " + nextLvlExp.ToString();
-
+        
         curOxygen = maxOxygen;
 
         indicators.GetComponent<ActorUI>().oxygenBar.maxValue = maxOxygen;
 
         indicators.GetComponent<ActorUI>().oxygenBar.value = maxOxygen;
-
+        */
         base.Start();
     }
 
-    public override void Update()
+    protected override void Update()
     {
-        if (WeaponDrawn) Attack(0);
+        if (_weaponDrawn)
+        {
+            if (_attackAllowed)
+            {
+                int attackType = 0;
 
-        if (Input.GetKeyUp(GameMaster.instance.drawWeaponKey)) DrawOrSheathWeapon();
+                float mouseX = Input.GetAxis("Mouse X");
+                float mouseY = Input.GetAxis("Mouse Y");
+
+                ItemInstance weaponR = inventory.equipment[EquipmentSlotType.HandRight1];
+                ItemInstance weaponL = inventory.equipment[EquipmentSlotType.HandLeft1];
+
+                if (Input.GetMouseButtonUp(0) && weaponR != null)
+                {
+                    if (mouseX == 0 && mouseY == 0) return; // Preventing the attack if there's no mouse movement at all.
+
+                    int staminaUsage = (int) (weaponR.Stats.weight * 10);
+
+                    if (currentStamina >= staminaUsage)
+                    {
+                        if (Mathf.Abs(mouseX) > Mathf.Abs(mouseY)) attackType = mouseX > 0 ? 1 : 2;
+                        else attackType = mouseY > 0 ? 3 : 4;
+
+                        ChangeCurrentStamina(-staminaUsage);
+                        /*
+                        if (InventoryManager.instance.GetItemByID(rightWeaponID).wpnType == WeaponType.Striking1H) animator.SetTrigger("AttackStrikeR");
+                        else if (InventoryManager.instance.GetItemByID(rightWeaponID).wpnType == WeaponType.Thrusting1H) animator.SetTrigger("AttackThrustR");
+                        */
+                        //animator.SetFloat("Speed", 0);
+                    }
+                }
+                else if (Input.GetMouseButtonUp(1) && weaponL != null)
+                {
+                    if (mouseX == 0 && mouseY == 0) return;
+
+                    int staminaUsage =(int) (weaponL.Stats.weight * 10);
+
+                    if (currentStamina >= staminaUsage)
+                    {
+                        if (Mathf.Abs(mouseX) > Mathf.Abs(mouseY)) attackType = mouseX > 0 ? 5 : 6;
+                        else attackType = mouseY > 0 ? 7 : 8;
+
+                        ChangeCurrentStamina(-staminaUsage);
+                        /*
+                        if (InventoryManager.instance.GetItemByID(leftWeaponID).wpnType == WeaponType.Striking1H) animator.SetTrigger("AttackStrikeL");
+                        else if (InventoryManager.instance.GetItemByID(leftWeaponID).wpnType == WeaponType.Thrusting1H) animator.SetTrigger("AttackThrustL");
+                        */
+                        animator.SetFloat("Speed", 0);
+                    }
+                }
+
+                if (attackType != 0) Attack(attackType);
+            }
+        }
+
+        if (Input.GetKeyUp(GameMaster.instance.drawWeaponKey))
+        {
+            if (_weaponDrawn == false) DrawWeapon();
+            else SheatheWeapon();
+        }
 
         RotateProjectile();
 
@@ -84,7 +153,7 @@ public class Player : Humanoid
     {
         exp += expGain;
 
-        indicators.GetComponent<ActorUI>().experienceBar.fillAmount = (float)exp / (float)nextLvlExp;
+        UIManager.instance.experienceMeter.fillAmount = (float)exp / (float)nextLvlExp;
 
         if (exp >= nextLvlExp) LevelUp();
     }
@@ -106,13 +175,13 @@ public class Player : Humanoid
             {
                 //transform.rotation = Quaternion.Euler(0, CameraControl.instance.transform.rotation.eulerAngles.y, 0);
 
-                if (Input.GetKey(GameMaster.instance.sprintKey) && Input.GetKey(GameMaster.instance.moveForward) && currentStamina >= sprintStamina)
+                if (Input.GetKey(GameMaster.instance.sprintKey) && Input.GetKey(GameMaster.instance.moveForward) && currentStamina >= _sprintStaminaCost)
                 {
                     controller.Move(CameraControl.instance.transform.forward * Input.GetAxis("Vertical") * (sprintSpeed / loadStage) * Time.deltaTime + CameraControl.instance.transform.right * Input.GetAxis("Horizontal") * (sprintSpeed / loadStage) * Time.deltaTime);
 
                     animator.SetInteger("Movement", 4);
 
-                    ChangeCurrentStamina(-sprintSpeed * loadStage * Time.deltaTime);
+                    ChangeCurrentStamina(-(int) (_sprintStaminaCost * loadStage));
                 }
                 else if (Input.GetKey(GameMaster.instance.walkKey))
                 {
@@ -151,76 +220,13 @@ public class Player : Humanoid
 
     public override void AddStatusEffect(Sprite sprite, Effect effect)
     {
-        var effectIcon = Instantiate(UIManager.instance.effectIconPrefab, indicators.GetComponent<ActorUI>().statusEffectsPanel);
+        var effectIcon = Instantiate(UIManager.instance.effectIconPrefab, UIManager.instance.GetComponent<ActorUI>().statusEffectsPanel);
 
         base.AddStatusEffect(sprite, effect);
 
         activeEffects[activeEffects.Count - 1].effectIcon = effectIcon;
 
         effectIcon.GetComponent<EffectIcon>().icon.sprite = sprite;
-    }
-
-    public override void Attack(int attackType)
-    {
-        float staminaUsage = 0;
-
-        string rightWeaponID = "jopa"; //  slots.Find(x => x.inventorySlot == EquipmentSlotType.HandLeft).storedItemID;
-
-        string leftWeaponID = "govno"; // slots.Find(x => x.inventorySlot == EquipmentSlotType.HandRight).storedItemID;
-
-        if (attackAllowed)
-        {
-            float mouseX = Input.GetAxis("Mouse X");
-
-            float mouseY = Input.GetAxis("Mouse Y");
-
-            if (Input.GetMouseButton(0) && rightWeaponID != null)
-            {
-                staminaUsage = InventoryManager.instance.GetItemByID(rightWeaponID).weight * 10;
-
-                //if (mouseX == 0 && mouseY == 0) return; // Preventing the attack if there's no mouse movement at all.
-
-                if (currentStamina >= staminaUsage)
-                {
-                    /*
-                    if (Mathf.Abs(mouseX) > Mathf.Abs(mouseY)) attackType = mouseX > 0 ? 1 : 2;
-                    else attackType = mouseY > 0 ? 3 : 4;
-                    
-                    Debug.Log(attackType);
-                    */
-                    ChangeCurrentStamina(-staminaUsage);
-
-                    if (InventoryManager.instance.GetItemByID(rightWeaponID).wpnType == WeaponType.Striking1H) animator.SetTrigger("AttackStrikeR");
-                    else if (InventoryManager.instance.GetItemByID(rightWeaponID).wpnType == WeaponType.Thrusting1H) animator.SetTrigger("AttackThrustR");
-
-                    //animator.SetFloat("Speed", 0);
-                }
-            }
-            else if (Input.GetMouseButton(1) && leftWeaponID != null)
-            {
-                staminaUsage = InventoryManager.instance.GetItemByID(leftWeaponID).weight * 10;
-
-                //if (mouseX == 0 && mouseY == 0) return;
-
-                if (currentStamina >= staminaUsage)
-                {
-                    /*
-                    if (Mathf.Abs(mouseX) > Mathf.Abs(mouseY)) attackType = mouseX > 0 ? 5 : 6;
-                    else attackType = mouseY > 0 ? 7 : 8;
-
-                    Debug.Log(attackType);
-                    */
-                    ChangeCurrentStamina(-staminaUsage);
-
-                    if (InventoryManager.instance.GetItemByID(leftWeaponID).wpnType == WeaponType.Striking1H) animator.SetTrigger("AttackStrikeL");
-                    else if (InventoryManager.instance.GetItemByID(leftWeaponID).wpnType == WeaponType.Thrusting1H) animator.SetTrigger("AttackThrustL");
-
-                    //animator.SetFloat("Speed", 0);
-                }
-            }
-        }
-
-        base.Attack(attackType);
     }
 
     public override void Footsteps(AnimationEvent animationEvent)
@@ -259,9 +265,9 @@ public class Player : Humanoid
     {
         controller.Move(velocity * Time.deltaTime);
 
-        if (grounded & Input.GetKeyDown(GameMaster.instance.jumpKey) & currentStamina >= jumpStamina + (jumpStamina * (loadStage / 4)))
+        if (grounded & Input.GetKeyDown(GameMaster.instance.jumpKey) & currentStamina >= _jumpStaminaCost + (_jumpStaminaCost * (loadStage / 4)))
         {
-            if (currentStamina >= dodgeStamina + (dodgeStamina * (loadStage / 4)) & Time.time >= dodgeDelay)
+            if (currentStamina >= _dodgeStaminaCost + (_dodgeStaminaCost * (loadStage / 4)) & Time.time >= dodgeDelay)
             {
                 if (Input.GetKey(GameMaster.instance.moveForward))
                 {
@@ -269,13 +275,15 @@ public class Player : Humanoid
 
                     if (animator.GetInteger("Movement") == 4) velocity = transform.forward * jumpDistance + new Vector3(0, jumpHeight / 2, 0);
 
+                    velocity.y = Mathf.Sqrt(jumpHeight * 1f * GameMaster.instance.gravity);
+
                     animator.SetTrigger("Jump");
 
                     animator.SetTrigger("Ahead");
 
                     dodgeDelay = Time.time + animator.GetCurrentAnimatorStateInfo(0).length;
 
-                    ChangeCurrentStamina(-jumpStamina * loadStage);
+                    ChangeCurrentStamina(-_jumpStaminaCost * loadStage);
                 }
                 else
                 {
@@ -287,7 +295,7 @@ public class Player : Humanoid
 
                     velocity.y = Mathf.Sqrt(jumpHeight * 1f * GameMaster.instance.gravity);
 
-                    ChangeCurrentStamina(-jumpStamina * loadStage);
+                    ChangeCurrentStamina(-_jumpStaminaCost * loadStage);
                 }
             }
         }
@@ -295,7 +303,7 @@ public class Player : Humanoid
 
     public override void Dodge()
     {
-        if (grounded & Input.GetKeyDown(GameMaster.instance.dodgeKey) & currentStamina >= dodgeStamina + (dodgeStamina * (loadStage / 4)))
+        if (grounded & Input.GetKeyDown(GameMaster.instance.dodgeKey) & currentStamina >= _dodgeStaminaCost + (_dodgeStaminaCost * (loadStage / 4)))
 
         if (Input.GetKey(GameMaster.instance.moveLeft))
         {
@@ -333,7 +341,7 @@ public class Player : Humanoid
     {
         dodgeDelay = Time.time + animator.GetCurrentAnimatorStateInfo(0).length;
 
-        ChangeCurrentStamina(-dodgeStamina * loadStage);
+        ChangeCurrentStamina(-_dodgeStaminaCost * loadStage);
 
         float startTime = Time.time;
 
@@ -342,15 +350,15 @@ public class Player : Humanoid
             switch (strafeType)
             {
                 case -1:
-                    controller.Move(transform.right * -dodgeDistance * Time.deltaTime);
+                    //controller.Move(transform.right * -dodgeDistance * Time.deltaTime);
                     break;
 
                 case 0:
-                    controller.Move(transform.forward * -dodgeDistance * Time.deltaTime);
+                    //controller.Move(transform.forward * -dodgeDistance * Time.deltaTime);
                     break;
 
                 case 1:
-                    controller.Move(transform.right * dodgeDistance * Time.deltaTime);
+                    //controller.Move(transform.right * dodgeDistance * Time.deltaTime);
                     break;
             }
 
@@ -439,9 +447,9 @@ public class Player : Humanoid
         {
             Transform projectile = holdPointMiddle.GetChild(0);
 
-            if (Input.GetKeyDown(GameMaster.instance.interactionKey)) indicators.GetComponent<ActorUI>().throwBar.gameObject.SetActive(true);
+            if (Input.GetKeyDown(GameMaster.instance.interactionKey)) UIManager.instance.throwMeter.gameObject.SetActive(true);
 
-            if (indicators.GetComponent<ActorUI>().throwBar.gameObject.activeSelf == true)
+            if (UIManager.instance.throwMeter.gameObject.activeSelf == true)
             {
                 if (Input.GetKey(GameMaster.instance.interactionKey))
                 {
@@ -449,10 +457,10 @@ public class Player : Humanoid
 
                     if (ThrowPower > MaxThrowPower) ThrowPower = MaxThrowPower;
 
-                    ThrowMeter(ThrowPower, MaxThrowPower);
+                    UIManager.instance.UpdateThrowMeter(ThrowPower, MaxThrowPower);
                 }
 
-                float staminaUsage = (projectile.GetComponent<Rigidbody>().mass * ThrowPower) / strength;
+                int staminaUsage = (int) ((projectile.GetComponent<Rigidbody>().mass * ThrowPower) / strength);
 
                 if (currentStamina < staminaUsage)
                 {
@@ -460,7 +468,7 @@ public class Player : Humanoid
 
                     projectile.GetComponent<Projectile>().Throw(CameraControl.instance.transform.forward * ThrowPower);
 
-                    ThrowMeter(ThrowPower, MaxThrowPower);
+                    UIManager.instance.UpdateThrowMeter(ThrowPower, MaxThrowPower);
 
                     GameMaster.instance.keyHoldTime = 0f;
 
@@ -477,25 +485,14 @@ public class Player : Humanoid
 
                     ThrowPower = 0;
 
-                    ThrowMeter(ThrowPower, MaxThrowPower);
+                    UIManager.instance.UpdateThrowMeter(ThrowPower, MaxThrowPower);
 
                     GameMaster.instance.keyHoldTime = 0f;
 
                     projectile = null;
                 }
             }
-            
         }
-    }
-
-    private void ThrowMeter(float currPower, float maxPower)
-    {
-        if (currPower > 0) indicators.GetComponent<ActorUI>().throwBar.gameObject.SetActive(true);
-        else indicators.GetComponent<ActorUI>().throwBar.gameObject.SetActive(false);
-
-        indicators.GetComponent<ActorUI>().throwBar.maxValue = maxPower;
-
-        indicators.GetComponent<ActorUI>().throwBar.value = currPower;
     }
 
     private void OnTriggerEnter(Collider col)
@@ -514,7 +511,7 @@ public class Player : Humanoid
 
                 suffocate = false;
 
-                indicators.GetComponent<ActorUI>().oxygenBar.gameObject.SetActive(false);
+                UIManager.instance.oxygenMeter.gameObject.SetActive(false);
 
                 GameMaster.instance.fogEnabled = false;
 
@@ -556,13 +553,11 @@ public class Player : Humanoid
         //if (animator.GetInteger("Movement") == 5) agent.speed = swimSpeed;
     }
 
-    public override void Death()
+    public override void Kill()
     {
-        GameMaster.instance.deathScreen.gameObject.SetActive(true);
+        GameMaster.instance.GameOver();
 
-        GameMaster.instance.deathScreen.GetComponent<Animation>().Play("DeathScreen");
-
-        GameMaster.instance.Invoke("GameOver", GameMaster.instance.deathScreen.GetComponent<Animation>().clip.length);
+        base.Kill();
     }
 
     private void OnDrawGizmosSelected()

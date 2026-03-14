@@ -3,39 +3,32 @@ using UnityEngine.UI;
 
 public class NPC : Humanoid, IInteractable
 {
-    public Transform indicatorsPrefab;
     private UnityEngine.AI.NavMeshAgent _agent;
+    [SerializeField] protected ActorStatus _statusPanel;
     public InteractionType interactionType { get; set; }
-    [SerializeField] private int _HPBarOffset;
     [SerializeField] private float _sightDistance = 50;
     [SerializeField] private float _aggroDistance = 30f;
     [SerializeField] private float _attackDistance = 2f;
     [SerializeField] private int _rays = 6;
     [SerializeField] private int _angle = 30;
     [SerializeField] private float _deagroDelay = 10f;
-    [SerializeField] private float _dmgHideDelay = 2f;
     public float maxAlert = 100;
     public float alertVolume;
-    protected float totalDmg;
-    [SerializeField] private float _fadeTime;
     private GameObject _target;
     private Vector3 _saveTargetPos;
     private Vector3 _startPos;
-    private Vector3 _dir;
     private Quaternion _startRot;
     float attackSpeed = 1f;
 
-    public override void Awake()
+    protected override void Awake()
     {
         interactionType = InteractionType.Loot;
 
         base.Awake();
     }
 
-    public override void Start()
+    protected override void Start()
     {
-        IndicatorsSetup();
-
         _agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
 
         _startPos = transform.position;
@@ -52,10 +45,14 @@ public class NPC : Humanoid, IInteractable
             }
         }
         */
+        _statusPanel = Instantiate(UIManager.instance.actorStatusPanelPrefab, UIManager.instance.transform);
+
+        _statusPanel.Init(this);
+
         base.Start();
     }
 
-    private void Update()
+    protected override void Update()
     {
         if (!isDead)
         {
@@ -63,35 +60,27 @@ public class NPC : Humanoid, IInteractable
 
             float distanceToTarget = Vector3.Distance(transform.position, _saveTargetPos);
 
-            Vector3 screenPos = CameraControl.instance.mainCam.WorldToScreenPoint(_agent.transform.position); //Projects actor's position in world coordinates onto it's position on screen
+            Vector3 screenPos = CameraControl.instance.mainCam.WorldToScreenPoint(_agent.transform.position); //Projects actor's position in world coordinates onto it's position on screen.
 
-            float angleToTarget = Vector3.Angle(CameraControl.instance.transform.forward, transform.position - _target.transform.position); //Angle between target and this actor, checks if Player faces this actor
+            float angleToTarget = Vector3.Angle(CameraControl.instance.transform.forward, transform.position - _target.transform.position); //Angle between target and this actor, checks if Player faces this actor.
 
-            //float dotProduct = Vector3.Dot(transform.forward, _saveTargetPos - transform.position); //Alternate method that calculates cosinus of the angle between target and this actor, if it's below 0 then Player is behind the actor
+            //float dotProduct = Vector3.Dot(transform.forward, _saveTargetPos - transform.position); //Alternate method that calculates cosinus of the angle between target and this actor, if it's below 0 then Player is behind the actor.
 
             if (screenPos.x > 0f && screenPos.x < Screen.width && screenPos.y > 0f && screenPos.y < Screen.height && angleToTarget < 90)
             {
-                indicators.GetComponent<Canvas>().enabled = true;
+                _statusPanel.transform.position = CameraControl.instance.mainCam.WorldToScreenPoint(new Vector3(transform.position.x, Mathf.Clamp(5f * distanceToTarget, 1, 2), transform.position.z)); ;
 
-                indicators.transform.position = CameraControl.instance.mainCam.WorldToScreenPoint(new Vector3(transform.position.x, Mathf.Clamp(_HPBarOffset * distanceToTarget, 1, 2), transform.position.z));
+                _statusPanel.transform.localScale = new Vector2(Mathf.Clamp(1 / distanceToTarget, 1, 100), Mathf.Clamp(1 / distanceToTarget, 1, 100));
 
-                //indicators.transform.position = transform.position + new Vector3(0, _HPBarOffset, 0);
+                //_statusPanel.transform.position = transform.position + new Vector3(0, _HPBarOffset, 0);
 
-                //indicators.transform.LookAt(GameMaster.instance.player.transform);
+                //_statusPanel.transform.LookAt(GameMaster.instance.player.transform);
 
-                indicators.transform.localScale = new Vector2(Mathf.Clamp(1 / distanceToTarget, 1, 100), Mathf.Clamp(1 / distanceToTarget, 1, 100));
+                _statusPanel.canvas.enabled = true;
             }
-            else indicators.GetComponent<Canvas>().enabled = false;
+            else _statusPanel.canvas.enabled = false;
 
-            if (Time.time >= _dmgHideDelay)
-            {
-                totalDmg = 0;
 
-                indicators.GetComponent<ActorUI>().damageCount.GetComponent<Text>().text = null;
-
-                _dmgHideDelay = Time.time + _fadeTime;
-            }
-            
             if (FielfOfView()) //If the actor sees the target or being alerted enough, he draws a weapon
             {
                 Alarm(maxAlert);
@@ -105,13 +94,13 @@ public class NPC : Humanoid, IInteractable
                 
                 if (distanceToTarget <= _attackDistance && inCombat) //If target in attack range, performs an attack
                 {
-                    int attackType = Random.Range(1, 5);
+                    int attackType = UnityEngine.Random.Range(0, 7);
 
                     if (Time.time >= attackDelay)
                     {
-                        if (WeaponDrawn) Attack(attackType);
+                        if (_weaponDrawn) Attack(attackType);
 
-                        attackDelay = Time.time + animator.GetCurrentAnimatorStateInfo(0).length + Random.Range(1f, attackSpeed);
+                        attackDelay = Time.time + animator.GetCurrentAnimatorStateInfo(0).length + UnityEngine.Random.Range(1f, attackSpeed);
                     }
                 }
             }
@@ -152,34 +141,23 @@ public class NPC : Humanoid, IInteractable
 
             if (animator.GetInteger("Movement") == 0) _agent.speed = 0;
         }
+
+        base.Update();
     }
 
-    private void IndicatorsSetup()
+    public override void ChangeCurrentHealth(int value)
     {
-        indicators = Instantiate(indicatorsPrefab.gameObject, GameMaster.instance.HUD.transform);
+        if (value < 0)
+        {
+            _statusPanel.totalDmg += value;
 
-        //indicators = Instantiate(indicatorsPrefab.gameObject, transform); // alternative variant if using "world space" render mode of canvas
+            //_statusPanel.dmgHideDelay = Time.time + fadeTime;
 
-        //indicators.GetComponent<ActorUI>().lvlTxt.text = lvl.ToString();
+            _statusPanel.dmgCountTMP.text = _statusPanel.totalDmg.ToString();
 
-        indicators.GetComponent<ActorUI>().nameTxt.text = transform.name;
+            StartCoroutine(_statusPanel.ResetDamageCounter());
 
-        indicators.GetComponent<ActorUI>().healthBar.maxValue = maxHealth;
-
-        indicators.GetComponent<ActorUI>().healthBar.value = currentHealth;
-
-        indicators.GetComponent<ActorUI>().curHealthTxt.text = currentHealth + " / " + maxHealth;
-
-        indicators.gameObject.SetActive(false);
-    }
-
-    public override void ChangeCurrentHealth(float value)
-    {
-        totalDmg += value;
-
-        //dmgHideDelay = Time.time + fadeTime;
-
-        indicators.GetComponent<ActorUI>().damageCount.GetComponent<Text>().text = totalDmg.ToString();
+        }
 
         base.ChangeCurrentHealth(value);
     }
@@ -192,24 +170,25 @@ public class NPC : Humanoid, IInteractable
 
             if (alertVolume > 0)
             {
-                indicators.GetComponent<ActorUI>().alertIndicator.GetComponent<Image>().enabled = true;
+                _statusPanel.alertIndicator.enabled = true;
 
-                //indicators.GetComponent<ActorUI>().alertIndicator.GetComponent<Image>().sprite = indicators.GetComponent<ActorUI>().alertIndicatorSprites[(int)(((alertVolume * 100) / maxAlert) / 25)]; //Alternative if we using list of sprites instead of animation
+                //alertIndicator.sprite = _statusPanel.GetComponent<ActorUI>().alertIndicatorSprites[(int)(((alertVolume * 100) / maxAlert) / 25)]; //Alternative if we using list of sprites instead of animation
 
-                indicators.GetComponent<ActorUI>().alertIndicator.GetComponent<Animator>().Play("AlertIndicatorAnimation", 0, (alertVolume * 100) / maxAlert / 100);
+                _statusPanel.alertIndicator.GetComponent<Animator>().Play("AlertIndicatorAnimation", 0, (alertVolume * 100) / maxAlert / 100);
 
-                indicators.GetComponent<ActorUI>().alertIndicator.GetComponent<Animator>().speed = 0;
+                _statusPanel.alertIndicator.GetComponent<Animator>().speed = 0;
             }
 
             if (alertVolume <= 0)
             {
-                indicators.GetComponent<ActorUI>().alertIndicator.GetComponent<Image>().enabled = false;
+
+                _statusPanel.alertIndicator.enabled = false;
 
                 alertVolume = 0;
 
                 if (inCombat)
                 {
-                    indicators.gameObject.SetActive(false);
+                    _statusPanel.gameObject.SetActive(false);
 
                     inCombat = !inCombat;
                 }
@@ -242,9 +221,9 @@ public class NPC : Humanoid, IInteractable
             {
                 if (!inCombat)
                 {
-                    DrawOrSheathWeapon();
+                    DrawWeapon();
 
-                    indicators.gameObject.SetActive(true);
+                    _statusPanel.gameObject.SetActive(true);
 
                     inCombat = true;
                 }
@@ -264,11 +243,11 @@ public class NPC : Humanoid, IInteractable
 
         //PlaySound("Land");
 
-        if (fallDistance > minFallHeight)
+        if (fallDistance > minSafeFallHeight)
         {
-            healthDamage = (int)Mathf.Clamp(maxHealth * (fallDistance / maxFallHeight) - dexterity, 0, maxHealth);
+            healthDamage = (int)Mathf.Clamp(maxHealth * (fallDistance / maxSafeFallHeight) - dexterity, 0, maxHealth);
 
-            if (fallDistance >= maxFallHeight) healthDamage = maxHealth;
+            if (fallDistance >= maxSafeFallHeight) healthDamage = maxHealth;
 
             ChangeCurrentHealth((int)(healthDamage));
 
@@ -328,14 +307,14 @@ public class NPC : Humanoid, IInteractable
         return result;
     }
 
-    public override void GetHit(float amount, DamageType type, Transform part)
+    public override void GetHit(int amount, DamageType type, Transform part)
     {
         Alarm(maxAlert - alertVolume);
 
         base.GetHit(amount, type, part);
     }
 
-    public override void Death()
+    public override void Kill()
     {
         animator.SetTrigger("Dead");
 
@@ -345,7 +324,7 @@ public class NPC : Humanoid, IInteractable
 
         animator.enabled = false;
 
-        indicators.SetActive(false);
+        _statusPanel.gameObject.SetActive(false);
 
         //inventory[0].GetComponent<Item>().clone.transform.SetParent(clone.transform.GetChild(0).transform.GetChild(0));
 
@@ -361,7 +340,7 @@ public class NPC : Humanoid, IInteractable
 
         //Invoke("DisableActor", 3f);
 
-        base.Death();
+        base.Kill();
 
         Sound sound = System.Array.Find(soundManager.sounds, sound => sound.name == "Death");
 

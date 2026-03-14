@@ -10,10 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3303617083735649538}
   - component: {fileID: 6742611976371861398}
-  - component: {fileID: 1313661791125251595}
   - component: {fileID: 6258340164547598967}
-  m_Layer: 0
-  m_Name: GameManager
+  m_Layer: 7
+  m_Name: DungeonMaster
   m_TagString: GameController
   m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -49,9 +48,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HUD: {fileID: 0}
   SM: {fileID: 0}
-  _notificationsWindow: {fileID: 0}
-  _messageDisplayDelay: 5
-  effectIconPrefab: {fileID: 0}
   environmentMask:
     serializedVersion: 2
     m_Bits: 8
@@ -61,27 +57,10 @@ MonoBehaviour:
   waterMask:
     serializedVersion: 2
     m_Bits: 16
-  _cursorStandart: {fileID: 2800000, guid: 10c0d94cd2bcc2e4da8f48b546b203c2, type: 3}
-  _cursorDrag: {fileID: 2800000, guid: 7d2401c6687fa0948abad68944f23ea7, type: 3}
-  _cursorPick: {fileID: 2800000, guid: d81c46e155a54fd4f8ba5cda5434759a, type: 3}
-  _cursorFether: {fileID: 2800000, guid: f44f6f00035e1824cbb1b2105d565dda, type: 3}
-  crosshair: {fileID: 0}
-  inventoryMenu: {fileID: 0}
-  _mainMenu: {fileID: 0}
-  _playerMenu: {fileID: 0}
-  _charMenu: {fileID: 0}
-  _journalMenu: {fileID: 0}
-  _questLogMenu: {fileID: 0}
-  _mapMenu: {fileID: 0}
-  _settingsMenu: {fileID: 0}
-  _controlsMenu: {fileID: 0}
-  _graphicMenu: {fileID: 0}
-  _soundMenu: {fileID: 0}
-  _exitConfirmWindow: {fileID: 0}
-  soundOverall: 1
-  musicOverall: 1
-  effectsOverall: 1
-  dialogueOverall: 1
+  fogColor: {r: 0, g: 0, b: 0, a: 0}
+  fogDensity: 0
+  fogEnabled: 0
+  fogMode: 0
   _fallingTimer: 10
   _maxFallTime: 0
   deathScreen: {fileID: 0}
@@ -120,27 +99,22 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   _day: 1
   _dayCycleActive: 0
-  _compass: {fileID: 0}
-  _sunIcon: {fileID: 21300000, guid: e303cd978e604d94e86504d73b0f434e, type: 3}
-  _moonIcon: {fileID: 21300000, guid: f43253e1b4499e64088bca8c3861e787, type: 3}
-  _timeWidget: {fileID: 0}
-  _miniMapCam: {fileID: 0}
-  fogColor: {r: 0, g: 0, b: 0, a: 0}
-  fogDensity: 0
-  fogEnabled: 0
-  fogMode: 0
+  soundOverall: 1
+  musicOverall: 1
+  effectsOverall: 1
+  dialogueOverall: 1
   mouseSensitivity: 300
-  mainMenuKey: 0
-  playerMenuKey: 0
+  mainMenuKey: 27
+  playerMenuKey: 9
   moveForward: 119
   moveBackward: 115
   moveRight: 100
   moveLeft: 97
   sprintKey: 304
-  walkKey: 308
+  walkKey: 0
   sneakKey: 306
   jumpKey: 32
-  dodgeKey: 0
+  dodgeKey: 308
   kickKey: 107
   drawWeaponKey: 114
   interactionKey: 101
@@ -148,20 +122,6 @@ MonoBehaviour:
   throwKey: 116
   interactionDistance: 3
   keyHoldTime: 0
---- !u!114 &1313661791125251595
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3303617083735649536}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5c37cc2e21ff9f4c8daa530e0f23100, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemsList:
-  - {fileID: 0}
 --- !u!114 &6258340164547598967
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -211,6 +171,24 @@ MonoBehaviour:
     pitch: 1
     source: {fileID: 0}
     category: 2
+  - name: EatVegetable
+    clip: {fileID: 8300000, guid: 0668ed691c096f7449a7e4c403d0beec, type: 3}
+    loop: 1
+    autoplay: 0
+    spatialBlend: 0
+    volume: 0.5
+    pitch: 1
+    source: {fileID: 0}
+    category: 2
+  - name: Write down a note
+    clip: {fileID: 8300000, guid: a8eb52b9d41031e40a008338adcbc636, type: 3}
+    loop: 0
+    autoplay: 0
+    spatialBlend: 0
+    volume: 0.5
+    pitch: 1
+    source: {fileID: 0}
+    category: 2
 --- !u!1 &9096762332866717107
 GameObject:
   m_ObjectHideFlags: 0
@@ -222,7 +200,7 @@ GameObject:
   - component: {fileID: 2758759651278084885}
   - component: {fileID: 4946355685540513872}
   - component: {fileID: 8029344638382955619}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: EventSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}

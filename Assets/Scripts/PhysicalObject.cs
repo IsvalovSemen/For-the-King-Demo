@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public abstract class Entity : MonoBehaviour, IDamageable
+public abstract class PhysicalObject : MonoBehaviour, IDamageable
 {
     protected SoundManager SM { get; set; }
     [SerializeField] private float _weight;
@@ -13,7 +13,7 @@ public abstract class Entity : MonoBehaviour, IDamageable
     [SerializeField] public float dealDmgThreshold = 5f;
     [SerializeField] Transform _pieces;
 
-    public virtual void Awake()
+    protected virtual void Awake()
     {
         currentDurability = _maxDurability;
 
@@ -22,7 +22,7 @@ public abstract class Entity : MonoBehaviour, IDamageable
         RB.mass = _weight;
     }
 
-    public virtual void Start()
+    private void Start()
     {
         SM = GetComponent<SoundManager>();
     }
@@ -58,11 +58,11 @@ public abstract class Entity : MonoBehaviour, IDamageable
         }
     }
 
-    void OnCollisionEnter(Collision coll)
+    private void OnCollisionEnter(Collision coll)
     {
         if (GetComponent<Rigidbody>().velocity.magnitude >= _takeDmgThreshold)
         {
-            if (coll.gameObject.layer == 3) GetHit(-RB.velocity.magnitude * _weight, DamageType.Blunt, null);
+            if (coll.gameObject.layer == 3) GetHit(-(int) (RB.velocity.magnitude * _weight), DamageType.Blunt, null);
         }
         
         if (GetComponent<Rigidbody>().velocity.magnitude >= dealDmgThreshold)
@@ -71,7 +71,7 @@ public abstract class Entity : MonoBehaviour, IDamageable
             {
                 if (coll.transform.root.GetComponent<IDamageable>() != null)
                 {
-                    coll.transform.root.GetComponent<IDamageable>().GetHit(-(_weight + RB.velocity.magnitude), DamageType.Blunt, coll.transform);
+                    coll.transform.root.GetComponent<IDamageable>().GetHit(-(int) (_weight + RB.velocity.magnitude), DamageType.Blunt, coll.transform);
 
                     UIManager.instance.PrintMessage(transform.root.name + " hits the " + coll.transform.root.name + ", speed: " + RB.velocity.magnitude);
                 }
@@ -79,7 +79,7 @@ public abstract class Entity : MonoBehaviour, IDamageable
         }
     }
 
-    public void GetHit(float amount, DamageType type, Transform part)
+    public void GetHit(int amount, DamageType type, Transform part)
     {
         SM.PlaySound("GetHit");
 
@@ -90,14 +90,14 @@ public abstract class Entity : MonoBehaviour, IDamageable
         if (_maxDurability > 0) ChangeDurability(amount);
     }
 
-    void ChangeDurability(float value)
+    private void ChangeDurability(int value)
     {
         currentDurability += value;
 
         if (currentDurability <= 0) Break();
     }
 
-    void Break()
+    private void Break()
     {
         currentDurability = 0;
 
@@ -125,7 +125,7 @@ public abstract class Entity : MonoBehaviour, IDamageable
         GetComponent<MeshRenderer>().enabled = false;
     }
 
-    void DiscardParts()
+    private void DiscardParts()
     {
         Destroy(this.gameObject);
     }

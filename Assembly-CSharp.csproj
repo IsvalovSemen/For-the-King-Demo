@@ -74,12 +74,15 @@
     <Compile Include="Assets\Scripts\RegenerationSkill.cs" />
     <Compile Include="Assets\Scripts\GameMaster.cs" />
     <Compile Include="Assets\Scripts\CameraControl.cs" />
+    <Compile Include="Assets\Scripts\ActorStatus.cs" />
     <Compile Include="Assets\Scripts\SoundManager.cs" />
     <Compile Include="Assets\Scripts\RegenerationEffect.cs" />
+    <Compile Include="Assets\Scripts\Hitbox.cs" />
+    <Compile Include="Assets\Scripts\PhysicalObject.cs" />
     <Compile Include="Assets\Scripts\UIManager.cs" />
-    <Compile Include="Assets\Scripts\Entity.cs" />
     <Compile Include="Assets\Scripts\EffectInfo.cs" />
     <Compile Include="Assets\Scripts\IDamageable.cs" />
+    <Compile Include="Assets\Scripts\IEquipment.cs" />
     <Compile Include="Assets\Scripts\Projectile.cs" />
     <Compile Include="Assets\Scripts\EffectIcon.cs" />
     <Compile Include="Assets\Scripts\ItemStats.cs" />
@@ -93,7 +96,7 @@
     <Compile Include="Assets\Scripts\Door.cs" />
     <Compile Include="Assets\Scripts\IEntityStats.cs" />
     <Compile Include="Assets\Scripts\ItemIcon.cs" />
-    <Compile Include="Assets\Scripts\Equipment.cs" />
+    <Compile Include="Assets\Scripts\Gear.cs" />
     <Compile Include="Assets\Scripts\Quest.cs" />
     <Compile Include="Assets\Scripts\Weapon.cs" />
     <Compile Include="Assets\Scripts\Skill.cs" />

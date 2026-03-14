@@ -1,62 +1,24 @@
-using UnityEngine.UI;
 using UnityEngine;
-using static UnityEditor.Progress;
-using UnityEngine.XR;
-using UnityEngine.Animations.Rigging;
 
-public class Weapon : Item
+public class Weapon : Item, IEquipment
 {
     private Transform _sheatheSocket;
     private int _handIndex;
 
     void OnCollisionEnter(Collision coll)
     {
-        DealDamage(coll);
+        if (coll.transform.GetComponent<Collider>().gameObject.layer == 3) transform.GetComponentInParent<Creature>().Knockback(this);
     }
 
-    void DealDamage(Collision coll)
-    {
-        Transform part = coll.transform.GetComponent<Collider>().transform;
-
-        if (coll.transform.GetComponent<Collider>().gameObject.layer == 6)
-        {
-            //Collider myCollider = collision.GetContact(0).thisCollider;
-
-            if (coll.transform.GetComponentInParent<Creature>() != transform.GetComponentInParent<Creature>() & coll.transform.GetComponent<Collider>().GetComponentInParent<IDamageable>() != null & !hittedTargets.Contains(coll.transform.GetComponent<Collider>().transform.root.transform))
-            {
-                hittedTargets.Add(coll.transform.GetComponent<Collider>().transform.root.transform);
-
-                coll.transform.GetComponentInParent<IDamageable>().GetHit(-_stats.damage, _stats.dmgType, part);
-
-
-                UIManager.instance.PrintMessage(coll.transform.GetComponentInParent<Creature>().gameObject.name + " got hit by " + transform.GetComponentInParent<Creature>().gameObject.name + " with " + transform.name + ", taking " + _stats.damage + " " + _stats.dmgType.ToString() + " damage to " + part.name);
-
-                
-            }
-        }
-
-        if (coll.transform.GetComponent<Collider>().gameObject.layer == 3)
-        {
-            transform.root.GetComponent<Creature>().Knockback(transform);
-
-            //GameMaster.instance.player.GetComponent<Player>().Noise(collision.contacts[0].point, 10 * _RB.mass);
-
-            UIManager.instance.PrintMessage(transform.root.name + " hits " + coll.transform.GetComponent<Collider>().transform.name);
-
-            if (coll.transform.GetComponent<IDamageable>() != null) coll.transform.GetComponent<IDamageable>().GetHit(-_stats.damage, _stats.dmgType, part);
-            else SM.PlaySound("Hit");
-        }
-    }
-
-    public override void Equip()
+    public void Equip()
     {
         foreach (Collider coll in GetComponentsInChildren<Collider>()) coll.enabled = false;
 
         GetComponent<Rigidbody>().isKinematic = false;
 
-        RB.useGravity = true;
+        RigidBody.useGravity = true;
 
-        RB.constraints = RigidbodyConstraints.FreezeAll;
+        RigidBody.constraints = RigidbodyConstraints.FreezeAll;
 
         transform.GetComponent<Rigidbody>().isKinematic = true;
 
@@ -66,31 +28,27 @@ public class Weapon : Item
 
         transform.GetComponentInChildren<MeshRenderer>().enabled = true;
 
-        //owner.OnDrawWeapon += Draw;
-
-        //owner.OnSheathWeapon += Sheath;
-
         UIManager.instance.PrintMessage(transform.name + " was equiped");
     }
 
-    public override void Unequip()
+    public void Unequip()
     {
         transform.SetParent(null);
 
-        RB.isKinematic = false;
+        RigidBody.isKinematic = false;
 
-        RB.useGravity = true;
+        RigidBody.useGravity = true;
 
-        RB.freezeRotation = false;
+        RigidBody.freezeRotation = false;
 
-        RB.isKinematic = false;
+        RigidBody.isKinematic = false;
     }
 
     public void Draw(Humanoid owner)
     {
-        RB.isKinematic = true;
+        RigidBody.isKinematic = true;
 
-        RB.useGravity = false;
+        RigidBody.useGravity = false;
 
         if (_handIndex == 0)
         {
@@ -122,11 +80,11 @@ public class Weapon : Item
     {
         foreach (Collider coll in GetComponentsInChildren<Collider>()) coll.enabled = false;
 
-        RB.isKinematic = false;
+        RigidBody.isKinematic = false;
 
-        RB.useGravity = true;
+        RigidBody.useGravity = true;
 
-        RB.constraints = RigidbodyConstraints.FreezeAll;
+        RigidBody.constraints = RigidbodyConstraints.FreezeAll;
 
         //RB.freezeRotation = true;
 

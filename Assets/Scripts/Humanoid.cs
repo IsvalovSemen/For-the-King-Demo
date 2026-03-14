@@ -1,45 +1,85 @@
 using System;
+using UnityEditor.Rendering;
 using UnityEngine;
 
 public class Humanoid : Creature
 {
+    [SerializeField] private GameObject _weapon1R;
+    [SerializeField] private GameObject _weapon1L;
+    [SerializeField] private GameObject _weapon2R;
+    [SerializeField] private GameObject _weapon2L;
     public Transform holdPointRight;
     public Transform holdPointLeft;
     public Transform holdPointMiddle;
     public Transform sheathRight;
     public Transform sheathLeft;
     public Transform sheathBack;
-    protected bool WeaponDrawn;
-    public event Action<Humanoid> OnDrawWeapon;
-    public event Action<Humanoid> OnSheathWeapon;
+    public Transform gearSocket;
     protected float attackDelay;
-    public bool attackAllowed;
+    [SerializeField] protected bool _attackAllowed;
+    [SerializeField] protected bool _weaponDrawn;
 
-    public override void Start()
+    protected override void Start()
     {
-        attackAllowed = true;
+        _attackAllowed = true;
 
-        base.Start();
+        if (inventory != null)
+        {
+            inventory.OnEquiploadChange += ChangeEquipload;
+
+            inventory.OnItemEquip += PutOn;
+
+            inventory.OnItemUnequip += TakeOff;
+        }
 
         loadStage = Mathf.Clamp(CalculateLoadStage(currentEquipLoad, maxEquipload), 1, 4);
+
+        base.Start();
     }
-    public override void Update()
+    protected override void Update()
     {
         Throw();
 
         base.Update();
     }
 
-    protected void DrawOrSheathWeapon()
+    private void PutOn(EquipmentSlotType equipSlot, ItemInstance item)
     {
-        if (WeaponDrawn == false) OnDrawWeapon?.Invoke(this);
-        else OnSheathWeapon?.Invoke(this);
+        Transform socket;
 
-        WeaponDrawn = !WeaponDrawn;
+        if (equipSlot == EquipmentSlotType.HandLeft1) socket = holdPointLeft;
+        else if (equipSlot == EquipmentSlotType.HandRight1) socket = holdPointRight;
+        else socket = gearSocket;
+
+        GameObject newObject = Instantiate(item.Stats.prefab, socket.transform.position, socket.rotation, socket);
+
+        newObject.GetComponent<IEquipment>().Equip();
+
+        if (socket == holdPointLeft) _weapon1L = newObject;
+        else if (socket == holdPointRight) _weapon1R = newObject;
     }
 
-    public void EnableHitbox(AnimationEvent animationEvent)
-    {/*
+    private void TakeOff(EquipmentSlotType equipSlot)
+    {
+
+    }
+    /// <summary>
+    /// TODO: Update this method to work with weapons draw/sheath animations.
+    /// </summary>
+    protected void DrawWeapon()
+    {
+        _weaponDrawn = true;
+    }
+    /// <summary>
+    /// TODO: Update this method to work with weapons draw/sheath animations.
+    /// </summary>
+    protected void SheatheWeapon()
+    {
+        _weaponDrawn = false;
+    }
+
+    protected override void EnableHitbox(AnimationEvent animationEvent)
+    {
         if (_recoil)
         {
             animator.SetTrigger("Stop");
@@ -52,19 +92,20 @@ public class Humanoid : Creature
         {
             if (animationEvent.stringParameter == "right")
             {
-                GameObject weaponR = slots.Find(x => x.inventorySlot == EquipmentSlotType.HandRight).itemLink;
+                _weapon1R.GetComponentInChildren<Hitbox>().Enable();
 
-                foreach (Collider coll in weaponR.transform.GetComponentsInChildren<Collider>()) coll.enabled = true;
+                _weapon1R.GetComponentInChildren<Hitbox>().DealDamage(inventory.equipment[EquipmentSlotType.HandRight1].Stats.damage, inventory.equipment[EquipmentSlotType.HandRight1].Stats.dmgType, this.gameObject);
 
-                weaponR.GetComponentInChildren<SoundManager>().PlaySound("Sway");
+                _weapon1R.GetComponentInChildren<SoundManager>().PlaySound("Sway");
             }
-            else if (animationEvent.stringParameter == "left")
+
+            if (animationEvent.stringParameter == "left")
             {
-                GameObject weaponL = slots.Find(x => x.inventorySlot == EquipmentSlotType.HandLeft).itemLink;
+                _weapon1L.GetComponentInChildren<Hitbox>().Enable();
 
-                foreach (Collider coll in weaponL.transform.GetComponentsInChildren<Collider>()) coll.enabled = true;
+                _weapon1L.GetComponentInChildren<Hitbox>().DealDamage(inventory.equipment[EquipmentSlotType.HandLeft1].Stats.damage, inventory.equipment[EquipmentSlotType.HandLeft1].Stats.dmgType, this.gameObject);
 
-                weaponL.GetComponentInChildren<SoundManager>().PlaySound("Sway");
+                _weapon1L.GetComponentInChildren<SoundManager>().PlaySound("Sway");
             }
             
             //dmg = animationEvent.intParameter;
@@ -72,29 +113,24 @@ public class Humanoid : Creature
             //weapon.GetComponent<Item>().attackType = animationEvent.stringParameter;
 
             //weapon.GetComponent<Collider>().enabled = true;
-        }*/
+        }
     }
 
-    public void DisableHitbox(AnimationEvent animationEvent)
+    protected override void DisableHitbox(AnimationEvent animationEvent)
     {
-        /*
         if (animationEvent.stringParameter == "right")
         {
-            GameObject weaponR = slots.Find(x => x.inventorySlot == EquipmentSlotType.HandRight).itemLink;
+            _weapon1R.GetComponentInChildren<Hitbox>().hittedTargets.Clear();
 
-            weaponR.transform.GetComponentInChildren<Item>().hittedTargets.Clear();
-
-            foreach (Collider coll in weaponR.transform.GetComponentsInChildren<Collider>()) coll.enabled = false;
+            _weapon1R.GetComponentInChildren<Hitbox>().Disable();
         }
         else if (animationEvent.stringParameter == "left")
         {
-            GameObject weaponL = slots.Find(x => x.inventorySlot == EquipmentSlotType.HandLeft).itemLink;
+            _weapon1L.GetComponentInChildren<Hitbox>().hittedTargets.Clear();
 
-            weaponL.transform.GetComponentInChildren<Item>().hittedTargets.Clear();
-
-            foreach (Collider coll in weaponL.transform.GetComponentsInChildren<Collider>()) coll.enabled = false;
+            _weapon1L.GetComponentInChildren<Hitbox>().Disable();
         }
-        */
+
         //weapon.GetComponent<Item>().hittedTarget = null;
 
         //weapon.GetComponent<Collider>().enabled = false;
@@ -106,8 +142,8 @@ public class Humanoid : Creature
 
     public void AttackDelay(AnimationEvent animationEvent)
     {
-        if (animationEvent.intParameter == 0) attackAllowed = false;
-        else if (animationEvent.intParameter == 1) attackAllowed = true;
+        if (animationEvent.intParameter == 0) _attackAllowed = false;
+        else if (animationEvent.intParameter == 1) _attackAllowed = true;
     }
 
     /*public void DropItem(ItemSlot slot)

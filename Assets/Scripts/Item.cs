@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using Unity.Burst.CompilerServices;
-using UnityEditor.PackageManager;
-using UnityEditor.Rendering;
+
 using UnityEngine;
 using static UIManager;
 
@@ -12,40 +10,42 @@ public interface IItem
     float CurrentDurability { get; }
 }
 
-public class Item : Entity, IInteractable, IItem
+public class Item : MonoBehaviour, IInteractable, IItem
 {
     public InteractionType interactionType { get; set; }
-    public List<Transform> hittedTargets = new List<Transform>();
     [SerializeField] protected ItemStats _stats;
+    [SerializeField] protected float _currentDurability;
     [SerializeField] [Range(1, 9999)] private int _count;
+    protected SoundManager SoundManager { get; set; }
+    protected Rigidbody RigidBody;
 
     public virtual void Awake()
     {
-        SM = transform.GetChild(0).gameObject.AddComponent<SoundManager>();
+        SoundManager = transform.GetChild(0).gameObject.AddComponent<SoundManager>();
 
-        SM.sounds = new Sound[_stats.sounds.Length];
+        SoundManager.sounds = new Sound[Stats.sounds.Length];
 
-        for (int i = 0; i < _stats.sounds.Length; i++)
+        for (int i = 0; i < Stats.sounds.Length; i++)
         {
-            SM.sounds[i] = _stats.sounds[i];
+            SoundManager.sounds[i] = Stats.sounds[i];
         }
 
         interactionType = InteractionType.Take;
 
         //bodyMesh = Player.instance.transform.Find("Body").gameObject;
 
-        RB = GetComponent<Rigidbody>();
+        RigidBody = GetComponent<Rigidbody>();
 
-        RB.mass = _stats.weight;
+        RigidBody.mass = Stats.weight;
 
-        currentDurability = _stats.maxDurability;
+        _currentDurability = Stats.maxDurability;
 
-        _count = Mathf.Clamp(_count, 1, _stats.maxStacksAmount);
+        _count = Mathf.Clamp(_count, 1, Stats.maxStacksAmount);
     }
 
     public ItemStats Stats => _stats;
     public int Count => _count;
-    public float CurrentDurability => currentDurability;
+    public float CurrentDurability => _currentDurability;
 
     public virtual void Use()
     {
@@ -62,16 +62,6 @@ public class Item : Entity, IInteractable, IItem
         InventoryManager.instance.OnItemPickUpConfirmation += DestroyItem;
 
         InventoryManager.instance.PickUpItem(interactor.inventory, this);
-    }
-
-    public virtual void Equip()
-    {
-
-    }
-    
-    public virtual void Unequip()
-    {
-
     }
 
     private void OnMouseEnter()
@@ -104,20 +94,20 @@ public class Item : Entity, IInteractable, IItem
 
     void ChangeDurability(int amount)
     {
-        currentDurability += amount;
+        _currentDurability += amount;
 
-        SM.PlaySound("GetHit");
+        SoundManager.PlaySound("GetHit");
 
-        if (currentDurability <= 0) Break();
+        if (_currentDurability <= 0) Break();
     }
 
     public virtual void Break()
     {
         UIManager.instance.PrintMessage(transform.name + " broke");
 
-        transform.root.GetComponent<Humanoid>().ChangeEquipload(-_stats.weight);
+        transform.root.GetComponent<Humanoid>().ChangeEquipload(-Stats.weight);
 
-        SM.PlaySound("ItemBroke");
+        SoundManager.PlaySound("ItemBroke");
 
         DestroyItem();
     }
