@@ -60,7 +60,6 @@
     <Analyzer Include="C:\Program Files\Unity\Editor\2022.3.19f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\NPC.cs" />
     <Compile Include="Assets\Scripts\QuestLog.cs" />
     <Compile Include="Assets\Scripts\ActorUI.cs" />
     <Compile Include="Assets\Scripts\EnteringAreaEvent.cs" />
@@ -85,6 +84,7 @@
     <Compile Include="Assets\Scripts\IEquipment.cs" />
     <Compile Include="Assets\Scripts\Projectile.cs" />
     <Compile Include="Assets\Scripts\EffectIcon.cs" />
+    <Compile Include="Assets\Scripts\DoubleClick.cs" />
     <Compile Include="Assets\Scripts\ItemStats.cs" />
     <Compile Include="Assets\Scripts\Key.cs" />
     <Compile Include="Assets\Scripts\Inventory.cs" />
@@ -97,6 +97,7 @@
     <Compile Include="Assets\Scripts\IEntityStats.cs" />
     <Compile Include="Assets\Scripts\ItemIcon.cs" />
     <Compile Include="Assets\Scripts\Gear.cs" />
+    <Compile Include="Assets\Scripts\Actor.cs" />
     <Compile Include="Assets\Scripts\Quest.cs" />
     <Compile Include="Assets\Scripts\Weapon.cs" />
     <Compile Include="Assets\Scripts\Skill.cs" />

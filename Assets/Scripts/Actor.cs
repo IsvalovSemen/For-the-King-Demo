@@ -1,9 +1,12 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class NPC : Humanoid, IInteractable
+public class Actor : Humanoid, IInteractable
 {
     private UnityEngine.AI.NavMeshAgent _agent;
+    [SerializeField] private List<ItemInstance> _loot = new List<ItemInstance>();
+    public Dictionary<EquipmentSlotType, ItemInstance> equipment = new Dictionary<EquipmentSlotType, ItemInstance>();
     [SerializeField] protected ActorStatus _statusPanel;
     public InteractionType interactionType { get; set; }
     [SerializeField] private float _sightDistance = 50;
@@ -45,11 +48,11 @@ public class NPC : Humanoid, IInteractable
             }
         }
         */
-        _statusPanel = Instantiate(UIManager.instance.actorStatusPanelPrefab, UIManager.instance.transform);
 
-        _statusPanel.Init(this);
+        _statusPanel = UIManager.instance.CreateActorStatusPanel(this);
 
         base.Start();
+
     }
 
     protected override void Update()
@@ -59,27 +62,6 @@ public class NPC : Humanoid, IInteractable
             _saveTargetPos = _target.transform.position;
 
             float distanceToTarget = Vector3.Distance(transform.position, _saveTargetPos);
-
-            Vector3 screenPos = CameraControl.instance.mainCam.WorldToScreenPoint(_agent.transform.position); //Projects actor's position in world coordinates onto it's position on screen.
-
-            float angleToTarget = Vector3.Angle(CameraControl.instance.transform.forward, transform.position - _target.transform.position); //Angle between target and this actor, checks if Player faces this actor.
-
-            //float dotProduct = Vector3.Dot(transform.forward, _saveTargetPos - transform.position); //Alternate method that calculates cosinus of the angle between target and this actor, if it's below 0 then Player is behind the actor.
-
-            if (screenPos.x > 0f && screenPos.x < Screen.width && screenPos.y > 0f && screenPos.y < Screen.height && angleToTarget < 90)
-            {
-                _statusPanel.transform.position = CameraControl.instance.mainCam.WorldToScreenPoint(new Vector3(transform.position.x, Mathf.Clamp(5f * distanceToTarget, 1, 2), transform.position.z)); ;
-
-                _statusPanel.transform.localScale = new Vector2(Mathf.Clamp(1 / distanceToTarget, 1, 100), Mathf.Clamp(1 / distanceToTarget, 1, 100));
-
-                //_statusPanel.transform.position = transform.position + new Vector3(0, _HPBarOffset, 0);
-
-                //_statusPanel.transform.LookAt(GameMaster.instance.player.transform);
-
-                _statusPanel.canvas.enabled = true;
-            }
-            else _statusPanel.canvas.enabled = false;
-
 
             if (FielfOfView()) //If the actor sees the target or being alerted enough, he draws a weapon
             {
@@ -143,23 +125,6 @@ public class NPC : Humanoid, IInteractable
         }
 
         base.Update();
-    }
-
-    public override void ChangeCurrentHealth(int value)
-    {
-        if (value < 0)
-        {
-            _statusPanel.totalDmg += value;
-
-            //_statusPanel.dmgHideDelay = Time.time + fadeTime;
-
-            _statusPanel.dmgCountTMP.text = _statusPanel.totalDmg.ToString();
-
-            StartCoroutine(_statusPanel.ResetDamageCounter());
-
-        }
-
-        base.ChangeCurrentHealth(value);
     }
 
     public void Alarm(float alert)
@@ -307,7 +272,7 @@ public class NPC : Humanoid, IInteractable
         return result;
     }
 
-    public override void GetHit(int amount, DamageType type, Transform part)
+    public override void GetHit(float amount, DamageType type, Transform part)
     {
         Alarm(maxAlert - alertVolume);
 

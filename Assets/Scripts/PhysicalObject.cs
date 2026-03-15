@@ -79,7 +79,7 @@ public abstract class PhysicalObject : MonoBehaviour, IDamageable
         }
     }
 
-    public void GetHit(int amount, DamageType type, Transform part)
+    public void GetHit(float amount, DamageType type, Transform part)
     {
         SM.PlaySound("GetHit");
 
@@ -90,7 +90,7 @@ public abstract class PhysicalObject : MonoBehaviour, IDamageable
         if (_maxDurability > 0) ChangeDurability(amount);
     }
 
-    private void ChangeDurability(int value)
+    private void ChangeDurability(float value)
     {
         currentDurability += value;
 

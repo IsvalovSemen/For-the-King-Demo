@@ -86,7 +86,7 @@ public class Player : Humanoid
                 {
                     if (mouseX == 0 && mouseY == 0) return; // Preventing the attack if there's no mouse movement at all.
 
-                    int staminaUsage = (int) (weaponR.Stats.weight * 10);
+                    float staminaUsage = weaponR.Stats.weight;
 
                     if (currentStamina >= staminaUsage)
                     {
@@ -105,7 +105,7 @@ public class Player : Humanoid
                 {
                     if (mouseX == 0 && mouseY == 0) return;
 
-                    int staminaUsage =(int) (weaponL.Stats.weight * 10);
+                    float staminaUsage = weaponL.Stats.weight;
 
                     if (currentStamina >= staminaUsage)
                     {
@@ -181,7 +181,7 @@ public class Player : Humanoid
 
                     animator.SetInteger("Movement", 4);
 
-                    ChangeCurrentStamina(-(int) (_sprintStaminaCost * loadStage));
+                    ChangeCurrentStamina(-(_sprintStaminaCost * loadStage * Time.deltaTime));
                 }
                 else if (Input.GetKey(GameMaster.instance.walkKey))
                 {
@@ -220,13 +220,9 @@ public class Player : Humanoid
 
     public override void AddStatusEffect(Sprite sprite, Effect effect)
     {
-        var effectIcon = Instantiate(UIManager.instance.effectIconPrefab, UIManager.instance.GetComponent<ActorUI>().statusEffectsPanel);
+        UIManager.instance.AddEffectIcon(effect);
 
         base.AddStatusEffect(sprite, effect);
-
-        activeEffects[activeEffects.Count - 1].effectIcon = effectIcon;
-
-        effectIcon.GetComponent<EffectIcon>().icon.sprite = sprite;
     }
 
     public override void Footsteps(AnimationEvent animationEvent)
@@ -379,7 +375,7 @@ public class Player : Humanoid
         // FIXME: make sound wave contact with head body part of actor
         foreach (Collider coll in hitColliders) if (coll.transform.root.GetComponent<Creature>() != null && coll.transform.root.GetComponent<Creature>().isDead == false && coll.transform == coll.transform.root.GetComponent<Creature>().viewPoint)
         {
-            coll.transform.root.GetComponent<NPC>().Alarm(volume / Vector3.Distance(coll.transform.position, pos));
+            coll.transform.root.GetComponent<Actor>().Alarm(volume / Vector3.Distance(coll.transform.position, pos));
         }
     }
 
@@ -460,7 +456,7 @@ public class Player : Humanoid
                     UIManager.instance.UpdateThrowMeter(ThrowPower, MaxThrowPower);
                 }
 
-                int staminaUsage = (int) ((projectile.GetComponent<Rigidbody>().mass * ThrowPower) / strength);
+                float staminaUsage = (projectile.GetComponent<Rigidbody>().mass * ThrowPower) / strength;
 
                 if (currentStamina < staminaUsage)
                 {

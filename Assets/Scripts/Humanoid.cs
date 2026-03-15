@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEditor.Rendering;
 using UnityEngine;
 
@@ -51,9 +52,9 @@ public class Humanoid : Creature
         else if (equipSlot == EquipmentSlotType.HandRight1) socket = holdPointRight;
         else socket = gearSocket;
 
-        GameObject newObject = Instantiate(item.Stats.prefab, socket.transform.position, socket.rotation, socket);
+        GameObject newObject = Instantiate(item.Stats.prefab, socket);
 
-        newObject.GetComponent<IEquipment>().Equip();
+        newObject.GetComponentInChildren<IEquipment>().Equip();
 
         if (socket == holdPointLeft) _weapon1L = newObject;
         else if (socket == holdPointRight) _weapon1R = newObject;
@@ -61,7 +62,13 @@ public class Humanoid : Creature
 
     private void TakeOff(EquipmentSlotType equipSlot)
     {
+        Transform socket;
 
+        if (equipSlot == EquipmentSlotType.HandLeft1) socket = holdPointLeft;
+        else if (equipSlot == EquipmentSlotType.HandRight1) socket = holdPointRight;
+        else socket = gearSocket;
+
+        socket.GetComponentInChildren<IEquipment>().Unequip();
     }
     /// <summary>
     /// TODO: Update this method to work with weapons draw/sheath animations.

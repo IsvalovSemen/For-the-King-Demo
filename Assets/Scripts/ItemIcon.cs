@@ -12,6 +12,7 @@ public class ItemIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     [SerializeField] private Canvas _canvas;
     [SerializeField] private RectTransform _rectTransform;
     [SerializeField] private CanvasGroup _canvasGroup;
+    private bool _isHoveringOver = false;
 
     private void Awake()
     {
@@ -22,6 +23,16 @@ public class ItemIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         _canvasGroup = GetComponent<CanvasGroup>();
 
         if (_canvasGroup == null) _canvasGroup = gameObject.AddComponent<CanvasGroup>();
+    }
+
+    private void Update()
+    {
+        if (_isHoveringOver == true && Input.GetMouseButtonDown(0) && DoubleClick.IsDoubleClick() == true && _relatedCell.RelatedSlot.IsOccupied == true)
+        {
+            Debug.LogWarning("test");
+
+            _relatedCell.RelatedSlot.Inventory.DropItem(_relatedCell.RelatedSlot.Index, false);
+        }
     }
 
     public void ConnectCell(InventoryCell cell)
@@ -67,6 +78,8 @@ public class ItemIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         {
             UIManager.instance.ShowItemTooltip(_relatedCell.RelatedSlot.StoredItem);
         }
+
+        _isHoveringOver = true;
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -75,6 +88,8 @@ public class ItemIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
         {
             UIManager.instance.HideItemTooltip();
         }
+
+        _isHoveringOver = false;
     }
 
     public void OnBeginDrag(PointerEventData eventData)

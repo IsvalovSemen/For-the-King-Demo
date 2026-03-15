@@ -7,7 +7,7 @@ public class Weapon : Item, IEquipment
 
     void OnCollisionEnter(Collision coll)
     {
-        if (coll.transform.GetComponent<Collider>().gameObject.layer == 3) transform.GetComponentInParent<Creature>().Knockback(this);
+        if (GetComponentInParent<Humanoid>() != null & coll.transform.GetComponent<Collider>().gameObject.layer == 3) transform.GetComponentInParent<Creature>().Knockback(this);
     }
 
     public void Equip()
@@ -27,21 +27,6 @@ public class Weapon : Item, IEquipment
         //weapon.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezePosition;
 
         transform.GetComponentInChildren<MeshRenderer>().enabled = true;
-
-        UIManager.instance.PrintMessage(transform.name + " was equiped");
-    }
-
-    public void Unequip()
-    {
-        transform.SetParent(null);
-
-        RigidBody.isKinematic = false;
-
-        RigidBody.useGravity = true;
-
-        RigidBody.freezeRotation = false;
-
-        RigidBody.isKinematic = false;
     }
 
     public void Draw(Humanoid owner)
@@ -99,5 +84,9 @@ public class Weapon : Item, IEquipment
         //transform.SetParent(sheatheSocket);
 
         transform.parent = _sheatheSocket;
+    }
+    public void Unequip()
+    {
+        Destroy(this.gameObject);
     }
 }

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 101129261005221903}
   - component: {fileID: 6266937776131338659}
   m_Layer: 5
-  m_Name: Status Effect Pictogram
+  m_Name: Effect Pictogram
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -381,7 +381,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4

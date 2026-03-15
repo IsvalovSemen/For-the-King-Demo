@@ -1,14 +1,13 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Effect : MonoBehaviour
 {
     [SerializeField] private bool _isActive;
-    public GameObject effectIcon;
-    private float _duration;
-    private float _internalTimer;
+    public Sprite effectSprite;
+    public float duration { get; private set; }
+    public float internalTimer { get; private set; }
     private GameObject _target;
 
     public void Activate(int power, float tick, float duration, Sprite icon, GameObject target)
@@ -21,9 +20,9 @@ public class Effect : MonoBehaviour
 
         StartCoroutine(EffectCountdown(power, tick, duration, icon, target));
 
-        _duration = duration;
+        this.duration = duration;
 
-        _internalTimer = _duration;
+        internalTimer = this.duration;
     }
 
     public virtual void Affect(int power, GameObject target)
@@ -31,18 +30,16 @@ public class Effect : MonoBehaviour
 
     }
 
-    public void Update()
+    private void Update()
     {
-        //If you want more smooth fill change
-        _internalTimer -= Time.deltaTime;
+        
+        internalTimer -= Time.deltaTime; //If you want more smooth fill change.
 
-        float normalizedTime = Mathf.Clamp01(_internalTimer / _duration);
 
-        effectIcon.transform.GetChild(0).GetComponent<Image>().fillAmount = normalizedTime;
 
-        if (_internalTimer <= 0)
+        if (internalTimer <= 0)
         {
-            _internalTimer = 0;
+            internalTimer = 0;
 
             RemoveEffect();
         }
@@ -66,7 +63,7 @@ public class Effect : MonoBehaviour
     {
         _isActive = false;
 
-        Destroy(effectIcon);
+        Destroy(effectSprite);
 
         _target.GetComponent<Creature>().RemoveStatusEffect(this);
 

@@ -136,7 +136,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1915942162909363943}
-  - component: {fileID: 8713147591050789190}
+  - component: {fileID: 5690528769586982738}
   - component: {fileID: 2378323815984910563}
   m_Layer: 3
   m_Name: Steel Cuirass
@@ -162,7 +162,7 @@ Transform:
   - {fileID: 7360604090336554617}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8713147591050789190
+--- !u!114 &5690528769586982738
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -171,18 +171,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1287215384068858973}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e94cf11de69f6fb4c9ba65339f0626b5, type: 3}
+  m_Script: {fileID: 11500000, guid: d5988fa95367ba848931cfa296e4c122, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _weight: 0
-  _maxDurability: 100
-  currentDurability: 0
-  _discardingTime: 30
-  _takeDmgThreshold: 1
-  dealDmgThreshold: 5
-  _pieces: {fileID: 0}
-  hittedTargets: []
   _stats: {fileID: 11400000, guid: d601826ffe8ea27459f8a463617aeb06, type: 2}
+  _currentDurability: 100
   _count: 0
 --- !u!54 &2378323815984910563
 Rigidbody:

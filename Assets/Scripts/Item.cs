@@ -64,6 +64,11 @@ public class Item : MonoBehaviour, IInteractable, IItem
         InventoryManager.instance.PickUpItem(interactor.inventory, this);
     }
 
+    private void OnMouseDown()
+    {
+        if (UIManager.instance.GetCurrentMenu == MenuState.Inventory && DoubleClick.IsDoubleClick() == true) Take(Player.instance);
+    }
+
     private void OnMouseEnter()
     {
         if (UIManager.instance.GetCurrentMenu == MenuState.Inventory) UIManager.instance.ShowItemTooltip(this);

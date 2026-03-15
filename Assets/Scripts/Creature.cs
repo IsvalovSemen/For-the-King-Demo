@@ -21,6 +21,7 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
     [SerializeField] protected Transform GroundCheckRight;
     [SerializeField] protected Transform GroundCheckLeft;
     public bool falling;
+    public bool wasFalling;
     public bool grounded;
     [SerializeField] private int _fallingTimer;
     protected bool swimming;
@@ -52,18 +53,18 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
 
     [Header("Stats:")]
     public bool isDead;
+    [field: SerializeField] public float maxHealth { get; set; }
+    [field: SerializeField] public float maxStamina { get; set; }
+    [field: SerializeField] public float maxMana { get; set; }
+    [field: SerializeField] public float currentHealth { get; set; }
+    [field: SerializeField] public float currentStamina { get; set; }
+    [field: SerializeField] public float currentMana { get; set; }
+    [field: SerializeField] public float healthRecovery { get; set; }
+    [field: SerializeField] public float staminaRecovery { get; set; }
+    [field: SerializeField] public float manaRecovery { get; set; }
     [field: SerializeField] public int strength { get; set; }
     [field: SerializeField] public int dexterity { get; set; }
     [field: SerializeField] public int intelligence { get; set; }
-    [field: SerializeField] public int maxHealth { get; set; }
-    [field: SerializeField] public int maxStamina { get; set; }
-    [field: SerializeField] public int maxMana { get; set; }
-    [field: SerializeField] public int currentHealth { get; set; }
-    [field: SerializeField] public int currentStamina { get; set; }
-    [field: SerializeField] public int currentMana { get; set; }
-    [field: SerializeField] public int healthRecovery { get; set; }
-    [field: SerializeField] public int staminaRecovery { get; set; }
-    [field: SerializeField] public int manaRecovery { get; set; }
     public float healthRegenDelay;
     [SerializeField] private float _staminaRecoveryDelay = 1f;
     [SerializeField] private float _staminaRecoveryTick = .1f;
@@ -72,14 +73,16 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
     public float maxEquipload;
     public float currentEquipLoad;
     [field: SerializeField] public int loadStage { get; set; }
-    [field: SerializeField] public int maxOxygen { get; set; }
-    public int curOxygen { get; set; }
+    [field: SerializeField] public float maxOxygen { get; set; }
+    public float curOxygen { get; set; }
     public List<Effect> activeEffects;
+    private Coroutine _infiniteFallCoroutine;
 
     public event Action<float, float> OnHealthChange;
     public event Action<float, float> OnStaminaChange;
     public event Action<float, float> OnManahange;
     public event Action<float, float> OnOxygenChange;
+    public event Action<float> OnRecieveDamage;
 
     protected virtual void Awake()
     {
@@ -114,6 +117,7 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
 
     protected virtual void Update()
     {
+        wasFalling = falling;
 
         grounded = Physics.CheckSphere(GroundCheckRight.position, groundCheckDistance, GameMaster.instance.environmentMask) | Physics.CheckSphere(GroundCheckLeft.transform.position, groundCheckDistance, GameMaster.instance.environmentMask);
 
@@ -123,21 +127,24 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
         {
             if (grounded)
             {
-                if (falling)
+                if (falling == true)
                 {
+                    falling = false;
+
                     Land();
                 }
                 else velocity.y = -1; //Resets free fall acceleration after hitting the ground/other objects
             }
             else
             {
-                if (!falling)
+                if (falling == false)
                 {
                     falling = true;
 
                     startFallPosition = transform.position.y;
 
-                    StartCoroutine(InfiniteFallCountdown());
+                    if (_infiniteFallCoroutine == null) _infiniteFallCoroutine = StartCoroutine(InfiniteFallCountdown());
+                    else StopCoroutine(_infiniteFallCoroutine);
                 }
             }
         }
@@ -171,8 +178,6 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
             ChangeCurrentHealth(-fallDmg);
         }
 
-        falling = false;
-
         velocity = Vector3.zero;
     }
 
@@ -184,18 +189,23 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
 
             _fallingTimer++;
 
-            if (_fallingTimer > GameMaster.MaxFallTime) Kill();
+            if (_fallingTimer > GameMaster.MaxFallTime)
+            {
+                Kill();
+
+                Debug.Log($"{this.gameObject} was killed via infinite fall.");
+            }
         }
 
         _fallingTimer = 0;
     }
 
-    private void SetMaxHealth(int value)
+    private void SetMaxHealth(float value)
     {
         maxHealth = value;
     }
 
-    public virtual void ChangeCurrentHealth(int value)
+    public virtual void ChangeCurrentHealth(float value)
     {
         if (value != 0)
         {
@@ -209,6 +219,8 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
                 healthRegenDelay = Time.time + 5f;
 
                 if (Time.time >= healthRegenDelay) RestoreHealth();
+
+                OnRecieveDamage?.Invoke(Mathf.Abs(value));
             }
 
             currentHealth += value;
@@ -229,12 +241,12 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
         yield return null;
     }
 
-    private void SetMaxStamina(int value)
+    private void SetMaxStamina(float value)
     {
         maxStamina = value;
     }
 
-    public void ChangeCurrentStamina(int value)
+    public void ChangeCurrentStamina(float value)
     {
         if (value < 0)
         {
@@ -264,12 +276,12 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
         _staminaRegenCoroutine = null; // When stamina is full replenished, forget this coroutine for further reusage.
     }
 
-    private void SetMaxMana(int value)
+    private void SetMaxMana(float value)
     {
         maxMana = value;
     }
 
-    public void ChangeCurrentMana(int value)
+    public void ChangeCurrentMana(float value)
     {
         if (value < 0) currentMana += value;
         else currentMana += value;
@@ -284,7 +296,7 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
         yield return null;
     }
 
-    public void ChangePoise(int value)
+    public void ChangePoise(float value)
     {
 
     }
@@ -485,7 +497,7 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
         }
     }
 
-    public virtual void GetHit(int amount, DamageType type, Transform part)
+    public virtual void GetHit(float amount, DamageType type, Transform part)
     {
         ChangeCurrentHealth(-amount);
 
@@ -496,6 +508,6 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
     {
         soundManager.PlaySound("Death");
 
-        UIManager.instance.PrintMessage(transform.name + " has died.");
+        UIManager.instance.PrintMessage($"{this.gameObject.name} has died.");
     }
 }

@@ -63,7 +63,7 @@ public class Door : MonoBehaviour, IInteractable, IDamageable
         }
     }
 
-    public void GetHit(int amount, DamageType type, Transform part)
+    public void GetHit(float amount, DamageType type, Transform part)
     {
         SM.PlaySound("GetHit");
 

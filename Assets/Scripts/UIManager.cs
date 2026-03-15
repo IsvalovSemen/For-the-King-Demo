@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.U2D;
 
 public class UIManager : MonoBehaviour
 {
@@ -12,11 +13,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text _notificationsWindow;
     private readonly List<string> _activeMessages = new List<string>();
     [SerializeField] private float _messageDisplayDelay = 5f;
-    public GameObject effectIconPrefab;
-    [SerializeField] private Transform _inventoryPointer;
-    public event Action OnInventoryClosure;
     [SerializeField] private MenuState currentMenu = MenuState.None;
-    public ActorStatus actorStatusPanelPrefab;
+    [SerializeField] private ActorStatus actorStatusPanelPrefab;
 
     [Header("Cursor:")]
     [SerializeField] private Texture2D _cursorStandart;
@@ -65,9 +63,11 @@ public class UIManager : MonoBehaviour
     public Slider throwMeter;
     public Slider oxygenMeter;
     public Image experienceMeter;
-    public RectTransform statusEffectsPanel;
+    [SerializeField] private EffectIcon _effectIconPrefab;
+    [SerializeField] private RectTransform _playerEffectsPanel;
 
-    [Header("Item tooltip:")]
+    [Header("Inventory:")]
+    [SerializeField] private Transform _inventoryPointer;
     [SerializeField] private GameObject _tooltipWindow;
     [SerializeField] private Image _tooltipIcon;
     [SerializeField] private Text _tooltipTitle;
@@ -76,6 +76,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Slider _durabilityMeter;
     [SerializeField] private Text _durabilityRatio;
     [SerializeField] private Text _tooltipDescription;
+    public event Action OnInventoryClosure;
 
     public enum MenuState
     {
@@ -99,8 +100,6 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
         //Cursor.visible = false;
-
-        Debug.LogWarning(Player.instance.gameObject);
 
         Player.instance.OnHealthChange += UpdateHealthbar;
 
@@ -218,6 +217,13 @@ public class UIManager : MonoBehaviour
         throwMeter.maxValue = maxPower;
 
         throwMeter.value = curPower;
+    }
+
+    public void AddEffectIcon(Effect effect)
+    {
+        var effectIcon = Instantiate(_effectIconPrefab, _playerEffectsPanel);
+
+        effectIcon.Init(effect);
     }
 
     public void OpenMenu(MenuState menu)
@@ -370,6 +376,15 @@ public class UIManager : MonoBehaviour
 
         _activeMessages.Remove(message);
         UpdateMessageText();
+    }
+
+    public ActorStatus CreateActorStatusPanel(Creature actor)
+    {
+        var newPanel = Instantiate(UIManager.instance.actorStatusPanelPrefab, UIManager.instance.transform);
+
+        newPanel.Init(actor);
+
+        return newPanel;
     }
 
     public void SetCursor(bool value)
