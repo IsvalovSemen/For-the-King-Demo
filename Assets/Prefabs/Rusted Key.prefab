@@ -137,7 +137,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8544435855584177311}
   - component: {fileID: 998369634616128570}
-  - component: {fileID: 4924516789864443846}
+  - component: {fileID: 1140137298022231307}
   m_Layer: 3
   m_Name: Rusted Key
   m_TagString: Untagged
@@ -188,7 +188,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 2
---- !u!114 &4924516789864443846
+--- !u!114 &1140137298022231307
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -197,16 +197,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 8507901604044092569}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66af589a5ecc010459decc8e32520f71, type: 3}
+  m_Script: {fileID: 11500000, guid: 948b23d1f7017324a8bb4a71798df8a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _weight: 0
-  _maxDurability: 100
-  currentDurability: 0
-  _discardingTime: 30
-  _takeDmgThreshold: 1
-  dealDmgThreshold: 5
-  _pieces: {fileID: 0}
-  hittedTargets: []
-  _stats: {fileID: 11400000, guid: 9969ea29fa9730f4b895c4ee739cc47f, type: 2}
-  _count: 0
+  _item:
+    _stats: {fileID: 11400000, guid: 9969ea29fa9730f4b895c4ee739cc47f, type: 2}
+    _count: 0
+    _currentDurability: 0

@@ -6,19 +6,19 @@ public class InventoryCell : MonoBehaviour
 {
     [SerializeField] private ItemIcon _icon;
     [SerializeField] private Sprite _defaultIcon;
-    [SerializeField] private ItemSlot _relatedSlot;
+    [SerializeField] private Slot _relatedSlot;
 
     private void Start()
     {
         _icon.ConnectCell(this);
     }
 
-    public void SetRelatedSlot(ItemSlot slot)
+    public void SetRelatedSlot(Slot slot)
     {
         _relatedSlot = slot;
     }
 
-    public ItemSlot RelatedSlot => _relatedSlot;
+    public Slot RelatedSlot => _relatedSlot;
 
     public void UpdateCellView()
     {

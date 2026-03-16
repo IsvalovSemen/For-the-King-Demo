@@ -44,7 +44,7 @@ public class Humanoid : Creature
         base.Update();
     }
 
-    private void PutOn(EquipmentSlotType equipSlot, ItemInstance item)
+    private void PutOn(EquipmentSlotType equipSlot, Item item)
     {
         Transform socket;
 
@@ -52,7 +52,7 @@ public class Humanoid : Creature
         else if (equipSlot == EquipmentSlotType.HandRight1) socket = holdPointRight;
         else socket = gearSocket;
 
-        GameObject newObject = Instantiate(item.Stats.prefab, socket);
+        GameObject newObject = Instantiate(item.Stats.prefab, socket.transform.position, socket.transform.rotation, socket);
 
         newObject.GetComponentInChildren<IEquipment>().Equip();
 

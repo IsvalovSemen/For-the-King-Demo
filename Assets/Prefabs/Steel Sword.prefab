@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2758179790640682901}
   - component: {fileID: 4358860849241450561}
-  - component: {fileID: 2591257362111629686}
+  - component: {fileID: 7041331359633873715}
   m_Layer: 3
   m_Name: Steel Sword
   m_TagString: Untagged
@@ -61,7 +61,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &2591257362111629686
+--- !u!114 &7041331359633873715
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -70,12 +70,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 2758179790640682902}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6dc3acc8b34d9784b93a9f0c61d3d24a, type: 3}
+  m_Script: {fileID: 11500000, guid: 948b23d1f7017324a8bb4a71798df8a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stats: {fileID: 11400000, guid: a1dc2d187e1636e47a769c9b5569ce49, type: 2}
-  _currentDurability: 0
-  _count: 0
+  _item:
+    _stats: {fileID: 11400000, guid: a1dc2d187e1636e47a769c9b5569ce49, type: 2}
+    _count: 0
+    _currentDurability: 0
 --- !u!1 &3173552451766600078
 GameObject:
   m_ObjectHideFlags: 0

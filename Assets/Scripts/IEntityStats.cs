@@ -11,9 +11,6 @@ public interface IEntityStats
 
     void ChangePoise(float value);
 
-    int strength { get; set; }
-    int dexterity { get; set; }
-    int intelligence { get; set; }
     float maxHealth { get; set; }
     float maxStamina { get; set; }
     float maxMana { get; set; }

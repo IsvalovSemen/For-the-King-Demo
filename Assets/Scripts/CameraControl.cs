@@ -13,6 +13,7 @@ public class CameraControl: MonoBehaviour
     [SerializeField] protected float maxVerticalAngle = 60f;
     protected float XRotation;
     protected float YRotation;
+    private IInteractable _prevSelected;
 
     #region Singleton
     private void Awake()
@@ -91,9 +92,9 @@ public class CameraControl: MonoBehaviour
         }
     }
 
-    public InteractionType InteractionCheck()
+    public IInteractable InteractionCheck()
     {
-        InteractionType result = InteractionType.None;
+        IInteractable result = null;
 
         if (!UIManager.instance.IsAnyMenuOpen)
         {
@@ -103,38 +104,42 @@ public class CameraControl: MonoBehaviour
 
             if (Physics.Raycast(_ray, out hit, 100f, ~0, QueryTriggerInteraction.Collide)) // "QueryTriggerInteraction.Collide" is necessary for raycast to work with trigger colliders.
             {
-                if (hit.collider.isTrigger) // If target collider is trigger and a Sphere Collider.
+                _distanceToObject = Vector3.Distance(hit.transform.position, transform.position); // Calculate distance to the target object.
+
+                if (_distanceToObject < GameMaster.instance.interactionDistance) // If distance is appropriate.
                 {
-                    _distanceToObject = Vector3.Distance(hit.transform.position, transform.position); // Calculate distance to the target object.
-
-                    if (_distanceToObject < GameMaster.instance.interactionDistance) // If distance is appropriate.
+                    if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Environment") || hit.transform.gameObject.layer == LayerMask.NameToLayer("Entitites"))
                     {
-                        if (hit.transform.gameObject.layer == 3 || hit.transform.gameObject.layer == 6) // If target object belongs to the "environment" or "entities" layers.
+                        if (hit.collider.isTrigger)
                         {
-                            if (hit.transform.GetComponent<IInteractable>() != null)
-                            {
-                                if (hit.transform.GetComponent<Item>() != null)
-                                {
-                                    UIManager.instance.ShowItemTooltip(hit.transform.GetComponent<Item>()); // Show item infobox while looking at item.
+                            IInteractable currentSelected = hit.transform.GetComponentInChildren<IInteractable>();
 
+                            if (currentSelected != null)
+                            {
+                                if (_prevSelected != null)
+                                {
+                                    _prevSelected.OnDeselect();
                                 }
 
-                                result = hit.transform.GetComponent<IInteractable>().interactionType;
+                                currentSelected.OnSelect();
 
-                                UIManager.instance.interactionPrompt.SetActive(true);
+                                _prevSelected = currentSelected;
 
-                                UIManager.instance.promptText.text = result.ToString();
+                                result = currentSelected;
                             }
                         }
                     }
                 }
             }
+        }
 
-            if (result == InteractionType.None)
+        if (result == null)
+        {
+            if (_prevSelected != null)
             {
-                UIManager.instance.interactionPrompt.transform.gameObject.SetActive(false);
+                _prevSelected.OnDeselect();
 
-                UIManager.instance.HideItemTooltip();
+                _prevSelected = null;
             }
         }
 

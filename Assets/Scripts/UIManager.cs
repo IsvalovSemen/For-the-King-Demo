@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.U2D;
+using System.Linq;
 
 public class UIManager : MonoBehaviour
 {
@@ -14,7 +14,6 @@ public class UIManager : MonoBehaviour
     private readonly List<string> _activeMessages = new List<string>();
     [SerializeField] private float _messageDisplayDelay = 5f;
     [SerializeField] private MenuState currentMenu = MenuState.None;
-    [SerializeField] private ActorStatus actorStatusPanelPrefab;
 
     [Header("Cursor:")]
     [SerializeField] private Texture2D _cursorStandart;
@@ -66,16 +65,18 @@ public class UIManager : MonoBehaviour
     [SerializeField] private EffectIcon _effectIconPrefab;
     [SerializeField] private RectTransform _playerEffectsPanel;
 
+    [Header("Actors:")]
+    [SerializeField] private ActorStatus actorStatusPanelPrefab;
+    [SerializeField] private Inventory _myInventory;
+    [SerializeField] private ScrollRect _lootPanelPrefab;
+
     [Header("Inventory:")]
+    [SerializeField] private GameObject _inventoryCanvas;
+    [field: SerializeField] public List<InventoryCell> cells { get; set; }
     [SerializeField] private Transform _inventoryPointer;
-    [SerializeField] private GameObject _tooltipWindow;
-    [SerializeField] private Image _tooltipIcon;
-    [SerializeField] private Text _tooltipTitle;
-    [SerializeField] private Text _tooltipWeight;
-    [SerializeField] private Text _tooltipPrice;
-    [SerializeField] private Slider _durabilityMeter;
-    [SerializeField] private Text _durabilityRatio;
-    [SerializeField] private Text _tooltipDescription;
+    public ItemPreview itemPreviewPrefab;
+    [SerializeField] private ItemTooltip _tooltip;
+
     public event Action OnInventoryClosure;
 
     public enum MenuState
@@ -88,14 +89,15 @@ public class UIManager : MonoBehaviour
         Map
     }
 
-    #region Singleton
     private void Awake()
     {
         if (instance != null) Debug.LogWarning("More than one GameManager.");
 
         instance = this;
+
+        cells = _inventoryCanvas.GetComponentsInChildren<InventoryCell>(true).ToList();
+
     }
-    #endregion
 
     private void Start()
     {
@@ -111,11 +113,20 @@ public class UIManager : MonoBehaviour
 
         Player.instance.OnOxygenChange += UpdateOxygenBar;
 
-        CloseAllMenus();
-
         promptKey.text = GameMaster.instance.interactionKey.ToString();
 
+        InventoryManager.instance.OnInventoryChanged += UpdateCells;
+
+        CloseAllMenus();
+
+        DisableInteractionPrompt();
+
         HideItemTooltip();
+
+        for (int i = 0; i < cells.Count; i++)
+        {
+            cells[i].SetRelatedSlot(Player.instance.inventory.slots[i]);
+        }
     }
 
     private void Update()
@@ -148,6 +159,13 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    private void UpdateCells(Inventory inventory)
+    {
+        for (int i = 0; i < cells.Count; i++)
+        {
+            cells[i].UpdateCellView();
+        }
+    }
     private void UpdateHealthbar(float currentHealth, float maxHealth)
     {
         _playerHealthBar.maxValue = maxHealth;
@@ -241,6 +259,7 @@ public class UIManager : MonoBehaviour
             case MenuState.Inventory:
                 _inventoryMenu.SetActive(true);
                 _cursorStandart = _cursorPick;
+                InventoryManager.instance.UpdateInventoryUI(Player.instance.inventory);
                 break;
 
             case MenuState.Character:
@@ -339,30 +358,32 @@ public class UIManager : MonoBehaviour
         _inventoryPointer.transform.position = cell.transform.position;
     }
 
-    public void ShowItemTooltip(IItem item)
+    public void EnableInteractionPrompt(InteractionType interaction)
     {
-        _tooltipWindow.SetActive(true);
-        _tooltipIcon.sprite = item.Stats.iconSprite;
-        _tooltipTitle.text = item.Stats.itemTitle;
-        _tooltipWeight.text = item.Stats.weight.ToString();
-        _tooltipPrice.text = item.Stats.price.ToString();
-        _durabilityMeter.maxValue = item.Stats.maxDurability;
-        _durabilityMeter.value = item.CurrentDurability;
-        _durabilityRatio.text = $"{item.CurrentDurability}/{item.Stats.maxDurability}";
-        _tooltipDescription.text = item.Stats.description;
+        interactionPrompt.SetActive(true);
+
+        promptText.text = interaction.ToString();
+    }
+
+    public void DisableInteractionPrompt()
+    {
+        interactionPrompt.SetActive(false);
+
+        promptText.text = string.Empty;
+    }
+
+    public void ShowItemTooltip(Item item)
+    {
+        _tooltip.gameObject.SetActive(true);
+
+        _tooltip.SetValues(item);
     }
 
     public void HideItemTooltip()
     {
-        _tooltipWindow.SetActive(false);
-        _tooltipIcon.sprite = null;
-        _tooltipTitle.text = string.Empty;
-        _tooltipWeight.text = string.Empty;
-        _tooltipPrice.text = string.Empty;
-        _durabilityMeter.maxValue = 100;
-        _durabilityMeter.value = 0;
-        _durabilityRatio.text = string.Empty;
-        _tooltipDescription.text = string.Empty;
+        _tooltip.gameObject.SetActive(false);
+
+        _tooltip.ClearValues();
     }
 
     private void UpdateMessageText()

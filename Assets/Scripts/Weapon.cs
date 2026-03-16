@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Weapon : Item, IEquipment
+public class Weapon : Loot, IEquipment
 {
     private Transform _sheatheSocket;
     private int _handIndex;

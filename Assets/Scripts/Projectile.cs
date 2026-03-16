@@ -35,6 +35,17 @@ public class Projectile : PhysicalObject, IPortable
         if (_inRadius) Hold();
     }
 
+    public void OnSelect()
+    {
+        UIManager.instance.EnableInteractionPrompt(interactionType);
+
+    }
+
+    public void OnDeselect()
+    {
+        UIManager.instance.DisableInteractionPrompt();
+    }
+
     private void Hold()
     {
         holding = true;

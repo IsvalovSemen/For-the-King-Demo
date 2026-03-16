@@ -1,25 +1,18 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 public class Inventory : MonoBehaviour
 {
-    public List<ItemSlot> slots = new List<ItemSlot>();
-    [SerializeField] private int _maxSlots = 100;
-    public Dictionary<EquipmentSlotType, ItemInstance> equipment = new Dictionary<EquipmentSlotType, ItemInstance>();
-    public List<InventoryCell> cells { get; set; }
-    [SerializeField] private GameObject _inventoryCanvas;
+    public List<Slot> slots = new List<Slot>();
+    public Dictionary<EquipmentSlotType, Item> equipment = new Dictionary<EquipmentSlotType, Item>();
     public event Action<float> OnEquiploadChange;
-    public event Action<EquipmentSlotType, ItemInstance> OnItemEquip;
+    public event Action<EquipmentSlotType, Item> OnItemEquip;
     public event Action<EquipmentSlotType> OnItemUnequip;
 
     private void Awake()
     {
-        cells = _inventoryCanvas.GetComponentsInChildren<InventoryCell>(true).ToList();
-
-        _maxSlots = cells.Count + 1;
-
         foreach (EquipmentSlotType slot in Enum.GetValues(typeof(EquipmentSlotType)))
         {
             equipment[slot] = null;
@@ -27,27 +20,9 @@ public class Inventory : MonoBehaviour
     }
     private void Start()
     {
-        for (int i = 0; i < cells.Count; i++)
+        for (int i = 0; i < slots.Count; i++)
         {
             slots[i].SetupSlot(this, i);
-        }
-    }
-
-    private void OnEnable()
-    {
-        InventoryManager.instance.OnInventoryChanged += UpdateCells;
-    }
-
-    private void OnDisable()
-    {
-        InventoryManager.instance.OnInventoryChanged -= UpdateCells;
-    }
-
-    private void UpdateCells(Inventory inventory)
-    {
-        for (int i = 0; i < cells.Count; i++)
-        {
-            cells[i].UpdateCellView();
         }
     }
     /// <summary>
@@ -55,7 +30,7 @@ public class Inventory : MonoBehaviour
     /// </summary>
     /// <param name="item"></param>
     /// <returns></returns>
-    public ItemSlot TryFindAppropriateSlot(IItem item)
+    public Slot FindFittingSlot(Item item)
     {
         for (int i = 0; i < slots.Count;i++)
         {
@@ -68,7 +43,20 @@ public class Inventory : MonoBehaviour
         return null;
     }
 
-    public void AddItem(ItemInstance item, int slotIndex)
+    public bool SearchForItem(string ID)
+    {
+        for (int i = 0; i < slots.Count; i++)
+        {
+            if (slots[i].IsOccupied == true && slots[i].StoredItem.Stats.ID == ID)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void AddItem(Item item, int slotIndex)
     {
         StoreInSlot(item, slotIndex);
 
@@ -77,7 +65,7 @@ public class Inventory : MonoBehaviour
         Debug.Log($"{item.Stats.itemTitle} was stored in {transform.GetComponentInParent<Creature>().gameObject.name} inventory.");
     }
 
-    public void StoreInSlot(ItemInstance item, int slotIndex)
+    public void StoreInSlot(Item item, int slotIndex)
     {
         slots[slotIndex].AssignItem(item);
 
@@ -87,7 +75,7 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    private void EquipItem(ItemInstance item, int slotIndex)
+    private void EquipItem(Item item, int slotIndex)
     {
         equipment[slots[slotIndex].EquipmentType] = item;
 
@@ -143,7 +131,7 @@ public class Inventory : MonoBehaviour
 
         GameObject createdItem = Instantiate(slots[slotIndex].StoredItem.Stats.prefab, hitInfo.point, Quaternion.identity); // Spawns a prefab of dropped item in the point camera facing.
 
-        createdItem.GetComponent<Item>().SetCount(slots[slotIndex].StoredItem.Count);
+        createdItem.GetComponent<Loot>().Item.SetCount(slots[slotIndex].StoredItem.Count);
 
         Debug.Log($"{slots[slotIndex].StoredItem.Stats.itemTitle} was dropped from {transform.GetComponentInParent<Creature>().gameObject.name} inventory.");
 
@@ -152,11 +140,5 @@ public class Inventory : MonoBehaviour
         RemoveFromSlot(slotIndex);
 
         InventoryManager.instance.UpdateInventoryUI(this);
-    }
-
-    public bool IsEnoughSpace()
-    {
-        if (slots.Count >= _maxSlots) return false;
-        else return true;
     }
 }

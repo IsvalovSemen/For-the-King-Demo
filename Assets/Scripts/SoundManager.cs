@@ -26,6 +26,14 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    public bool FindSound(string name)
+    {
+        Sound sound = Array.Find(sounds, sound => sound.name == name);
+
+        if (sound != null) return true;
+        else return false;
+    }
+
     public void PlaySound(string name)
     {
         Sound sound = Array.Find(sounds, sound => sound.name == name);

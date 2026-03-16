@@ -12,6 +12,9 @@ public class Player : Humanoid
     [field: SerializeField] public int exp { get; set; }
     [field: SerializeField] public int nextLvlExp { get; set; }
     [field: SerializeField] public int skillpointsAvailable { get; set; }
+    [field: SerializeField] public int strength { get; set; }
+    [field: SerializeField] public int dexterity { get; set; }
+    [field: SerializeField] public int intelligence { get; set; }
 
     public event Action<float, float, int> OnEquiploadChange;
 
@@ -44,27 +47,7 @@ public class Player : Humanoid
     protected override void Start()
     {
         controller = GetComponent<CharacterController>();
-        /*
-        indicators.GetComponent<ActorUI>().strTxt.text = strength.ToString();
 
-        indicators.GetComponent<ActorUI>().dexTxt.text = dexterity.ToString();
-
-        indicators.GetComponent<ActorUI>().intTxt.text = intelligence.ToString();
-
-        indicators.GetComponent<ActorUI>().nameTxt.text = transform.name;
-
-        indicators.GetComponent<ActorUI>().lvlTxt.text = lvl.ToString();
-
-        indicators.GetComponent<ActorUI>().experienceBar.fillAmount = (float)exp / (float)nextLvlExp;
-
-        indicators.GetComponent<ActorUI>().expTxt.text = exp.ToString() + " / " + nextLvlExp.ToString();
-        
-        curOxygen = maxOxygen;
-
-        indicators.GetComponent<ActorUI>().oxygenBar.maxValue = maxOxygen;
-
-        indicators.GetComponent<ActorUI>().oxygenBar.value = maxOxygen;
-        */
         base.Start();
     }
 
@@ -79,8 +62,8 @@ public class Player : Humanoid
                 float mouseX = Input.GetAxis("Mouse X");
                 float mouseY = Input.GetAxis("Mouse Y");
 
-                ItemInstance weaponR = inventory.equipment[EquipmentSlotType.HandRight1];
-                ItemInstance weaponL = inventory.equipment[EquipmentSlotType.HandLeft1];
+                Item weaponR = inventory.equipment[EquipmentSlotType.HandRight1];
+                Item weaponL = inventory.equipment[EquipmentSlotType.HandLeft1];
 
                 if (Input.GetMouseButtonUp(0) && weaponR != null)
                 {
@@ -167,8 +150,10 @@ public class Player : Humanoid
         lvl++;
     }
 
-    public override void Movement()
+    protected override void Movement()
     {
+        base.Movement();
+
         if (!UIManager.instance.IsAnyMenuOpen && grounded)
         {
             if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
@@ -379,11 +364,62 @@ public class Player : Humanoid
         }
     }
 
+    protected override void Swimming()
+    {
+        base.Swimming();
+
+        if (swimming)
+        {
+            if (!grounded && !diving && Input.GetKeyDown(GameMaster.instance.jumpKey)) diving = true;
+
+            if (Input.GetKey(GameMaster.instance.moveForward))
+            {
+                animator.SetInteger("Movement", 6);
+
+                controller.Move(transform.forward * Input.GetAxis("Vertical") * (swimSpeed / loadStage) * Time.deltaTime);
+            }
+
+            if (Input.GetKey(GameMaster.instance.moveBackward))
+            {
+                animator.SetInteger("Movement", 6);
+
+                controller.Move(-transform.forward * -Input.GetAxis("Vertical") * (swimSpeed / loadStage) * Time.deltaTime);
+
+            }
+            else animator.SetInteger("Movement", 0);
+        }
+
+        if (diving)
+        {
+            if (Input.GetKey(GameMaster.instance.moveForward))
+            {
+                animator.SetInteger("Movement", 5);
+
+                controller.Move(CameraControl.instance.transform.forward * Input.GetAxis("Vertical") * (swimSpeed / loadStage) * Time.deltaTime);
+            }
+
+            if (Input.GetKey(GameMaster.instance.moveBackward))
+            {
+                animator.SetInteger("Movement", 5);
+
+                controller.Move(-CameraControl.instance.transform.forward * -Input.GetAxis("Vertical") * (swimSpeed / loadStage) * Time.deltaTime);
+            }
+            else animator.SetInteger("Movement", 0);
+        }
+    }
+
     private void Interact()
     {
-        if (CameraControl.instance.InteractionCheck() != InteractionType.None)
+        IInteractable target = CameraControl.instance.InteractionCheck();
+
+        if (target != null)
         {
-            RaycastHit target = CameraControl.instance.hit;
+            if (Input.GetKeyDown(GameMaster.instance.interactionKey))
+            {
+                target.Interaction(this);
+            }
+            /*
+                RaycastHit target = CameraControl.instance.hit;
 
             if (Input.GetKey(GameMaster.instance.interactionKey))
             {
@@ -417,7 +453,7 @@ public class Player : Humanoid
 
                     GameMaster.instance.keyHoldTime = 0f;
                 }
-            }
+            }*/
         }
     }
 
@@ -570,28 +606,16 @@ public class Player : Humanoid
 
         switch (animator.GetInteger("Movement")) // FIXME: need to clear this mess.
         {
-            case 4:
-                {
-                    MS = sprintSpeed;
-                }
+            case 4: MS = sprintSpeed;
                 break;
 
-            case 3:
-                {
-                    MS = runSpeed;
-                }
+            case 3: MS = runSpeed;
                 break;
 
-            case 2:
-                {
-                    MS = walkSpeed;
-                }
+            case 2: MS = walkSpeed;
                 break;
 
-            case 1:
-                {
-                    MS = crouchSpeed;
-                }
+            case 1: MS = crouchSpeed;
                 break;
         }
 

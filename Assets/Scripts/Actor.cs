@@ -5,8 +5,7 @@ using UnityEngine.UI;
 public class Actor : Humanoid, IInteractable
 {
     private UnityEngine.AI.NavMeshAgent _agent;
-    [SerializeField] private List<ItemInstance> _loot = new List<ItemInstance>();
-    public Dictionary<EquipmentSlotType, ItemInstance> equipment = new Dictionary<EquipmentSlotType, ItemInstance>();
+    public Dictionary<EquipmentSlotType, Item> equipment = new Dictionary<EquipmentSlotType, Item>();
     [SerializeField] protected ActorStatus _statusPanel;
     public InteractionType interactionType { get; set; }
     [SerializeField] private float _sightDistance = 50;
@@ -202,23 +201,6 @@ public class Actor : Humanoid, IInteractable
 
     public override void Land()
     {
-        float fallDistance = startFallPosition - transform.position.y;
-
-        float healthDamage = 0;
-
-        //PlaySound("Land");
-
-        if (fallDistance > minSafeFallHeight)
-        {
-            healthDamage = (int)Mathf.Clamp(maxHealth * (fallDistance / maxSafeFallHeight) - dexterity, 0, maxHealth);
-
-            if (fallDistance >= maxSafeFallHeight) healthDamage = maxHealth;
-
-            ChangeCurrentHealth((int)(healthDamage));
-
-            UIManager.instance.PrintMessage(transform.name + "  fell from " + fallDistance + " units and took " + healthDamage + " damage");
-        }
-
         if (!_agent.isOnNavMesh)
         {
             UnityEngine.AI.NavMeshHit hit;
@@ -232,9 +214,7 @@ public class Actor : Humanoid, IInteractable
             //agent.enabled = true;
         }
 
-        falling = false;
-
-        velocity = Vector3.zero;
+        base.Land();
     }
 
     private bool FielfOfView()
@@ -317,6 +297,16 @@ public class Actor : Humanoid, IInteractable
         animator.enabled = false;
 
         this.enabled = false;
+    }
+
+    public void OnSelect()
+    {
+
+    }
+
+    public void OnDeselect()
+    {
+
     }
 
     private void OnDrawGizmosSelected()

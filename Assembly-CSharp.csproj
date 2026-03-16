@@ -61,11 +61,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\QuestLog.cs" />
-    <Compile Include="Assets\Scripts\ActorUI.cs" />
     <Compile Include="Assets\Scripts\EnteringAreaEvent.cs" />
     <Compile Include="Assets\Scripts\IInteractable.cs" />
     <Compile Include="Assets\Scripts\SkeletonResurrection.cs" />
     <Compile Include="Assets\Scripts\Effect.cs" />
+    <Compile Include="Assets\Scripts\Loot.cs" />
     <Compile Include="Assets\Scripts\Bone.cs" />
     <Compile Include="Assets\Scripts\InventoryManager.cs" />
     <Compile Include="Assets\Scripts\MainMenuCamera.cs" />
@@ -76,17 +76,19 @@
     <Compile Include="Assets\Scripts\ActorStatus.cs" />
     <Compile Include="Assets\Scripts\SoundManager.cs" />
     <Compile Include="Assets\Scripts\RegenerationEffect.cs" />
+    <Compile Include="Assets\Scripts\ItemTooltip.cs" />
     <Compile Include="Assets\Scripts\Hitbox.cs" />
     <Compile Include="Assets\Scripts\PhysicalObject.cs" />
     <Compile Include="Assets\Scripts\UIManager.cs" />
+    <Compile Include="Assets\Scripts\ItemPreview.cs" />
     <Compile Include="Assets\Scripts\EffectInfo.cs" />
     <Compile Include="Assets\Scripts\IDamageable.cs" />
     <Compile Include="Assets\Scripts\IEquipment.cs" />
+    <Compile Include="Assets\Scripts\Slot.cs" />
     <Compile Include="Assets\Scripts\Projectile.cs" />
     <Compile Include="Assets\Scripts\EffectIcon.cs" />
     <Compile Include="Assets\Scripts\DoubleClick.cs" />
     <Compile Include="Assets\Scripts\ItemStats.cs" />
-    <Compile Include="Assets\Scripts\Key.cs" />
     <Compile Include="Assets\Scripts\Inventory.cs" />
     <Compile Include="Assets\Scripts\IPortable.cs" />
     <Compile Include="Assets\Scripts\QuestTemplate.cs" />
@@ -104,7 +106,6 @@
     <Compile Include="Assets\Scripts\Item.cs" />
     <Compile Include="Assets\Scripts\QuestUpdate.cs" />
     <Compile Include="Assets\Scripts\Creature.cs" />
-    <Compile Include="Assets\Scripts\Consumable.cs" />
     <Compile Include="Assets\Scripts\InventoryCell.cs" />
   </ItemGroup>
   <ItemGroup>

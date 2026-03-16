@@ -62,9 +62,6 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
     [field: SerializeField] public float healthRecovery { get; set; }
     [field: SerializeField] public float staminaRecovery { get; set; }
     [field: SerializeField] public float manaRecovery { get; set; }
-    [field: SerializeField] public int strength { get; set; }
-    [field: SerializeField] public int dexterity { get; set; }
-    [field: SerializeField] public int intelligence { get; set; }
     public float healthRegenDelay;
     [SerializeField] private float _staminaRecoveryDelay = 1f;
     [SerializeField] private float _staminaRecoveryTick = .1f;
@@ -83,6 +80,7 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
     public event Action<float, float> OnManahange;
     public event Action<float, float> OnOxygenChange;
     public event Action<float> OnRecieveDamage;
+    public event Action<Creature> OnDeath;
 
     protected virtual void Awake()
     {
@@ -117,37 +115,7 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
 
     protected virtual void Update()
     {
-        wasFalling = falling;
 
-        grounded = Physics.CheckSphere(GroundCheckRight.position, groundCheckDistance, GameMaster.instance.environmentMask) | Physics.CheckSphere(GroundCheckLeft.transform.position, groundCheckDistance, GameMaster.instance.environmentMask);
-
-        velocity.y += -GameMaster.instance.gravity * Time.deltaTime; //Acceleration of gravity.
-
-        if (velocity.y < 0)
-        {
-            if (grounded)
-            {
-                if (falling == true)
-                {
-                    falling = false;
-
-                    Land();
-                }
-                else velocity.y = -1; //Resets free fall acceleration after hitting the ground/other objects
-            }
-            else
-            {
-                if (falling == false)
-                {
-                    falling = true;
-
-                    startFallPosition = transform.position.y;
-
-                    if (_infiniteFallCoroutine == null) _infiniteFallCoroutine = StartCoroutine(InfiniteFallCountdown());
-                    else StopCoroutine(_infiniteFallCoroutine);
-                }
-            }
-        }
 
         Movement();
 
@@ -171,7 +139,7 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
 
             float x = Mathf.InverseLerp(minSafeFallHeight, maxSafeFallHeight, fallDistance); // If value <= a  returns 0 | if value >= b returns 1 | if value between a and b returns 0..1.
 
-            int fallDmg = (int)(x * maxHealth);
+            float fallDmg = x * maxHealth;
 
             UIManager.instance.PrintMessage($"{transform.name} fell from {fallDistance} units and took {fallDmg} damage.");
 
@@ -350,12 +318,42 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
         //if (curHP <= 0 && !_isPlayerChar) parts[part].GetComponent<BodyPart>().Dismember();
     }
     
-    public virtual void Movement()
+    protected virtual void Movement()
     {
+        wasFalling = falling;
 
+        grounded = Physics.CheckSphere(GroundCheckRight.position, groundCheckDistance, GameMaster.instance.environmentMask) | Physics.CheckSphere(GroundCheckLeft.transform.position, groundCheckDistance, GameMaster.instance.environmentMask);
+
+        velocity.y += -GameMaster.instance.gravity * Time.deltaTime; //Acceleration of gravity.
+
+        if (velocity.y < 0)
+        {
+            if (grounded)
+            {
+                if (falling == true)
+                {
+                    falling = false;
+
+                    Land();
+                }
+                else velocity.y = -1; //Resets free fall acceleration after hitting the ground/other objects
+            }
+            else
+            {
+                if (falling == false)
+                {
+                    falling = true;
+
+                    startFallPosition = transform.position.y;
+
+                    if (_infiniteFallCoroutine == null) _infiniteFallCoroutine = StartCoroutine(InfiniteFallCountdown());
+                    else StopCoroutine(_infiniteFallCoroutine);
+                }
+            }
+        }
     }
 
-    public void Swimming()
+    protected virtual void Swimming()
     {
         //if (parts[5].transform.position.y <= _waterLine) _swimming = true;
 
@@ -367,9 +365,7 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
         {
             //if (_diving && _cam.transform.position.y >= _waterLine) _diving = false;
 
-            if (falling && !grounded ) swimming = true;
-
-            if (!grounded && !diving && Input.GetKeyDown(GameMaster.instance.jumpKey)) diving = true;
+            if (falling && !grounded) swimming = true;
 
             falling = false;
 
@@ -378,22 +374,6 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
             //velocity.y -= master.gravity * Time.deltaTime;
 
             velocity.y = 0;
-
-            if (Input.GetKey(GameMaster.instance.moveForward))
-            {
-                animator.SetInteger("Movement", 6);
-
-                controller.Move(transform.forward * Input.GetAxis("Vertical") * (swimSpeed / loadStage) * Time.deltaTime);
-            }
-
-            if (Input.GetKey(GameMaster.instance.moveBackward))
-            {
-                animator.SetInteger("Movement", 6);
-
-                controller.Move(-transform.forward * -Input.GetAxis("Vertical") * (swimSpeed / loadStage) * Time.deltaTime);
-
-            }
-            else animator.SetInteger("Movement", 0);
         }
 
         if (diving)
@@ -404,24 +384,9 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
 
             grounded = false;
 
-            curOxygen -= (int) (10 * Time.deltaTime);
+            curOxygen -= (int)(10 * Time.deltaTime);
 
             OnOxygenChange?.Invoke(curOxygen, maxOxygen); // TODO: add coroutine to disable oxygen meter in UI after it's regenerates to full.
-
-            if (Input.GetKey(GameMaster.instance.moveForward))
-            {
-                animator.SetInteger("Movement", 5);
-
-                controller.Move(CameraControl.instance.transform.forward * Input.GetAxis("Vertical") * (swimSpeed / loadStage) * Time.deltaTime);
-            }
-
-            if (Input.GetKey(GameMaster.instance.moveBackward))
-            {
-                animator.SetInteger("Movement", 5);
-
-                controller.Move(-CameraControl.instance.transform.forward * -Input.GetAxis("Vertical") * (swimSpeed / loadStage) * Time.deltaTime);
-            }
-            else animator.SetInteger("Movement", 0);
 
             if (!suffocate && curOxygen <= 0) StartCoroutine(Suffocate());
         }
@@ -507,6 +472,8 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
     public virtual void Kill()
     {
         soundManager.PlaySound("Death");
+
+        OnDeath?.Invoke(this);
 
         UIManager.instance.PrintMessage($"{this.gameObject.name} has died.");
     }

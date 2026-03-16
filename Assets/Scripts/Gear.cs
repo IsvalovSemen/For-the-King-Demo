@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Gear : Item, IEquipment
+public class Gear : Loot, IEquipment
 {
     private SkinnedMeshRenderer _mySkinnedMesh;
     private List<Transform> _bones = new List<Transform>();
@@ -34,8 +34,6 @@ public class Gear : Item, IEquipment
         var targetSkinnedMesh = transform.parent.GetComponent<SkinnedMeshRenderer>();
 
         _bones.Clear();
-
-        _mySkinnedMesh.rootBone = targetSkinnedMesh.rootBone;
 
         foreach (Transform element in _mySkinnedMesh.bones) _bones.Add(element);
 

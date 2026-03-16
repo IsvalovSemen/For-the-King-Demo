@@ -21,9 +21,9 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] private int bagRows;
     [SerializeField] private int bagColumns;
     [Header("Dragging data:")]
-    private ItemInstance _draggedItem;
+    private Item _draggedItem;
     private bool _isDragging = false;
-    private ItemSlot _prevSlot; // Stores the slot from which item was removed at the start of the drag.
+    private Slot _prevSlot; // Stores the slot from which item was removed at the start of the drag.
 
     private void Awake()
     {
@@ -50,7 +50,7 @@ public class InventoryManager : MonoBehaviour
             else if (Input.GetKeyDown(KeyCode.LeftArrow)) MovePointer(Vector2Int.left);
             else if (Input.GetKeyDown(KeyCode.RightArrow)) MovePointer(Vector2Int.right);
 
-            ItemSlot selectedSlot = GetSelectedSlot();
+            Slot selectedSlot = GetSelectedSlot();
 
             if (Input.GetKeyDown(KeyCode.E))
             {
@@ -117,11 +117,11 @@ public class InventoryManager : MonoBehaviour
 
         _currentColumn = newColumn;
 
-        ItemSlot slot = GetSelectedSlot();
+        Slot slot = GetSelectedSlot();
 
         if (slot != null)
         {
-            UIManager.instance.UpdateInventoryPointerLocation(GetSelectedSlot().RelatedCell);
+            UIManager.instance.UpdateInventoryPointerLocation(UIManager.instance.cells[GetSelectedSlot().Index]);
 
             if (slot.IsOccupied == true)
             {
@@ -140,7 +140,7 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    public ItemInstance DraggedItem => _draggedItem;
+    public Item DraggedItem => _draggedItem;
 
     public bool IsDragging => _isDragging;
 
@@ -149,15 +149,15 @@ public class InventoryManager : MonoBehaviour
         OnInventoryChanged?.Invoke(inventory);
     }
 
-    public ItemSlot GetSelectedSlot()
+    public Slot GetSelectedSlot()
     {
         int index;
 
         Inventory inventory = Player.instance.inventory; // FIXME: make it work with any inventory.
 
-        if (inventory == null || inventory.cells.Count == 0)
+        if (inventory == null )
         {
-            throw new Exception("Wrong inventory capacity or no inventory detected.");
+            throw new Exception("No inventory detected.");
         }
 
         if (_currentRow < equipRows)
@@ -169,9 +169,9 @@ public class InventoryManager : MonoBehaviour
             index = equipRows * equipColumns + (_currentRow - equipRows) * bagColumns + _currentColumn;
         }
 
-        if (index >= 0 && index < inventory.cells.Count)
+        if (index >= 0 && index < inventory.slots.Count)
         {
-            ItemSlot slot = inventory.slots[index];
+            Slot slot = inventory.slots[index];
 
             return slot;
         }
@@ -190,7 +190,7 @@ public class InventoryManager : MonoBehaviour
     {
         if (_isDragging == false)
         {
-            _draggedItem = new ItemInstance(item);
+            _draggedItem = item;
         }
         else
         {
@@ -199,7 +199,7 @@ public class InventoryManager : MonoBehaviour
             return;
         }
 
-        ItemSlot freeSlot = inventory.TryFindAppropriateSlot(item);
+        Slot freeSlot = inventory.FindFittingSlot(item);
 
         if (freeSlot != null)
         {
@@ -217,7 +217,7 @@ public class InventoryManager : MonoBehaviour
         UpdateInventoryUI(inventory);
     }
 
-    public void TakeFromSlot(ItemSlot slot)
+    public void TakeFromSlot(Slot slot)
     {
         if (slot.IsOccupied == false)
         {
@@ -239,7 +239,7 @@ public class InventoryManager : MonoBehaviour
         UpdateInventoryUI(slot.Inventory);
     }
 
-    public void StoreInSlot(ItemSlot slot)
+    public void StoreInSlot(Slot slot)
     {
         if (slot.IsOccupied == false) // If the slot is free just place dragged item in there.
         {
@@ -331,9 +331,9 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    private void SwapItems(ItemSlot targetSlot)
+    private void SwapItems(Slot targetSlot)
     {
-        ItemInstance tempItem = targetSlot.StoredItem;
+        Item tempItem = targetSlot.StoredItem;
 
         targetSlot.Inventory.StoreInSlot(_draggedItem, targetSlot.Index);
 
@@ -378,7 +378,7 @@ public class InventoryManager : MonoBehaviour
     /// <summary>
     /// Returns item to slot, where it was taken from.
     /// </summary>
-    private void SwapBack(ItemInstance item)
+    private void SwapBack(Item item)
     {
         if (_prevSlot != null)
         {
@@ -400,7 +400,7 @@ public class InventoryManager : MonoBehaviour
 
             if (GetSelectedSlot() != null)
             {
-                UIManager.instance.UpdateInventoryPointerLocation(GetSelectedSlot().RelatedCell);
+                UIManager.instance.UpdateInventoryPointerLocation(UIManager.instance.cells[GetSelectedSlot().Index]);
 
                 OnInventoryChanged?.Invoke(GetSelectedSlot().Inventory);
             }
@@ -415,102 +415,4 @@ public class InventoryManager : MonoBehaviour
         return;
     }
     #endregion
-}
-
-[System.Serializable]
-public class ItemSlot
-{
-    [SerializeField] private int _index;
-    private Inventory _assignedInventory;
-    [SerializeField] private ItemInstance _storedItem;
-    [SerializeField] private bool _isOccupied;
-    [SerializeField] private ItemSlotType _itemType;
-    [SerializeField] private EquipmentSlotType _equipSlotType;
-
-    public void SetupSlot(Inventory inventory, int index)
-    {
-        _assignedInventory = inventory;
-
-        this._index = index;
-
-        _assignedInventory.cells[_index].SetRelatedSlot(this);
-    }
-
-    public InventoryCell RelatedCell => _assignedInventory.cells[_index];
-    public int Index => _index;
-    public Inventory Inventory => _assignedInventory;
-    public ItemInstance StoredItem => _storedItem;
-    public bool IsOccupied => _isOccupied;
-    public ItemSlotType SlotType => _itemType;
-    public EquipmentSlotType EquipmentType => _equipSlotType;
-
-    public void AssignItem(ItemInstance item)
-    {
-        _storedItem = item;
-
-        _isOccupied = true;
-
-        Debug.Log($"{_storedItem.Stats.itemTitle} was placed in {_index} slot.");
-    }
-
-    public void FreeSlot()
-    {
-        Debug.Log($"{_storedItem.Stats.itemTitle} was taken from {_index} slot.");
-
-        _storedItem = null;
-
-        _isOccupied = false;
-    }
-}
-
-[System.Serializable]
-public class ItemInstance: IItem
-{
-    [SerializeField] private ItemStats _stats;
-    [SerializeField] private int _count;
-    [SerializeField] private float _currentDurability;
-
-    public ItemInstance(Item reference)
-    {
-        _stats = reference.Stats;
-        _count = reference.Count;
-        _currentDurability = reference.CurrentDurability;
-    }
-
-    public ItemStats Stats => _stats;
-    public int Count => _count;
-    public float CurrentDurability => _currentDurability;
-    public void SetCount(int value)
-    {
-        _count = value;
-    }
-}
-public enum EquipmentSlotType
-{
-    None,
-    HandRight1,
-    HandLeft1,
-    HandRight2,
-    HandLeft2,
-    Head,
-    Torso,
-    Arms,
-    Legs,
-    Feet,
-    RingRight,
-    RingLeft,
-    Necklace
-}
-
-public enum ItemSlotType
-{
-    Misc,
-    Weapon,
-    Head,
-    Torso,
-    Arms,
-    Legs,
-    Feet,
-    Ring,
-    Necklace
 }
