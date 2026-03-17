@@ -475,6 +475,6 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
 
         OnDeath?.Invoke(this);
 
-        UIManager.instance.PrintMessage($"{this.gameObject.name} has died.");
+        UIManager.instance.PrintMessage($"{this.gameObject.name} died.");
     }
 }

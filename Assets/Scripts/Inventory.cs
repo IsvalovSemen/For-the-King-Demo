@@ -81,8 +81,6 @@ public class Inventory : MonoBehaviour
 
         OnItemEquip?.Invoke(slots[slotIndex].EquipmentType, item);
 
-        Debug.Log("test: " + equipment[slots[slotIndex].EquipmentType].Stats.itemTitle);
-
         Debug.Log($"{item.Stats.itemTitle} was equipped in {slots[slotIndex].EquipmentType} slot.");
     }
 

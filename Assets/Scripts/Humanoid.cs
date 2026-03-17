@@ -2,6 +2,7 @@ using System;
 using Unity.VisualScripting;
 using UnityEditor.Rendering;
 using UnityEngine;
+using UnityEngine.XR;
 
 public class Humanoid : Creature
 {
@@ -43,7 +44,11 @@ public class Humanoid : Creature
 
         base.Update();
     }
-
+    /// <summary>
+    /// FIXME: This method is weird. Logic need to be updated and transferred to the item itself that is being equipped (somehow).
+    /// </summary>
+    /// <param name="equipSlot"></param>
+    /// <param name="item"></param>
     private void PutOn(EquipmentSlotType equipSlot, Item item)
     {
         Transform socket;
@@ -54,10 +59,39 @@ public class Humanoid : Creature
 
         GameObject newObject = Instantiate(item.Stats.prefab, socket.transform.position, socket.transform.rotation, socket);
 
-        newObject.GetComponentInChildren<IEquipment>().Equip();
+        if (item.Stats.itemType == ItemSlotType.Weapon)
+        {
+            foreach (Collider collider in newObject.GetComponentsInChildren<Collider>()) collider.enabled = false;
 
-        if (socket == holdPointLeft) _weapon1L = newObject;
-        else if (socket == holdPointRight) _weapon1R = newObject;
+            var RB = newObject.GetComponent<Rigidbody>();
+
+            RB.isKinematic = false;
+
+            RB.useGravity = true;
+
+            RB.constraints = RigidbodyConstraints.FreezeAll;
+
+            RB.isKinematic = true;
+
+            //RB.freezeRotation = true;
+
+            //RB.constraints = RigidbodyConstraints.FreezePosition;
+
+            if (equipSlot == EquipmentSlotType.HandLeft1) _weapon1L = newObject;
+            else if (equipSlot == EquipmentSlotType.HandRight1) _weapon1R = newObject;
+        }
+        else if (item.Stats.itemType == ItemSlotType.Torso)
+        {
+            Destroy(newObject.GetComponentInChildren<Rigidbody>());
+
+            foreach (var collider in newObject.GetComponentsInChildren<Collider>()) Destroy(collider);
+
+            var targetSkinnedMesh = socket.GetComponentInChildren<SkinnedMeshRenderer>();
+
+            newObject.GetComponentInChildren<SkinnedMeshRenderer>().bones = targetSkinnedMesh.bones;
+
+            newObject.GetComponentInChildren<SkinnedMeshRenderer>().rootBone = targetSkinnedMesh.rootBone;
+        }
     }
 
     private void TakeOff(EquipmentSlotType equipSlot)
@@ -68,7 +102,7 @@ public class Humanoid : Creature
         else if (equipSlot == EquipmentSlotType.HandRight1) socket = holdPointRight;
         else socket = gearSocket;
 
-        socket.GetComponentInChildren<IEquipment>().Unequip();
+        GameObject.Destroy(socket.GetChild(0).gameObject);
     }
     /// <summary>
     /// TODO: Update this method to work with weapons draw/sheath animations.
@@ -114,8 +148,6 @@ public class Humanoid : Creature
 
                 _weapon1L.GetComponentInChildren<SoundManager>().PlaySound("Sway");
             }
-            
-            //dmg = animationEvent.intParameter;
 
             //weapon.GetComponent<Item>().attackType = animationEvent.stringParameter;
 
@@ -142,8 +174,6 @@ public class Humanoid : Creature
 
         //weapon.GetComponent<Collider>().enabled = false;
 
-        //dmg = 0;
-
         //animator.SetTrigger("Reset");
     }
 
@@ -152,32 +182,6 @@ public class Humanoid : Creature
         if (animationEvent.intParameter == 0) _attackAllowed = false;
         else if (animationEvent.intParameter == 1) _attackAllowed = true;
     }
-
-    /*public void DropItem(ItemSlot slot)
-    {
-        GameObject item;
-
-        RaycastHit hit;
-
-        Ray ray = CameraControl.instance.mainCam.ScreenPointToRay(Input.mousePosition); // Fires a beam from the camera to the point where the cursor is located on the screen.
-        
-        if (Physics.Raycast(ray, out hit) && hit.transform.gameObject.layer == LayerMask.NameToLayer("Environment"))
-        {
-            float placingDistance = UnityEngine.Vector3.Distance(Player.instance.transform.position, hit.point); // Calculate the distance to the point where the object can be placed.
-
-            if (hit.transform != null && placingDistance <= GameMaster.instance.interactionDistance && placingDistance > 0.5f) // Only if the distance to the surface is adequate.
-            {
-                item = Instantiate(InventoryManager.instance.GetItemByID(slot.storedItemID).prefab, hit.transform.position, hit.transform.rotation);
-
-                item.transform.position = hit.point; // The object appears in the place where the beam hits.
-            }
-        }
-        else UIManager.instance.PrintMessage("Cannot drop the item!");
-
-        UIManager.instance.PrintMessage((InventoryManager.instance.GetItemByID(slot.storedItemID).itemTitle) + " was dropped.");
-
-        slot.storedItemID = "";
-    }*/
 
     public virtual void Throw()
     {

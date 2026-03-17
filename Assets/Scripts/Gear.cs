@@ -9,10 +9,8 @@ public class Gear : Loot, IEquipment
     private Mesh _myMesh;
     private Material[] _myMaterial;
 
-    public override void Awake()
+    private void Awake()
     {
-        base.Awake();
-
         //ConvertToRegularMesh();
 
         _mySkinnedMesh = GetComponentInChildren<SkinnedMeshRenderer>();

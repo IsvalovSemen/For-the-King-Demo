@@ -3,56 +3,60 @@
   "WorkspaceRootPath": "D:\\Projects\\For the king\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\Assets\\Scripts\\Player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:Assets\\Scripts\\Player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\humanoid.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\humanoid.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\gear.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\gear.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\weapon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\weapon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\uimanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\uimanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\Assets\\Scripts\\Creature.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:Assets\\Scripts\\Creature.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\humanoid.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\humanoid.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|d:\\projects\\for the king\\assets\\scripts\\hitbox.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\hitbox.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\inventory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\inventory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\item.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\item.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\inventorymanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\inventorymanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|d:\\projects\\for the king\\assets\\scripts\\uimanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\uimanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\loot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\loot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\itemstats.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\itemstats.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|d:\\projects\\for the king\\assets\\scripts\\weapon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\weapon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|d:\\projects\\for the king\\assets\\scripts\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\actor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\actor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|d:\\projects\\for the king\\assets\\scripts\\questupdate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\questupdate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\inventory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\inventory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\gear.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\gear.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\inventorymanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\inventorymanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\item.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\item.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\slot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\slot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\itemstats.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\itemstats.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\loot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\loot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\door.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -63,11 +67,11 @@
       "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\itempreview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|d:\\projects\\for the king\\assets\\scripts\\soundmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\soundmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\soundmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|d:\\projects\\for the king\\assets\\scripts\\ientitystats.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\ientitystats.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\ientitystats.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -85,10 +89,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\Assets\\Scripts\\ItemIcon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:Assets\\Scripts\\ItemIcon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\slot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\slot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\actorstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -111,8 +111,8 @@
       "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:Assets\\Scripts\\GameMaster.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Projects\\For the king\\assets\\scripts\\actorui.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:assets\\scripts\\actorui.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Projects\\For the king\\Assets\\Scripts\\ActorUI.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Assets\\Scripts\\ActorUI.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -122,34 +122,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 10,
+          "SelectedChildIndex": 13,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "Weapon.cs",
-              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Weapon.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Weapon.cs",
-              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Weapon.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Weapon.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-16T03:15:17.306Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "QuestUpdate.cs",
-              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\QuestUpdate.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\QuestUpdate.cs",
-              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\QuestUpdate.cs",
-              "RelativeToolTip": "Assets\\Scripts\\QuestUpdate.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAyAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-16T01:44:58.533Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
@@ -160,20 +134,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 4,
+              "Title": "Hitbox.cs",
+              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Hitbox.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Hitbox.cs",
+              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Hitbox.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Hitbox.cs",
+              "ViewState": "AgIAABYAAAAAAAAAAAAAACoAAABAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-16T23:56:49.366Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
               "Title": "Item.cs",
               "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Item.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Item.cs",
               "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Item.cs",
               "RelativeToolTip": "Assets\\Scripts\\Item.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAnAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-15T19:48:35.223Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 13,
               "Title": "Loot.cs",
               "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Loot.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Loot.cs",
@@ -181,90 +168,50 @@
               "RelativeToolTip": "Assets\\Scripts\\Loot.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-07T10:52:38.653Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-07T10:52:38.653Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 2,
               "Title": "UIManager.cs",
               "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\UIManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\UIManager.cs",
               "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\UIManager.cs",
               "RelativeToolTip": "Assets\\Scripts\\UIManager.cs",
-              "ViewState": "AgIAAFkAAAAAAAAAAAAQwHEAAAA6AAAAAAAAAA==",
+              "ViewState": "AgIAAIYBAAAAAAAAAAAAAKoBAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-04T01:02:52.954Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Humanoid.cs",
-              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Humanoid.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Humanoid.cs",
-              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Humanoid.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Humanoid.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAUAAAAgAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-06T23:31:27.212Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "Actor.cs",
-              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Actor.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Actor.cs",
-              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Actor.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Actor.cs",
-              "ViewState": "AgIAAEAAAAAAAAAAAAAMwFEAAAAqAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-09T02:32:08.799Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 9,
               "Title": "InventoryManager.cs",
               "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\InventoryManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\InventoryManager.cs",
               "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\InventoryManager.cs",
               "RelativeToolTip": "Assets\\Scripts\\InventoryManager.cs",
-              "ViewState": "AgIAAK0AAAAAAAAAAAAuwCYAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAACsAAAAAAAAAAAAwwCgAAAA8AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-07T03:16:58.417Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 5,
               "Title": "Player.cs",
               "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Player.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Player.cs",
               "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Player.cs",
               "RelativeToolTip": "Assets\\Scripts\\Player.cs",
-              "ViewState": "AgIAACUBAAAAAAAAAAAgwNIAAAAFAAAAAAAAAA==",
+              "ViewState": "AgIAAEMCAAAAAAAAAAAAACgAAABbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-17T03:57:58.721Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Gear.cs",
-              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Gear.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Gear.cs",
-              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Gear.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Gear.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAA1AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-14T01:05:14.023Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 12,
               "Title": "ItemStats.cs",
               "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\ItemStats.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\ItemStats.cs",
@@ -277,33 +224,98 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 7,
               "Title": "Inventory.cs",
               "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Inventory.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Inventory.cs",
               "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Inventory.cs",
               "RelativeToolTip": "Assets\\Scripts\\Inventory.cs",
-              "ViewState": "AgIAAGQAAAAAAAAAAAAYwDMAAAAcAAAAAAAAAA==",
+              "ViewState": "AgIAAEUAAAAAAAAAAAAmwFIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-03T12:12:04.317Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "Creature.cs",
               "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Creature.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Creature.cs",
               "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Creature.cs",
               "RelativeToolTip": "Assets\\Scripts\\Creature.cs",
-              "ViewState": "AgIAAEgAAAAAAAAAAAAkwAcAAAAWAAAAAAAAAA==",
+              "ViewState": "AgIAALoBAAAAAAAAAAAQwN0BAABAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-06T23:34:33.174Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 11,
+              "Title": "Slot.cs",
+              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Slot.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Slot.cs",
+              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Slot.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Slot.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-15T19:50:12.533Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Actor.cs",
+              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Actor.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Actor.cs",
+              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Actor.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Actor.cs",
+              "ViewState": "AgIAACABAAAAAAAAAAAAAFEAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-09T02:32:08.799Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Humanoid.cs",
+              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Humanoid.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Humanoid.cs",
+              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Humanoid.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Humanoid.cs",
+              "ViewState": "AgIAADkAAAAAAAAAAAAQwJYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-06T23:31:27.212Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Weapon.cs",
+              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Weapon.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Weapon.cs",
+              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Weapon.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Weapon.cs",
+              "ViewState": "AgIAADAAAAAAAAAAAAAwwA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-16T03:15:17.306Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Gear.cs",
+              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Gear.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Gear.cs",
+              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Gear.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Gear.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-14T01:05:14.023Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
               "Title": "SoundManager.cs",
               "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\SoundManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\SoundManager.cs",
@@ -311,12 +323,11 @@
               "RelativeToolTip": "Assets\\Scripts\\SoundManager.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-16T01:41:43.396Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-16T01:41:43.396Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 17,
               "Title": "IEntityStats.cs",
               "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\IEntityStats.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\IEntityStats.cs",
@@ -324,12 +335,11 @@
               "RelativeToolTip": "Assets\\Scripts\\IEntityStats.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-16T01:07:11.823Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-16T01:07:11.823Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 15,
               "Title": "ItemPreview.cs",
               "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\ItemPreview.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\ItemPreview.cs",
@@ -337,12 +347,11 @@
               "RelativeToolTip": "Assets\\Scripts\\ItemPreview.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAqwA0AAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-15T20:17:14.854Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-15T20:17:14.854Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 14,
               "Title": "Door.cs",
               "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Door.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Door.cs",
@@ -350,12 +359,11 @@
               "RelativeToolTip": "Assets\\Scripts\\Door.cs",
               "ViewState": "AgIAADoAAAAAAAAAAAAqwFwAAAA+AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-15T21:10:47.703Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-15T21:10:47.703Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 21,
               "Title": "ItemIcon.cs",
               "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\ItemIcon.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\ItemIcon.cs",
@@ -367,7 +375,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 18,
               "Title": "CameraControl.cs",
               "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\CameraControl.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\CameraControl.cs",
@@ -379,7 +387,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 20,
               "Title": "Projectile.cs",
               "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Projectile.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Projectile.cs",
@@ -391,7 +399,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 19,
               "Title": "IInteractable.cs",
               "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\IInteractable.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\IInteractable.cs",
@@ -412,18 +420,6 @@
               "ViewState": "AgIAAAYAAAAAAAAAAAAiwCEAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-14T06:02:50.367Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 21,
-              "Title": "Slot.cs",
-              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Slot.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Slot.cs",
-              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Slot.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Slot.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-15T19:50:12.533Z"
             },
             {
               "$type": "Document",

@@ -40,8 +40,7 @@ public class Hitbox : MonoBehaviour
         {
             _targetCollider.GetComponentInChildren<IDamageable>().GetHit(dmg, type, _targetCollider.transform);
 
-            UIManager.instance.PrintMessage($"{_targetCollider.gameObject.name} got hit by {source.name} with {transform.name} taking {dmg} {type} damage.");
+            UIManager.instance.PrintMessage($"{source.name} hits {_targetCollider.gameObject.name} with a {transform.name}, dealing {dmg} {type} damage.");
         }
     }
-
 }
