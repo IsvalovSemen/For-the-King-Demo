@@ -6,16 +6,17 @@ using UnityEngine.UI;
 public class ItemPreview : MonoBehaviour
 {
     [SerializeField] protected Image _iconImg;
+    public Image IconImg => _iconImg;
     [SerializeField] protected TextMeshProUGUI _stacksCounter;
     [SerializeField] protected TextMeshProUGUI _itemTitle;
 
     public void Init(Item item)
     {
-        SetIconImage(item.Stats.iconSprite);
+        SetIconImage(item.Data.iconSprite);
 
         UpdateStacksCounter(item.Count);
 
-        SetTitle(item.Stats.itemTitle);
+        SetTitle(item.Data.itemTitle);
     }
 
     public void SetIconImage(Sprite sprite)

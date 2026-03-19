@@ -6,8 +6,7 @@ using UnityEngine;
     private Inventory _assignedInventory;
     [SerializeField] private Item _storedItem;
     [SerializeField] private bool _isOccupied;
-    [SerializeField] private ItemSlotType _itemType;
-    [SerializeField] private EquipmentSlotType _equipSlotType;
+    [SerializeField] private ItemType _itemType;
 
     public void SetupSlot(Inventory inventory, int index)
     {
@@ -20,8 +19,7 @@ using UnityEngine;
     public Inventory Inventory => _assignedInventory;
     public Item StoredItem => _storedItem;
     public bool IsOccupied => _isOccupied;
-    public ItemSlotType SlotType => _itemType;
-    public EquipmentSlotType EquipmentType => _equipSlotType;
+    public ItemType SlotType => _itemType;
 
     public void AssignItem(Item item)
     {
@@ -29,12 +27,12 @@ using UnityEngine;
 
         _isOccupied = true;
 
-        Debug.Log($"{_storedItem.Stats.itemTitle} was placed in {_index} slot.");
+        Debug.Log($"{_storedItem.Data.itemTitle} was placed in {_index} slot.");
     }
 
     public void FreeSlot()
     {
-        Debug.Log($"{_storedItem.Stats.itemTitle} was taken from {_index} slot.");
+        Debug.Log($"{_storedItem.Data.itemTitle} was taken from {_index} slot.");
 
         _storedItem = null;
 

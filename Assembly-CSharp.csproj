@@ -60,36 +60,41 @@
     <Analyzer Include="C:\Program Files\Unity\Editor\2022.3.19f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Inventory\InventoryCell.cs" />
     <Compile Include="Assets\Scripts\QuestLog.cs" />
     <Compile Include="Assets\Scripts\EnteringAreaEvent.cs" />
     <Compile Include="Assets\Scripts\IInteractable.cs" />
+    <Compile Include="Assets\Scripts\Inventory\Inventory.cs" />
+    <Compile Include="Assets\Scripts\Inventory\Item.cs" />
     <Compile Include="Assets\Scripts\SkeletonResurrection.cs" />
     <Compile Include="Assets\Scripts\Effect.cs" />
-    <Compile Include="Assets\Scripts\Loot.cs" />
+    <Compile Include="Assets\Scripts\Inventory\Slot.cs" />
     <Compile Include="Assets\Scripts\Bone.cs" />
-    <Compile Include="Assets\Scripts\InventoryManager.cs" />
     <Compile Include="Assets\Scripts\MainMenuCamera.cs" />
+    <Compile Include="Assets\Scripts\Inventory\EquipmentSlots.cs" />
+    <Compile Include="Assets\Scripts\Inventory\ItemTooltip.cs" />
     <Compile Include="Assets\Scripts\Humanoid.cs" />
     <Compile Include="Assets\Scripts\RegenerationSkill.cs" />
+    <Compile Include="Assets\Scripts\Inventory\ItemIcon.cs" />
+    <Compile Include="Assets\Scripts\Inventory\ItemData.cs" />
     <Compile Include="Assets\Scripts\GameMaster.cs" />
     <Compile Include="Assets\Scripts\CameraControl.cs" />
     <Compile Include="Assets\Scripts\ActorStatus.cs" />
+    <Compile Include="Assets\Scripts\Inventory\Weapon.cs" />
     <Compile Include="Assets\Scripts\SoundManager.cs" />
     <Compile Include="Assets\Scripts\RegenerationEffect.cs" />
-    <Compile Include="Assets\Scripts\ItemTooltip.cs" />
     <Compile Include="Assets\Scripts\Hitbox.cs" />
     <Compile Include="Assets\Scripts\PhysicalObject.cs" />
     <Compile Include="Assets\Scripts\UIManager.cs" />
     <Compile Include="Assets\Scripts\ItemPreview.cs" />
     <Compile Include="Assets\Scripts\EffectInfo.cs" />
     <Compile Include="Assets\Scripts\IDamageable.cs" />
-    <Compile Include="Assets\Scripts\IEquipment.cs" />
-    <Compile Include="Assets\Scripts\Slot.cs" />
     <Compile Include="Assets\Scripts\Projectile.cs" />
     <Compile Include="Assets\Scripts\EffectIcon.cs" />
     <Compile Include="Assets\Scripts\DoubleClick.cs" />
-    <Compile Include="Assets\Scripts\ItemStats.cs" />
-    <Compile Include="Assets\Scripts\Inventory.cs" />
+    <Compile Include="Assets\Scripts\Inventory\Loot.cs" />
+    <Compile Include="Assets\Scripts\Inventory\InventoryManager.cs" />
+    <Compile Include="Assets\Scripts\Inventory\Gear.cs" />
     <Compile Include="Assets\Scripts\IPortable.cs" />
     <Compile Include="Assets\Scripts\QuestTemplate.cs" />
     <Compile Include="Assets\Scripts\Storm.cs" />
@@ -97,16 +102,13 @@
     <Compile Include="Assets\Scripts\Player.cs" />
     <Compile Include="Assets\Scripts\Door.cs" />
     <Compile Include="Assets\Scripts\IEntityStats.cs" />
-    <Compile Include="Assets\Scripts\ItemIcon.cs" />
-    <Compile Include="Assets\Scripts\Gear.cs" />
     <Compile Include="Assets\Scripts\Actor.cs" />
     <Compile Include="Assets\Scripts\Quest.cs" />
-    <Compile Include="Assets\Scripts\Weapon.cs" />
     <Compile Include="Assets\Scripts\Skill.cs" />
-    <Compile Include="Assets\Scripts\Item.cs" />
     <Compile Include="Assets\Scripts\QuestUpdate.cs" />
     <Compile Include="Assets\Scripts\Creature.cs" />
-    <Compile Include="Assets\Scripts\InventoryCell.cs" />
+    <Compile Include="Assets\Scripts\Inventory\IEquipment.cs" />
+    <Compile Include="Assets\Scripts\Inventory\InventoryGrid.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Terrain\TerrainSampleAssets\ThirdPartyNotices.txt" />

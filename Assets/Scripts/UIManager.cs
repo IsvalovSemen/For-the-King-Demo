@@ -5,6 +5,10 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro;
 using System.Linq;
+using UnityEditor;
+using static UnityEditor.Progress;
+using System.Runtime.CompilerServices;
+using System.Reflection;
 
 public class UIManager : MonoBehaviour
 {
@@ -67,13 +71,21 @@ public class UIManager : MonoBehaviour
 
     [Header("Actors:")]
     [SerializeField] private ActorStatus actorStatusPanelPrefab;
-    [SerializeField] private Inventory _myInventory;
     [SerializeField] private ScrollRect _lootPanelPrefab;
 
     [Header("Inventory:")]
-    [SerializeField] private GameObject _inventoryCanvas;
-    [field: SerializeField] public List<InventoryCell> cells { get; set; }
-    [SerializeField] private Transform _inventoryPointer;
+    [SerializeField] private RectTransform _inventoryCanvas;
+    [SerializeField] private RectTransform _equipment;
+    [SerializeField] private RectTransform _bag;
+    [SerializeField] private RectTransform _tempInvCanvas;
+    public RectTransform pointer;
+    [SerializeField] private int _cellSize = 50;
+    [SerializeField] private int _spacing = 5;
+    [SerializeField] private ItemIcon _itemIconPrefab;
+
+    public Dictionary<Item, ItemIcon> icons = new();
+    [SerializeField] private List<InventoryCell> _bagSlots { get; set; }
+    public List<InventoryCell> equipSlots;
     public ItemPreview itemPreviewPrefab;
     [SerializeField] private ItemTooltip _tooltip;
 
@@ -94,9 +106,6 @@ public class UIManager : MonoBehaviour
         if (instance != null) Debug.LogWarning("More than one GameManager.");
 
         instance = this;
-
-        cells = _inventoryCanvas.GetComponentsInChildren<InventoryCell>(true).ToList();
-
     }
 
     private void Start()
@@ -115,7 +124,7 @@ public class UIManager : MonoBehaviour
 
         promptKey.text = GameMaster.instance.interactionKey.ToString();
 
-        InventoryManager.instance.OnInventoryChanged += UpdateCells;
+        //InventoryManager.instance.OnInventoryChanged += UpdateCells;
 
         CloseAllMenus();
 
@@ -123,9 +132,13 @@ public class UIManager : MonoBehaviour
 
         HideItemTooltip();
 
-        for (int i = 0; i < cells.Count; i++)
+        equipSlots = _equipment.GetComponentsInChildren<InventoryCell>(true).ToList();
+
+        _bagSlots = _bag.GetComponentsInChildren<InventoryCell>(true).ToList();
+
+        for (int i = 0; i < _bagSlots.Count; i++)
         {
-            cells[i].SetRelatedSlot(Player.instance.inventory.slots[i]);
+            _bagSlots[i].SetRelatedSlot(i);
         }
     }
 
@@ -159,11 +172,11 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    private void UpdateCells(Inventory inventory)
+    private void UpdateCells()
     {
-        for (int i = 0; i < cells.Count; i++)
+        for (int i = 0; i < _bagSlots.Count; i++)
         {
-            cells[i].UpdateCellView();
+            _bagSlots[i].UpdateCellView();
         }
     }
     private void UpdateHealthbar(float currentHealth, float maxHealth)
@@ -259,7 +272,7 @@ public class UIManager : MonoBehaviour
             case MenuState.Inventory:
                 _inventoryMenu.SetActive(true);
                 _cursorStandart = _cursorPick;
-                InventoryManager.instance.UpdateInventoryUI(Player.instance.inventory);
+                //InventoryManager.instance.UpdateInventoryUI();
                 break;
 
             case MenuState.Character:
@@ -353,9 +366,46 @@ public class UIManager : MonoBehaviour
         StartCoroutine(RemoveMessageAfterDelay(messageTxt, _messageDisplayDelay));
     }
 
-    public void UpdateInventoryPointerLocation(InventoryCell cell)
+    public void UpdateInventoryView()
     {
-        _inventoryPointer.transform.position = cell.transform.position;
+        foreach (var pair in icons)
+        {
+            UpdateRect(icons[pair.Key].GetComponent<RectTransform>(), pair.Key.x, pair.Key.y, pair.Key.Width, pair.Key.Height);
+
+            icons[pair.Key].UpdateVisuals();
+        }
+    }
+
+    public void CreateItemIcon(Item item)
+    {
+        GameObject icon = Instantiate(_itemIconPrefab.gameObject, _tempInvCanvas);
+
+        icon.GetComponent<ItemIcon>().BindItem(item);
+
+        icons[item] = icon.GetComponent<ItemIcon>();
+
+        UpdateRect(icons[item].GetComponent<RectTransform>(), item.x, item.y, item.Width, item.Height);
+
+        icon.GetComponent<ItemIcon>().UpdateVisuals();
+    }
+
+    public void DeleteItemIcon(Item item)
+    {
+        Destroy(icons[item].gameObject);
+    }
+    /// <summary>
+    /// Calculates scale and position of the given rect (for item icons, pointer etc).
+    /// </summary>
+    /// <param name="rect"></param>
+    /// <param name="horizontalPos"></param>
+    /// <param name="verticalPos"></param>
+    /// <param name="width"></param>
+    /// <param name="height"></param>
+    public void UpdateRect(RectTransform rect, int horizontalPos, int verticalPos, int width, int height)
+    {
+        rect.anchoredPosition = new Vector2(horizontalPos * (_cellSize + _spacing), -verticalPos * (_cellSize + _spacing));
+
+        rect.sizeDelta = new Vector2(width * (_cellSize + _spacing), height * (_cellSize + _spacing));
     }
 
     public void EnableInteractionPrompt(InteractionType interaction)

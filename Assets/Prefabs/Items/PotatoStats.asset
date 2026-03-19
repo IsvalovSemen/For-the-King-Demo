@@ -36,7 +36,7 @@ MonoBehaviour:
   weight: 0.5
   price: 5
   maxDurability: 0
-  iconWidth: 1
+  iconWidth: 2
   iconHeight: 1
   description: Potato. Can be eaten to restore 10 HP.
   placement: 0

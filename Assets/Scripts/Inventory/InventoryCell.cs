@@ -1,24 +1,26 @@
 using System;
 using TMPro;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 public class InventoryCell : MonoBehaviour
 {
     [SerializeField] private ItemIcon _icon;
     [SerializeField] private Sprite _defaultIcon;
-    [SerializeField] private Slot _relatedSlot;
+    [SerializeField] private int _relatedSlotIndex;
+    public int index {  get; private set; }
 
     private void Start()
     {
         _icon.ConnectCell(this);
     }
 
-    public void SetRelatedSlot(Slot slot)
+    public void SetRelatedSlot(int index)
     {
-        _relatedSlot = slot;
+        _relatedSlotIndex = index;
     }
 
-    public Slot RelatedSlot => _relatedSlot;
+    public int RelatedSlotIndex => _relatedSlotIndex;
 
     public void UpdateCellView()
     {
@@ -37,20 +39,20 @@ public class InventoryCell : MonoBehaviour
             return;
         }
         */
-
-        if (InventoryManager.instance.IsDragging == true && InventoryManager.instance.GetSelectedSlot() == _relatedSlot)
+        /*
+        if (InventoryManager.instance.IsDragging == true && InventoryManager.instance.GetSelectedSlot() == _relatedSlotIndex)
         {
-            _icon.SetIconImage(InventoryManager.instance.DraggedItem.Stats.iconSprite);
+            _icon.SetIconImage(InventoryManager.instance.DraggedItem.Data.iconSprite);
 
             _icon.UpdateStacksCounter(InventoryManager.instance.DraggedItem.Count);
         }
         else
         {
-            if (_relatedSlot.IsOccupied == true)
+            if (Player.instance.inventory.items[_relatedSlotIndex].Count > 0)
             {
-                _icon.UpdateStacksCounter(_relatedSlot.StoredItem.Count);
+                _icon.UpdateStacksCounter(Player.instance.inventory.items[_relatedSlotIndex].Count);
 
-                _icon.SetIconImage(_relatedSlot.StoredItem.Stats.iconSprite);
+                _icon.SetIconImage(Player.instance.inventory.items[_relatedSlotIndex].Data.iconSprite);
             }
             else
             {
@@ -58,6 +60,6 @@ public class InventoryCell : MonoBehaviour
 
                 _icon.SetIconImage(_defaultIcon);
             }
-        }
+        }*/
     }
 }

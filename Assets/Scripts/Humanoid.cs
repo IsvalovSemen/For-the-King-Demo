@@ -1,11 +1,10 @@
-using System;
-using Unity.VisualScripting;
-using UnityEditor.Rendering;
 using UnityEngine;
-using UnityEngine.XR;
+using System.Linq;
+using System.Collections.Generic;
 
 public class Humanoid : Creature
 {
+    [SerializeField] private List <EquipSlot> _equipment;
     [SerializeField] private GameObject _weapon1R;
     [SerializeField] private GameObject _weapon1L;
     [SerializeField] private GameObject _weapon2R;
@@ -21,17 +20,16 @@ public class Humanoid : Creature
     [SerializeField] protected bool _attackAllowed;
     [SerializeField] protected bool _weaponDrawn;
 
+
     protected override void Start()
     {
         _attackAllowed = true;
 
         if (inventory != null)
         {
-            inventory.OnEquiploadChange += ChangeEquipload;
+            inventory.OnItemAdd += ChangeEquipload;
 
-            inventory.OnItemEquip += PutOn;
-
-            inventory.OnItemUnequip += TakeOff;
+            inventory.OnItemRemove += ChangeEquipload;
         }
 
         loadStage = Mathf.Clamp(CalculateLoadStage(currentEquipLoad, maxEquipload), 1, 4);
@@ -44,22 +42,29 @@ public class Humanoid : Creature
 
         base.Update();
     }
+
+    private EquipSlot GetEquipmentSlot(string name)
+    {
+        //return _equipment.FirstOrDefault(slot => slot.Name == name);
+
+        return null;
+    }
     /// <summary>
     /// FIXME: This method is weird. Logic need to be updated and transferred to the item itself that is being equipped (somehow).
     /// </summary>
     /// <param name="equipSlot"></param>
     /// <param name="item"></param>
-    private void PutOn(EquipmentSlotType equipSlot, Item item)
+    private void PutOn(EquipSlot equipSlot, Item item)
     {
         Transform socket;
 
-        if (equipSlot == EquipmentSlotType.HandLeft1) socket = holdPointLeft;
-        else if (equipSlot == EquipmentSlotType.HandRight1) socket = holdPointRight;
+        if (equipSlot == GetEquipmentSlot("WeaponL1")) socket = holdPointLeft;
+        else if (equipSlot == GetEquipmentSlot("WeaponR1")) socket = holdPointRight;
         else socket = gearSocket;
 
-        GameObject newObject = Instantiate(item.Stats.prefab, socket.transform.position, socket.transform.rotation, socket);
-
-        if (item.Stats.itemType == ItemSlotType.Weapon)
+        GameObject newObject = Instantiate(item.Data.prefab, socket.transform.position, socket.transform.rotation, socket);
+        /*
+        if (item.Data.itemType == ItemSlots.Weapon)
         {
             foreach (Collider collider in newObject.GetComponentsInChildren<Collider>()) collider.enabled = false;
 
@@ -77,10 +82,10 @@ public class Humanoid : Creature
 
             //RB.constraints = RigidbodyConstraints.FreezePosition;
 
-            if (equipSlot == EquipmentSlotType.HandLeft1) _weapon1L = newObject;
-            else if (equipSlot == EquipmentSlotType.HandRight1) _weapon1R = newObject;
+            if (equipSlot == GetEquipmentSlot("WeaponL1")) _weapon1L = newObject;
+            else if (equipSlot == GetEquipmentSlot("WeaponR1")) _weapon1R = newObject;
         }
-        else if (item.Stats.itemType == ItemSlotType.Torso)
+        else if (item.Data.itemType == ItemSlots.Torso)
         {
             Destroy(newObject.GetComponentInChildren<Rigidbody>());
 
@@ -91,15 +96,15 @@ public class Humanoid : Creature
             newObject.GetComponentInChildren<SkinnedMeshRenderer>().bones = targetSkinnedMesh.bones;
 
             newObject.GetComponentInChildren<SkinnedMeshRenderer>().rootBone = targetSkinnedMesh.rootBone;
-        }
+        }*/
     }
 
-    private void TakeOff(EquipmentSlotType equipSlot)
+    private void TakeOff(EquipSlot equipSlot)
     {
         Transform socket;
 
-        if (equipSlot == EquipmentSlotType.HandLeft1) socket = holdPointLeft;
-        else if (equipSlot == EquipmentSlotType.HandRight1) socket = holdPointRight;
+        if (equipSlot == GetEquipmentSlot("WeaponL1")) socket = holdPointLeft;
+        else if (equipSlot == GetEquipmentSlot("WeaponR1")) socket = holdPointRight;
         else socket = gearSocket;
 
         GameObject.Destroy(socket.GetChild(0).gameObject);
@@ -131,20 +136,20 @@ public class Humanoid : Creature
         }
         else
         {
-            if (animationEvent.stringParameter == "right")
+            if (animationEvent.stringParameter == "left")
             {
                 _weapon1R.GetComponentInChildren<Hitbox>().Enable();
 
-                _weapon1R.GetComponentInChildren<Hitbox>().DealDamage(inventory.equipment[EquipmentSlotType.HandRight1].Stats.damage, inventory.equipment[EquipmentSlotType.HandRight1].Stats.dmgType, this.gameObject);
+                //_weapon1R.GetComponentInChildren<Hitbox>().DealDamage(GetEquipmentSlot("WeaponL1").Item.Data.damage, GetEquipmentSlot("WeaponL1").Item.Data.dmgType, this.gameObject);
 
                 _weapon1R.GetComponentInChildren<SoundManager>().PlaySound("Sway");
             }
 
-            if (animationEvent.stringParameter == "left")
+            if (animationEvent.stringParameter == "right")
             {
                 _weapon1L.GetComponentInChildren<Hitbox>().Enable();
 
-                _weapon1L.GetComponentInChildren<Hitbox>().DealDamage(inventory.equipment[EquipmentSlotType.HandLeft1].Stats.damage, inventory.equipment[EquipmentSlotType.HandLeft1].Stats.dmgType, this.gameObject);
+                //_weapon1L.GetComponentInChildren<Hitbox>().DealDamage(GetEquipmentSlot("WeaponR1").Item.Data.damage, GetEquipmentSlot("WeaponR1").Item.Data.dmgType, this.gameObject);
 
                 _weapon1L.GetComponentInChildren<SoundManager>().PlaySound("Sway");
             }

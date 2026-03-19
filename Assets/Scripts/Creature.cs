@@ -89,13 +89,13 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
 
         if (GetComponentInChildren<Inventory>() != null) inventory = GetComponentInChildren<Inventory>();
         else Debug.LogWarning("No Inventory component found on this creature.", this.gameObject);
+
+        if (GetComponentInChildren<SoundManager>() != null) soundManager = GetComponentInChildren<SoundManager>();
+        else Debug.LogWarning("No Sound Manager component found on this creature.", this.gameObject);
     }
 
     protected virtual void Start()
     {
-        if (GetComponentInChildren<SoundManager>() != null) soundManager = GetComponentInChildren<SoundManager>();
-        else Debug.LogWarning("No Sound Manager component found on this creature.", this.gameObject);
-
         SetMaxHealth(maxHealth);
 
         ChangeCurrentHealth(maxHealth);

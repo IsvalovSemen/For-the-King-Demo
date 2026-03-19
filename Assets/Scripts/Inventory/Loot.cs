@@ -14,11 +14,11 @@ public class Loot : MonoBehaviour, IInteractable
     {
         SoundManager = transform.GetChild(0).gameObject.AddComponent<SoundManager>();
 
-        SoundManager.sounds = new Sound[_item.Stats.sounds.Length];
+        SoundManager.sounds = new Sound[_item.Data.sounds.Length];
 
-        for (int i = 0; i < _item.Stats.sounds.Length; i++)
+        for (int i = 0; i < _item.Data.sounds.Length; i++)
         {
-            SoundManager.sounds[i] = _item.Stats.sounds[i];
+            SoundManager.sounds[i] = _item.Data.sounds[i];
         }
 
         interactionType = InteractionType.Take;
@@ -27,7 +27,7 @@ public class Loot : MonoBehaviour, IInteractable
 
         RigidBody = GetComponent<Rigidbody>();
 
-        RigidBody.mass = _item.Stats.weight;
+        RigidBody.mass = _item.Data.weight;
 
         _item.SetCount(Mathf.Clamp(_item.Count, 1, 999));
     }
@@ -64,9 +64,9 @@ public class Loot : MonoBehaviour, IInteractable
 
     public void Take(Creature interactor)
     {
-        InventoryManager.instance.OnItemPickUpConfirmation += DestroyItem;
+        InventoryManager.instance.OnItemPickupConfirmation += DestroyItem;
 
-        InventoryManager.instance.PickUpItem(interactor.inventory, _item);
+        InventoryManager.instance.StartPickUp(_item);
     }
 
     private void OnMouseDown()
@@ -99,7 +99,7 @@ public class Loot : MonoBehaviour, IInteractable
 
     private void DestroyItem()
     {
-        InventoryManager.instance.OnItemPickUpConfirmation -= DestroyItem;
+        InventoryManager.instance.OnItemPickupConfirmation -= DestroyItem;
 
         Destroy(gameObject);
     }

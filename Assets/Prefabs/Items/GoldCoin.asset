@@ -36,8 +36,8 @@ MonoBehaviour:
   weight: 0.1
   price: 1
   maxDurability: 0
-  iconWidth: 0
-  iconHeight: 0
+  iconWidth: 1
+  iconHeight: 1
   description: 
   placement: 0
   sounds: []

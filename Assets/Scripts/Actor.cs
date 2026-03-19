@@ -5,7 +5,6 @@ using UnityEngine.UI;
 public class Actor : Humanoid, IInteractable
 {
     private UnityEngine.AI.NavMeshAgent _agent;
-    public Dictionary<EquipmentSlotType, Item> equipment = new Dictionary<EquipmentSlotType, Item>();
     [SerializeField] protected ActorStatus _statusPanel;
     public InteractionType interactionType { get; set; }
     [SerializeField] private float _sightDistance = 50;
@@ -49,6 +48,10 @@ public class Actor : Humanoid, IInteractable
         */
 
         _statusPanel = UIManager.instance.CreateActorStatusPanel(this);
+
+        inventory.OnItemAdd += ChangeEquipload;
+
+        inventory.OnItemRemove += ChangeEquipload;
 
         base.Start();
 

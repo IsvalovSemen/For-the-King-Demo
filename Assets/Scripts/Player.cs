@@ -54,7 +54,7 @@ public class Player : Humanoid
     protected override void Update()
     {
         if (_weaponDrawn)
-        {
+        {/*
             if (_attackAllowed)
             {
                 int attackType = 0;
@@ -62,14 +62,14 @@ public class Player : Humanoid
                 float mouseX = Input.GetAxis("Mouse X");
                 float mouseY = Input.GetAxis("Mouse Y");
 
-                Item weaponR = inventory.equipment[EquipmentSlotType.HandRight1];
-                Item weaponL = inventory.equipment[EquipmentSlotType.HandLeft1];
+                //Item weaponR = inventory.equipment[EquipmentSlots.HandRight1];
+                //Item weaponL = inventory.equipment[EquipmentSlots.HandLeft1];
 
                 if (Input.GetMouseButtonUp(0) && weaponR != null)
                 {
                     if (mouseX == 0 && mouseY == 0) return; // Preventing the attack if there's no mouse movement at all.
 
-                    float staminaUsage = weaponR.Stats.weight;
+                    float staminaUsage = weaponR.Data.weight;
 
                     if (currentStamina >= staminaUsage)
                     {
@@ -77,10 +77,10 @@ public class Player : Humanoid
                         else attackType = mouseY > 0 ? 3 : 4;
 
                         ChangeCurrentStamina(-staminaUsage);
-                        /*
-                        if (InventoryManager.instance.GetItemByID(rightWeaponID).wpnType == WeaponType.Striking1H) animator.SetTrigger("AttackStrikeR");
-                        else if (InventoryManager.instance.GetItemByID(rightWeaponID).wpnType == WeaponType.Thrusting1H) animator.SetTrigger("AttackThrustR");
-                        */
+
+                        //if (InventoryManager.instance.GetItemByID(rightWeaponID).wpnType == WeaponType.Striking1H) animator.SetTrigger("AttackStrikeR");
+                        //else if (InventoryManager.instance.GetItemByID(rightWeaponID).wpnType == WeaponType.Thrusting1H) animator.SetTrigger("AttackThrustR");
+
                         //animator.SetFloat("Speed", 0);
                     }
                 }
@@ -88,7 +88,7 @@ public class Player : Humanoid
                 {
                     if (mouseX == 0 && mouseY == 0) return;
 
-                    float staminaUsage = weaponL.Stats.weight;
+                    float staminaUsage = weaponL.Data.weight;
 
                     if (currentStamina >= staminaUsage)
                     {
@@ -96,16 +96,16 @@ public class Player : Humanoid
                         else attackType = mouseY > 0 ? 7 : 8;
 
                         ChangeCurrentStamina(-staminaUsage);
-                        /*
-                        if (InventoryManager.instance.GetItemByID(leftWeaponID).wpnType == WeaponType.Striking1H) animator.SetTrigger("AttackStrikeL");
-                        else if (InventoryManager.instance.GetItemByID(leftWeaponID).wpnType == WeaponType.Thrusting1H) animator.SetTrigger("AttackThrustL");
-                        */
+
+                        //if (InventoryManager.instance.GetItemByID(leftWeaponID).wpnType == WeaponType.Striking1H) animator.SetTrigger("AttackStrikeL");
+                        //else if (InventoryManager.instance.GetItemByID(leftWeaponID).wpnType == WeaponType.Thrusting1H) animator.SetTrigger("AttackThrustL");
+
                         animator.SetFloat("Speed", 0);
                     }
                 }
 
                 if (attackType != 0) Attack(attackType);
-            }
+            }*/
         }
 
         if (Input.GetKeyUp(GameMaster.instance.drawWeaponKey))
