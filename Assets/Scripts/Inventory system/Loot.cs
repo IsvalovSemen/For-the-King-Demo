@@ -29,7 +29,7 @@ public class Loot : MonoBehaviour, IInteractable
 
         RigidBody.mass = _item.Data.weight;
 
-        _item.SetCount(Mathf.Clamp(_item.Count, 1, 999));
+        _item.SetCount(Mathf.Clamp(_item.Quantity, 1, 999));
     }
 
     private void Update()

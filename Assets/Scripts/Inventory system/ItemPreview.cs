@@ -14,7 +14,7 @@ public class ItemPreview : MonoBehaviour
     {
         SetIconImage(item.Data.iconSprite);
 
-        UpdateStacksCounter(item.Count);
+        UpdateStacksCounter(item.Quantity);
 
         SetTitle(item.Data.itemTitle);
     }

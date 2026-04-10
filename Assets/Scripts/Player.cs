@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static UnityEngine.EventSystems.EventTrigger;
 
-public class Player : Humanoid
+public class Player : Creature
 {
     public static Player instance;
     [field: SerializeField] public int lvl { get; set; }
@@ -17,6 +17,16 @@ public class Player : Humanoid
     [field: SerializeField] public int intelligence { get; set; }
 
     public event Action<float, float, int> OnEquiploadChange;
+
+    [SerializeField] protected bool _weaponDrawn;
+
+    public Transform holdPointRight;
+    public Transform holdPointLeft;
+    public Transform holdPointMiddle;
+    public Transform sheathRight;
+    public Transform sheathLeft;
+    public Transform sheathBack;
+    public Transform gearSocket;
 
     protected AttackTypes _attackDir;
     protected enum AttackTypes
@@ -54,58 +64,55 @@ public class Player : Humanoid
     protected override void Update()
     {
         if (_weaponDrawn)
-        {/*
-            if (_attackAllowed)
+        {
+            int attackIndex = 0;
+
+            float mouseX = Input.GetAxis("Mouse X");
+            float mouseY = Input.GetAxis("Mouse Y");
+
+            //Item weaponR = inventory.equipment[EquipmentSlots.HandRight1];
+            //Item weaponL = inventory.equipment[EquipmentSlots.HandLeft1];
+
+            if (Input.GetMouseButtonUp(0))
             {
-                int attackType = 0;
+                if (mouseX == 0 && mouseY == 0) return; // Preventing the attack if there's no mouse movement at all.
 
-                float mouseX = Input.GetAxis("Mouse X");
-                float mouseY = Input.GetAxis("Mouse Y");
+                float staminaUsage = InventoryManager.instance.GetEquipslotByType(EquipSlotType.WeaponRight).item.Data.weight;
 
-                //Item weaponR = inventory.equipment[EquipmentSlots.HandRight1];
-                //Item weaponL = inventory.equipment[EquipmentSlots.HandLeft1];
-
-                if (Input.GetMouseButtonUp(0) && weaponR != null)
+                if (currentStamina >= staminaUsage)
                 {
-                    if (mouseX == 0 && mouseY == 0) return; // Preventing the attack if there's no mouse movement at all.
+                    if (Mathf.Abs(mouseX) > Mathf.Abs(mouseY)) attackIndex = mouseX > 0 ? 1 : 2;
+                    else attackIndex = mouseY > 0 ? 3 : 4;
 
-                    float staminaUsage = weaponR.Data.weight;
+                    ChangeCurrentStamina(-staminaUsage);
 
-                    if (currentStamina >= staminaUsage)
-                    {
-                        if (Mathf.Abs(mouseX) > Mathf.Abs(mouseY)) attackType = mouseX > 0 ? 1 : 2;
-                        else attackType = mouseY > 0 ? 3 : 4;
+                    //if (InventoryManager.instance.GetItemByID(rightWeaponID).wpnType == WeaponType.Striking1H) animator.SetTrigger("AttackStrikeR");
+                    //else if (InventoryManager.instance.GetItemByID(rightWeaponID).wpnType == WeaponType.Thrusting1H) animator.SetTrigger("AttackThrustR");
 
-                        ChangeCurrentStamina(-staminaUsage);
-
-                        //if (InventoryManager.instance.GetItemByID(rightWeaponID).wpnType == WeaponType.Striking1H) animator.SetTrigger("AttackStrikeR");
-                        //else if (InventoryManager.instance.GetItemByID(rightWeaponID).wpnType == WeaponType.Thrusting1H) animator.SetTrigger("AttackThrustR");
-
-                        //animator.SetFloat("Speed", 0);
-                    }
+                    //animator.SetFloat("Speed", 0);
                 }
-                else if (Input.GetMouseButtonUp(1) && weaponL != null)
+            }
+            else if (Input.GetMouseButtonUp(1))
+            {
+                if (mouseX == 0 && mouseY == 0) return;
+
+                float staminaUsage = InventoryManager.instance.GetEquipslotByType(EquipSlotType.WeaponLeft).item.Data.weight;
+
+                if (currentStamina >= staminaUsage)
                 {
-                    if (mouseX == 0 && mouseY == 0) return;
+                    if (Mathf.Abs(mouseX) > Mathf.Abs(mouseY)) attackIndex = mouseX > 0 ? 5 : 6;
+                    else attackIndex = mouseY > 0 ? 7 : 8;
 
-                    float staminaUsage = weaponL.Data.weight;
+                    ChangeCurrentStamina(-staminaUsage);
 
-                    if (currentStamina >= staminaUsage)
-                    {
-                        if (Mathf.Abs(mouseX) > Mathf.Abs(mouseY)) attackType = mouseX > 0 ? 5 : 6;
-                        else attackType = mouseY > 0 ? 7 : 8;
+                    //if (InventoryManager.instance.GetItemByID(leftWeaponID).wpnType == WeaponType.Striking1H) animator.SetTrigger("AttackStrikeL");
+                    //else if (InventoryManager.instance.GetItemByID(leftWeaponID).wpnType == WeaponType.Thrusting1H) animator.SetTrigger("AttackThrustL");
 
-                        ChangeCurrentStamina(-staminaUsage);
-
-                        //if (InventoryManager.instance.GetItemByID(leftWeaponID).wpnType == WeaponType.Striking1H) animator.SetTrigger("AttackStrikeL");
-                        //else if (InventoryManager.instance.GetItemByID(leftWeaponID).wpnType == WeaponType.Thrusting1H) animator.SetTrigger("AttackThrustL");
-
-                        animator.SetFloat("Speed", 0);
-                    }
+                    animator.SetFloat("Speed", 0);
                 }
+            }
 
-                if (attackType != 0) Attack(attackType);
-            }*/
+            if (attackIndex != 0) PerformAttack(_attacks[attackIndex - 1]);
         }
 
         if (Input.GetKeyUp(GameMaster.instance.drawWeaponKey))
@@ -117,6 +124,8 @@ public class Player : Humanoid
         RotateProjectile();
 
         Interact();
+
+        Throw();
 
         if (attackDelay > 0f) attackDelay -= Time.deltaTime;
 
@@ -148,6 +157,21 @@ public class Player : Humanoid
         nextLvlExp += nextLvlExp * lvl;
 
         lvl++;
+    }
+
+    /// <summary>
+    /// TODO: Update this method to work with weapons draw/sheath animations.
+    /// </summary>
+    protected void DrawWeapon()
+    {
+        _weaponDrawn = true;
+    }
+    /// <summary>
+    /// TODO: Update this method to work with weapons draw/sheath animations.
+    /// </summary>
+    protected void SheatheWeapon()
+    {
+        _weaponDrawn = false;
     }
 
     protected override void Movement()
@@ -473,7 +497,7 @@ public class Player : Humanoid
         }
     }
 
-    public override void Throw()
+    private void Throw()
     {
         if (holdPointMiddle.childCount > 0)
         {

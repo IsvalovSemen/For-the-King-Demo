@@ -36,7 +36,12 @@ public class InventoryGrid
 
         return true;
     }
-
+    /// <summary>
+    /// Place item on grid according to the given coordinates.
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="startX"></param>
+    /// <param name="startY"></param>
     public void Place(Item item, int startX, int startY)
     {
         for (int x = 0; x < item.Width; x++)
@@ -52,7 +57,10 @@ public class InventoryGrid
 
         UIManager.instance.UpdateRect(UIManager.instance.icons[item].GetComponent<RectTransform>(), item.x, item.y, item.Width, item.Height);
     }
-
+    /// <summary>
+    /// Remove item from given coordinates.
+    /// </summary>
+    /// <param name="item"></param>
     public void Remove(Item item)
     {
         for (int x = 0; x < width; x++)
@@ -63,7 +71,12 @@ public class InventoryGrid
             }
         }
     }
-
+    /// <summary>
+    /// Is there item at these coordinates.
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <returns></returns>
     public Item GetItem(int x, int y)
     {
         if (x < 0 || y < 0 || x >= width || y >= height) return null;

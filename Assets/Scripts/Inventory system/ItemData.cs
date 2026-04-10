@@ -13,17 +13,6 @@ public enum ItemType
     Necklace
 }
 
-public enum DamageType
-{
-    Slash,
-    Blunt,
-    Thrust,
-    Fire,
-    Cold,
-    Poison,
-    Light
-}
-
 [CreateAssetMenu(fileName = "NewItem", menuName = "Item")]
 public class ItemData : ScriptableObject
 {
@@ -37,7 +26,7 @@ public class ItemData : ScriptableObject
     public Sprite iconSprite;
     public int damage;
 
-    public DamageType dmgType;
+    public DamageTypes dmgType;
     public enum WeaponType
     {
         Striking1H,

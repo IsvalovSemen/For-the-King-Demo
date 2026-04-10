@@ -18,7 +18,7 @@ public class EquipSlot
     public EquipSlotType slotType;
     public Item item;
 
-    public bool CanPlace(Item item)
+    public bool CanPlaceHere(Item item)
     {
         switch (slotType)
         {

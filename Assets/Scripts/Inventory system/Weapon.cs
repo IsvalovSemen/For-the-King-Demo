@@ -7,7 +7,7 @@ public class Weapon : Loot, IEquipment
 
     void OnCollisionEnter(Collision coll)
     {
-        if (GetComponentInParent<Humanoid>() != null & coll.transform.GetComponent<Collider>().gameObject.layer == 3) transform.GetComponentInParent<Creature>().Knockback(this);
+        if (coll.transform.GetComponent<Collider>().gameObject.layer == 3) transform.GetComponentInParent<Creature>().Knockback(this);
     }
 
     public void Equip()
@@ -28,7 +28,7 @@ public class Weapon : Loot, IEquipment
 
         transform.GetComponentInChildren<MeshRenderer>().enabled = true;
     }
-
+    /*
     public void Draw(Humanoid owner)
     {
         RigidBody.isKinematic = true;
@@ -85,6 +85,7 @@ public class Weapon : Loot, IEquipment
 
         transform.parent = _sheatheSocket;
     }
+    */
     public void Unequip()
     {
         Destroy(this.gameObject);

@@ -42,7 +42,7 @@ public class Bone : MonoBehaviour
 
         GetComponent<MeshRenderer>().sharedMaterials = myMaterial;
 
-        transform.SetParent(null);      
+        transform.SetParent(null);
     }
 
     public void FallApart()

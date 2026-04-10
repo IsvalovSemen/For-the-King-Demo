@@ -378,15 +378,17 @@ public class UIManager : MonoBehaviour
 
     public void CreateItemIcon(Item item)
     {
-        GameObject icon = Instantiate(_itemIconPrefab.gameObject, _tempInvCanvas);
+        ItemIcon icon = Instantiate(_itemIconPrefab.gameObject.GetComponent<ItemIcon>(), _tempInvCanvas);
 
-        icon.GetComponent<ItemIcon>().BindItem(item);
+        icon.BindItem(item);
 
-        icons[item] = icon.GetComponent<ItemIcon>();
+        icons[item] = icon;
 
         UpdateRect(icons[item].GetComponent<RectTransform>(), item.x, item.y, item.Width, item.Height);
 
-        icon.GetComponent<ItemIcon>().UpdateVisuals();
+        icon.UpdateStacksCounter(item.Quantity);
+
+        icon.UpdateVisuals();
     }
 
     public void DeleteItemIcon(Item item)

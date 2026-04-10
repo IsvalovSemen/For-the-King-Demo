@@ -1,5 +1,4 @@
 using UnityEngine;
-
 public abstract class PhysicalObject : MonoBehaviour, IDamageable
 {
     protected SoundManager SM { get; set; }
@@ -62,16 +61,22 @@ public abstract class PhysicalObject : MonoBehaviour, IDamageable
     {
         if (GetComponent<Rigidbody>().velocity.magnitude >= _takeDmgThreshold)
         {
-            if (coll.gameObject.layer == 3) GetHit(-(int) (RB.velocity.magnitude * _weight), DamageType.Blunt, null);
+            DamageInstance damage = new DamageInstance(coll.gameObject, (int)(RB.velocity.magnitude * _weight), DamageTypes.Blunt, (int)(RB.velocity.magnitude * _weight), (int)(RB.velocity.magnitude * _weight), DirectionCalculator.GetDirection(RB.velocity));
+
+            if (coll.gameObject.layer == 3) TakeDamage(damage);
         }
         
         if (GetComponent<Rigidbody>().velocity.magnitude >= dealDmgThreshold)
         {
             if (coll.gameObject.layer == 3 || coll.gameObject.layer == 6 && coll.transform.root != transform.root)
             {
-                if (coll.transform.root.GetComponent<IDamageable>() != null)
+                Hurtbox targetHB = coll.transform.GetComponentInChildren<Hurtbox>();
+
+                if (targetHB != null)
                 {
-                    coll.transform.root.GetComponent<IDamageable>().GetHit(-(int) (_weight + RB.velocity.magnitude), DamageType.Blunt, coll.transform);
+                    DamageInstance damage = new DamageInstance(this.gameObject, (int)(RB.velocity.magnitude * _weight), DamageTypes.Blunt, (int)(RB.velocity.magnitude * _weight), (int)(RB.velocity.magnitude * _weight), DirectionCalculator.GetDirection(RB.velocity));
+
+                    targetHB.GetHit(damage);
 
                     UIManager.instance.PrintMessage(transform.root.name + " hits the " + coll.transform.root.name + ", speed: " + RB.velocity.magnitude);
                 }
@@ -79,15 +84,13 @@ public abstract class PhysicalObject : MonoBehaviour, IDamageable
         }
     }
 
-    public void GetHit(float amount, DamageType type, Transform part)
+    public void TakeDamage(DamageInstance damage)
     {
         SM.PlaySound("GetHit");
 
         //RB.AddForce(RB.velocity * 10f, ForceMode.Impulse);
 
-        if (type != DamageType.Blunt) amount /= 2;
-
-        if (_maxDurability > 0) ChangeDurability(amount);
+        if (_maxDurability > 0) ChangeDurability(-damage.objDmg);
     }
 
     private void ChangeDurability(float value)

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class Door : MonoBehaviour, IInteractable, IDamageable
@@ -55,7 +56,7 @@ public class Door : MonoBehaviour, IInteractable, IDamageable
             {
                 if (_locked == true)
                 {
-                    if (interactor.inventory.SearchForItem(_keyID) == true) Unlock();
+                    if (InventoryManager.instance.HasItem(_keyID) == true) Unlock();
                     else UIManager.instance.PrintMessage("You don't have the right key.");
                 }
                 else
@@ -81,7 +82,7 @@ public class Door : MonoBehaviour, IInteractable, IDamageable
         UIManager.instance.DisableInteractionPrompt();
     }
 
-    public void GetHit(float amount, DamageType type, Transform part)
+    public void TakeDamage(DamageInstance damage)
     {
         _soundManager.PlaySound("GetHit");
 

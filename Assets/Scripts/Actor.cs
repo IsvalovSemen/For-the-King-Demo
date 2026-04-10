@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Actor : Humanoid, IInteractable
+public class Actor : Creature, IInteractable
 {
     private UnityEngine.AI.NavMeshAgent _agent;
     [SerializeField] protected ActorStatus _statusPanel;
@@ -78,11 +78,11 @@ public class Actor : Humanoid, IInteractable
                 
                 if (distanceToTarget <= _attackDistance && inCombat) //If target in attack range, performs an attack
                 {
-                    int attackType = UnityEngine.Random.Range(0, 7);
+                    int attackIndex = UnityEngine.Random.Range(0, 7);
 
                     if (Time.time >= attackDelay)
                     {
-                        if (_weaponDrawn) Attack(attackType);
+                        PerformAttack(_attacks[attackIndex]);
 
                         attackDelay = Time.time + animator.GetCurrentAnimatorStateInfo(0).length + UnityEngine.Random.Range(1f, attackSpeed);
                     }
@@ -188,8 +188,6 @@ public class Actor : Humanoid, IInteractable
             {
                 if (!inCombat)
                 {
-                    DrawWeapon();
-
                     _statusPanel.gameObject.SetActive(true);
 
                     inCombat = true;
@@ -255,11 +253,11 @@ public class Actor : Humanoid, IInteractable
         return result;
     }
 
-    public override void GetHit(float amount, DamageType type, Transform part)
+    public override void TakeDamage(DamageInstance damage)
     {
         Alarm(maxAlert - alertVolume);
 
-        base.GetHit(amount, type, part);
+        base.TakeDamage(damage);
     }
 
     public override void Kill()

@@ -28,9 +28,8 @@ public class Projectile : PhysicalObject, IPortable
         else if (RB.velocity.magnitude >= dealDmgThreshold) foreach (Collider coll in GetComponentsInChildren<Collider>()) coll.enabled = true;
     }
 
-    public void Interaction(Humanoid source)
+    public void Interaction()
     {
-        _holdPoint = source.holdPointMiddle;
 
         if (_inRadius) Hold();
     }

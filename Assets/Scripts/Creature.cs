@@ -4,6 +4,9 @@ using System.Collections;
 using System;
 using UnityEngine.Animations.Rigging;
 using static UnityEngine.Rendering.DebugUI;
+using System.Linq;
+using static Unity.VisualScripting.Member;
+using static Hitbox;
 
 public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
 {
@@ -75,6 +78,12 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
     public List<Effect> activeEffects;
     private Coroutine _infiniteFallCoroutine;
 
+    [Header("Attacks:")]
+    [SerializeField] protected List<Attack> _attacks = new List<Attack>();
+    private Attack _currentAttack;
+    [SerializeField] private List<DamageRegion> _damageRegions = new List<DamageRegion>();
+    protected float attackDelay;
+
     public event Action<float, float> OnHealthChange;
     public event Action<float, float> OnStaminaChange;
     public event Action<float, float> OnManahange;
@@ -92,6 +101,8 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
 
         if (GetComponentInChildren<SoundManager>() != null) soundManager = GetComponentInChildren<SoundManager>();
         else Debug.LogWarning("No Sound Manager component found on this creature.", this.gameObject);
+
+        CollectHitboxes();
     }
 
     protected virtual void Start()
@@ -115,8 +126,6 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
 
     protected virtual void Update()
     {
-
-
         Movement();
 
         Swimming();
@@ -125,6 +134,130 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
 
         Dodge();
     }
+
+    protected void CollectHitboxes()
+    {
+        // Get all damageboxes in children (including inactive).
+        DamageArea[] hboxes = GetComponentsInChildren<DamageArea>(true);
+
+        foreach (var HB in hboxes)
+        {
+            HB.Init(this); // This will call RegisterHitbox().
+        }
+    }
+
+    public void RegisterDamagebox(DamageArea HB)
+    {
+        if (HB == null) return;
+
+        RegionType regionType = HB.Region;
+
+        // Find matching region.
+        DamageRegion region = _damageRegions.Find(r => r.Region == regionType);
+
+        if (region == null)
+        {
+            Debug.LogWarning($"[Creature] No DamageRegion found for {regionType} on {name}");
+            return;
+        }
+
+        if (HB is Hitbox)
+        {
+            if (!region.hitboxes.Contains(HB)) // Avoid duplicates.
+            {
+                region.hitboxes.Add(HB as Hitbox);
+            }
+        }
+
+        if (HB is Hurtbox)
+        {
+            if (!region.hurtboxes.Contains(HB))
+            {
+                region.hurtboxes.Add(HB as Hurtbox);
+            }
+        }
+
+    }
+
+    public void UnregisterHitbox(DamageArea HB)
+    {
+        if (HB == null) return;
+
+        foreach (DamageRegion region in _damageRegions)
+        {
+            if (HB is Hitbox && region.hitboxes.Contains(HB))
+            {
+                region.hitboxes.Remove(HB as Hitbox);
+
+                return;
+            }
+
+            if (HB is Hurtbox && region.hurtboxes.Contains(HB))
+            {
+                region.hurtboxes.Remove(HB as Hurtbox);
+
+                return;
+            }
+        }
+    }
+
+    public void PerformAttack(Attack attack)
+    {
+        _currentAttack = attack;
+
+        animator.SetTrigger("Attack");
+        animator.SetFloat("Speed", 1);
+        animator.Play(attack.title);
+        animator.SetTrigger("Stop");
+    }
+
+    protected void EnableHitbox(AnimationEvent animationEvent)
+    {
+        if (_currentAttack == null) return;
+
+        var region = _damageRegions.Find(r => r.Region == _currentAttack.region);
+        if (region == null) return;
+
+        var damage = new DamageInstance(
+            gameObject,
+            region.baseDmg,
+            region.dmgType,
+            region.impact,
+            region.objectDmg,
+            _currentAttack.dir
+        );
+
+        foreach (var hb in region.hitboxes)
+        {
+            Debug.Log(123);
+            hb.Activate(damage);
+        }
+    }
+
+    protected void DisableHitbox(AnimationEvent animationEvent)
+    {
+        if (_currentAttack == null) return;
+
+        var region = _damageRegions.Find(r => r.Region == _currentAttack.region);
+        if (region == null) return;
+
+        foreach (var hb in region.hitboxes)
+        {
+            hb.Deactivate();
+        }
+
+        _currentAttack = null;
+    }
+
+    public void Knockback(Weapon weapon)
+    {
+        animator.SetFloat("Speed", -1f);
+
+        weapon.GetComponentInChildren<Hitbox>().Deactivate();
+
+        _recoil = true;
+    }
+
 
     public virtual void Land()
     {
@@ -419,38 +552,6 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
         soundManager.PlaySound("Footsteps");
     }
 
-    public virtual void Attack(int attackType)
-    {
-        animator.SetTrigger("Attack");
-
-        animator.SetFloat("Speed", 1);
-
-        animator.SetInteger("AttackType", attackType);
-
-        animator.SetTrigger("Stop");
-    }
-
-    protected virtual void EnableHitbox(AnimationEvent animationEvent)
-    {
-
-    }
-
-    protected virtual void DisableHitbox(AnimationEvent animationEvent)
-    {
-
-    }
-
-    public void Knockback(Weapon weapon)
-    {
-        animator.SetFloat("Speed", -1f);
-
-        weapon.GetComponentInChildren<Hitbox>().Disable();
-
-        weapon.GetComponentInChildren<Hitbox>().hittedTargets.Clear();
-
-        _recoil = true;
-    }
-
     private void OnTriggerExit(Collider col)
     {
         //if (col.gameObject.layer == 4 && parts[0].transform.position.y < col.transform.position.y) _diving = true;
@@ -462,9 +563,9 @@ public abstract class Creature : MonoBehaviour, IEntityStats, IDamageable
         }
     }
 
-    public virtual void GetHit(float amount, DamageType type, Transform part)
+    public virtual void TakeDamage(DamageInstance damage)
     {
-        ChangeCurrentHealth(-amount);
+        ChangeCurrentHealth(-damage.dmgValue);
 
         soundManager.PlaySound("GetHit");
     }

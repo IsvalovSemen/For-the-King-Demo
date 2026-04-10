@@ -3,36 +3,64 @@
   "WorkspaceRootPath": "D:\\Projects\\For the king\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|d:\\projects\\for the king\\assets\\scripts\\inventory\\inventorymanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\inventory\\inventorymanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|d:\\projects\\for the king\\assets\\scripts\\combat system\\hurtbox.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\combat system\\hurtbox.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\inventory\\inventorygrid.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\inventory\\inventorygrid.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\combat system\\damagearea.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\combat system\\damagearea.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\combat system\\damageregion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\combat system\\damageregion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\combat system\\hitbox.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\combat system\\hitbox.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\creature.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\creature.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\combat system\\damageinstance.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\combat system\\damageinstance.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\combat system\\attack.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\combat system\\attack.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\inventory system\\inventorymanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\inventory system\\inventorymanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\actor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\actor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\physicalobject.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\physicalobject.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\door.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\door.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\uimanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\uimanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|d:\\projects\\for the king\\assets\\scripts\\inventory\\itemicon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\inventory\\itemicon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\inventory system\\weapon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\inventory system\\weapon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|d:\\projects\\for the king\\assets\\scripts\\inventory\\loot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\inventory\\loot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|d:\\projects\\for the king\\assets\\scripts\\inventory\\itemdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\inventory\\itemdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|d:\\projects\\for the king\\assets\\scripts\\inventory\\item.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\inventory\\item.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|d:\\projects\\for the king\\assets\\scripts\\inventory\\equipmentslots.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\inventory\\equipmentslots.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|D:\\Projects\\For the king\\assets\\scripts\\inventory system\\inventorygrid.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7641A2F6-237B-5963-21D8-2EE04791DE26}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\inventory system\\inventorygrid.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -45,19 +73,6 @@
           "SelectedChildIndex": 4,
           "Children": [
             {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "EquipmentSlots.cs",
-              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Inventory\\EquipmentSlots.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Inventory\\EquipmentSlots.cs",
-              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Inventory\\EquipmentSlots.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Inventory\\EquipmentSlots.cs",
-              "ViewState": "AgIAABcAAAAAAAAAAAAAACcAAAA6AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-18T20:31:18.154Z",
-              "EditorCaption": ""
-            },
-            {
               "$type": "Bookmark",
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
             },
@@ -68,93 +83,183 @@
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "UIManager.cs",
-              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\UIManager.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\UIManager.cs",
-              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\UIManager.cs",
-              "RelativeToolTip": "Assets\\Scripts\\UIManager.cs",
-              "ViewState": "AgIAAD4AAAAAAAAAAAAgwFcAAAAfAAAAAAAAAA==",
+              "Title": "DamageRegion.cs",
+              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Combat system\\DamageRegion.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Combat system\\DamageRegion.cs",
+              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Combat system\\DamageRegion.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Combat system\\DamageRegion.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-04T01:02:52.954Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "InventoryManager.cs",
-              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Inventory\\InventoryManager.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Inventory\\InventoryManager.cs",
-              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Inventory\\InventoryManager.cs*",
-              "RelativeToolTip": "Assets\\Scripts\\Inventory\\InventoryManager.cs*",
-              "ViewState": "AgIAAAwBAAAAAAAAAAAAACABAAAiAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-17T21:36:38.025Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-10T06:35:35.503Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "InventoryGrid.cs",
-              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Inventory\\InventoryGrid.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Inventory\\InventoryGrid.cs",
-              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Inventory\\InventoryGrid.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Inventory\\InventoryGrid.cs",
-              "ViewState": "AgIAACIAAAAAAAAAAAAAADYAAACvAAAAAAAAAA==",
+              "Title": "DamageArea.cs",
+              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Combat system\\DamageArea.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Combat system\\DamageArea.cs",
+              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Combat system\\DamageArea.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Combat system\\DamageArea.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-17T21:13:32.001Z",
+              "WhenOpened": "2026-04-10T05:10:53.755Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Hurtbox.cs",
+              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Combat system\\Hurtbox.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Combat system\\Hurtbox.cs",
+              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Combat system\\Hurtbox.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Combat system\\Hurtbox.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAB4AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-10T05:07:35.089Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "ItemIcon.cs",
-              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Inventory\\ItemIcon.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Inventory\\ItemIcon.cs",
-              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Inventory\\ItemIcon.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Inventory\\ItemIcon.cs",
-              "ViewState": "AgIAABcAAAAAAAAAAAAcwCAAAABpAAAAAAAAAA==",
+              "Title": "Hitbox.cs",
+              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Combat system\\Hitbox.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Combat system\\Hitbox.cs",
+              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Combat system\\Hitbox.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Combat system\\Hitbox.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADsAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-17T21:36:49.167Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-10T03:30:31.175Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 6,
-              "Title": "Item.cs",
-              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Inventory\\Item.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Inventory\\Item.cs",
-              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Inventory\\Item.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Inventory\\Item.cs",
-              "ViewState": "AgIAAAIAAAAAAAAAAAAswBYAAAAWAAAAAAAAAA==",
+              "Title": "DamageInstance.cs",
+              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Combat system\\DamageInstance.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Combat system\\DamageInstance.cs",
+              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Combat system\\DamageInstance.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Combat system\\DamageInstance.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAACIAAACAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-17T21:36:50.591Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-09T20:07:29.512Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
-              "Title": "ItemData.cs",
-              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Inventory\\ItemData.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Inventory\\ItemData.cs",
-              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Inventory\\ItemData.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Inventory\\ItemData.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAUAAAAAAAAAA==",
+              "Title": "Creature.cs",
+              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Creature.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Creature.cs",
+              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Creature.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Creature.cs",
+              "ViewState": "AgIAAHkAAAAAAAAAAAAAwJAAAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-17T21:36:49.823Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-08T07:19:58.277Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Attack.cs",
+              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Combat system\\Attack.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Combat system\\Attack.cs",
+              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Combat system\\Attack.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Combat system\\Attack.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-10T03:30:30.54Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "InventoryManager.cs",
+              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Inventory system\\InventoryManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Inventory system\\InventoryManager.cs",
+              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Inventory system\\InventoryManager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Inventory system\\InventoryManager.cs",
+              "ViewState": "AgIAAGUCAAAAAAAAAAD4v4cCAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-20T21:25:58.767Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Door.cs",
+              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Door.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Door.cs",
+              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Door.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Door.cs",
+              "ViewState": "AgIAADYAAAAAAAAAAAAuwFQAAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-08T12:27:41.471Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "PhysicalObject.cs",
+              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\PhysicalObject.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\PhysicalObject.cs",
+              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\PhysicalObject.cs",
+              "RelativeToolTip": "Assets\\Scripts\\PhysicalObject.cs",
+              "ViewState": "AgIAACwAAAAAAAAAAAAowEoAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-08T12:24:55.176Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "Weapon.cs",
+              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Inventory system\\Weapon.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Inventory system\\Weapon.cs",
+              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Inventory system\\Weapon.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Inventory system\\Weapon.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-08T07:42:38.922Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Actor.cs",
+              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Actor.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Actor.cs",
+              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Actor.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Actor.cs",
+              "ViewState": "AgIAADAAAAAAAAAAAAAtwFQAAAA9AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-08T07:06:42.822Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "Loot.cs",
-              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Inventory\\Loot.cs",
-              "RelativeDocumentMoniker": "Assets\\Scripts\\Inventory\\Loot.cs",
-              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Inventory\\Loot.cs",
-              "RelativeToolTip": "Assets\\Scripts\\Inventory\\Loot.cs",
-              "ViewState": "AgIAACYAAAAAAAAAAAAIwEQAAAAtAAAAAAAAAA==",
+              "Title": "Player.cs",
+              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Player.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Player.cs",
+              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Player.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Player.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAHIAAABIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-18T21:38:12.899Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-07T19:12:43.274Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "InventoryGrid.cs",
+              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\Inventory system\\InventoryGrid.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Inventory system\\InventoryGrid.cs",
+              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\Inventory system\\InventoryGrid.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Inventory system\\InventoryGrid.cs",
+              "ViewState": "AgIAADcAAAAAAAAAAAAQwE8AAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-19T04:22:49.602Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "UIManager.cs",
+              "DocumentMoniker": "D:\\Projects\\For the king\\Assets\\Scripts\\UIManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\UIManager.cs",
+              "ToolTip": "D:\\Projects\\For the king\\Assets\\Scripts\\UIManager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\UIManager.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-20T22:55:28.536Z"
             }
           ]
         }
